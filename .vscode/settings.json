@@ -1,0 +1,6 @@
+{
+    "lmstudioCode.minContextLength": 32768,
+    "lmstudioCode.permissionMode": "default",
+    "ollama.model": "deepseek-r1:1.5b",
+    "chat.disableAIFeatures": false
+}
