@@ -1,0 +1,9 @@
+node_modules/
+data/*.db
+data/*.db-*
+data/.jwt-secret
+uploads/
+backups/
+.env
+*.log
+public/testdot-pc-root-ca.cer
