@@ -20,8 +20,8 @@ const { optionalAuth, requireAuth } = require('./middleware/auth');
 const authRouter = require('./routes/auth');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-const HTTPS_PORT = Number(process.env.HTTPS_PORT) || 3444;
+const PORT = process.env.PORT || 3001;
+const HTTPS_PORT = Number(process.env.HTTPS_PORT) || 3443;
 const HTTPS_CERT_DIR = path.join(
   process.env.LOCALAPPDATA || path.join(os.homedir(), 'AppData', 'Local'),
   'BurnTestQC', 'https'
