@@ -35,7 +35,7 @@ function safePart(value, fallback) {
 }
 
 function recordWithPhotos(id) {
-  const record = prepare(`SELECT r.id, r.purchase_order_id, r.customer_code,
+  const record = prepare(`SELECT r.id, r.purchase_order_id, r.customer_code, r.is_completed,
     po.po_number, r.created_at, r.updated_at
     FROM customer_check_records r
     JOIN purchase_orders po ON po.id = r.purchase_order_id
@@ -88,14 +88,64 @@ router.get('/', (req, res, next) => {
   } catch (err) { next(err); }
 });
 
+router.get('/orders', (req, res, next) => {
+  try {
+    const rows = prepare(`SELECT DISTINCT po.id AS PO_Id, po.po_number AS PO_Name,
+      c.name AS Cus_Name
+      FROM customer_check_records r
+      JOIN purchase_orders po ON po.id = r.purchase_order_id
+      JOIN customers c ON c.id = po.customer_id
+      WHERE TRIM(r.customer_code) <> ''
+      ORDER BY po.po_number`).all();
+    res.json(rows);
+  } catch (err) { next(err); }
+});
+
 router.get('/codes', (req, res, next) => {
   try {
-    const orderId = Number(req.query.purchase_order_id);
-    if (!orderId) return res.status(400).json({ error: 'purchase_order_id là bắt buộc' });
-    const order = prepare('SELECT id FROM purchase_orders WHERE id = ?').get(orderId);
-    if (!order) return res.status(404).json({ error: 'Không tìm thấy đơn hàng' });
-    res.json(prepare(`SELECT id, customer_code, created_at, updated_at
-      FROM customer_check_records WHERE purchase_order_id = ? ORDER BY customer_code`).all(orderId));
+    const hasOrderFilter = req.query.purchase_order_id != null && req.query.purchase_order_id !== '';
+    const orderId = hasOrderFilter ? Number(req.query.purchase_order_id) : null;
+    if (hasOrderFilter && !orderId) return res.status(400).json({ error: 'purchase_order_id không hợp lệ' });
+    if (orderId && !prepare('SELECT id FROM purchase_orders WHERE id = ?').get(orderId)) {
+      return res.status(404).json({ error: 'Không tìm thấy đơn hàng' });
+    }
+    const rows = prepare(`SELECT r.id, r.purchase_order_id, po.po_number, c.name AS customer_name,
+      r.customer_code, r.is_completed, r.created_at, r.updated_at,
+      p.id AS photo_id, p.burn_hours AS photo_hours, p.file_url AS photo_url, p.created_at AS photo_created_at
+      FROM customer_check_records r
+      JOIN purchase_orders po ON po.id = r.purchase_order_id
+      JOIN customers c ON c.id = po.customer_id
+      LEFT JOIN customer_check_photos p ON p.record_id = r.id
+      WHERE TRIM(r.customer_code) <> '' ${orderId ? 'AND r.purchase_order_id = ?' : ''}
+      ORDER BY po.po_number, r.customer_code, p.created_at DESC, p.id DESC`)
+      .all(...(orderId ? [orderId] : []));
+    const records = new Map();
+    for (const row of rows) {
+      let record = records.get(row.id);
+      if (!record) {
+        record = {
+          id: row.id,
+          purchase_order_id: row.purchase_order_id,
+          po_number: row.po_number,
+          customer_name: row.customer_name,
+          customer_code: row.customer_code,
+          is_completed: row.is_completed,
+          created_at: row.created_at,
+          updated_at: row.updated_at,
+          photos: []
+        };
+        records.set(row.id, record);
+      }
+      if (row.photo_id) {
+        record.photos.push({
+          id: row.photo_id,
+          burn_hours: row.photo_hours,
+          file_url: row.photo_url,
+          created_at: row.photo_created_at
+        });
+      }
+    }
+    res.json([...records.values()]);
   } catch (err) { next(err); }
 });
 
@@ -112,6 +162,20 @@ router.post('/', (req, res, next) => {
     if (String(err.message || '').includes('UNIQUE')) return res.status(409).json({ error: 'Mã hàng này đã tồn tại trong đơn hàng' });
     next(err);
   }
+});
+
+router.patch('/:id/completion', (req, res, next) => {
+  try {
+    const isCompleted = req.body.is_completed;
+    if (isCompleted !== true && isCompleted !== false) {
+      return res.status(400).json({ error: 'is_completed phải là true hoặc false' });
+    }
+    const record = recordWithPhotos(req.params.id);
+    if (!record) return res.status(404).json({ error: 'Không tìm thấy mã khách hàng' });
+    prepare("UPDATE customer_check_records SET is_completed = ?, updated_at = datetime('now') WHERE id = ?")
+      .run(isCompleted ? 1 : 0, record.id);
+    res.json(recordWithPhotos(record.id));
+  } catch (err) { next(err); }
 });
 
 router.get('/:id/report.xlsx', async (req, res, next) => {

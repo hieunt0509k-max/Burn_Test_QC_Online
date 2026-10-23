@@ -90,6 +90,7 @@ CREATE TABLE IF NOT EXISTS customer_check_records (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   purchase_order_id INTEGER NOT NULL REFERENCES purchase_orders(id) ON DELETE RESTRICT,
   customer_code TEXT NOT NULL,
+  is_completed INTEGER NOT NULL DEFAULT 0,
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at TEXT NOT NULL DEFAULT (datetime('now')),
   UNIQUE(purchase_order_id, customer_code)
@@ -242,6 +243,10 @@ for (const unit of defaultUnits) {
 
 try { db.exec("ALTER TABLE burn_tests ADD COLUMN material_types TEXT"); } catch (_) {}
 try { db.exec("ALTER TABLE products ADD COLUMN image_url TEXT"); } catch (_) {}
+{
+  const columns = new Set(db.prepare('PRAGMA table_info(customer_check_records)').all().map(column => column.name));
+  if (!columns.has('is_completed')) db.exec('ALTER TABLE customer_check_records ADD COLUMN is_completed INTEGER NOT NULL DEFAULT 0');
+}
 
 // Cache các câu prepared statement theo SQL text để không phải compile lại mỗi lần gọi.
 const stmtCache = new Map();

@@ -19,6 +19,12 @@ Mở: http://localhost:3000
 
 Camera trực tiếp cần HTTPS. Khi chứng chỉ cục bộ đã được tạo, khởi động lại app và mở `https://testdot-pc:3443/` trên iPhone. Tải chứng chỉ CA tại `http://testdot-pc:3001/testdot-pc-root-ca.cer`, cài trong **Settings > General > VPN & Device Management**, sau đó bật tin cậy tại **Settings > General > About > Certificate Trust Settings**. Chỉ cài CA này trên thiết bị tin cậy; chứng chỉ riêng của server nằm ngoài workspace.
 
+## Chụp ảnh khách kiểm theo mã
+
+Trong **Nghiệp vụ > Ảnh khách kiểm**, chọn đơn hàng để mở camera trực tiếp ở bên trái và danh sách mã ở bên phải. Chọn một mã hoặc nhấn **Chụp ảnh** trên thẻ mã đó để lưu ảnh đúng hồ sơ. Nếu trình duyệt không cấp camera trực tiếp, dùng **Mở camera thiết bị**. Trang cần HTTPS hoặc localhost để truy cập camera; mã mới và mốc giờ vẫn được thêm trong phần **Quản lý mã hàng và mốc giờ**.
+
+Trong **Điều hướng > Chụp ảnh test**, camera trực tiếp nằm bên trái và danh sách lần Burn Test đang **PENDING** nằm bên phải. Tìm theo PO hoặc mã hàng, chọn lần test rồi dùng nút **Chụp ảnh** nổi dùng chung để chụp và lưu ảnh vào album của lần test đang chọn. Danh sách vẫn hiển thị trong khi chụp để có thể chuyển nhanh giữa các mã; **Thoát chế độ chụp** để quay lại điều hướng. Có thể chọn camera từ danh sách thiết bị (sau khi cấp quyền) và camera được yêu cầu ở độ phân giải ưu tiên 2048 × 1536, tỷ lệ 4:3; trình duyệt/thiết bị có thể chọn độ phân giải khác nếu không hỗ trợ. Ảnh lưu theo tỷ lệ 4:3. Nếu camera trực tiếp không dùng được, chọn **Mở camera thiết bị**.
+
 ## Video bằng chứng Burn Test
 
 Trong chi tiết Burn Test, chọn **Quay video** để mở camera gốc của điện thoại; xoay ngang máy trước khi quay để video lưu theo hướng camera. Trên máy tính, nút quay dùng camera của trình duyệt; **Tải video từ máy tính** cho phép chọn video có sẵn. Khi xem ảnh hoặc video trong ứng dụng, con dấu gồm mã hàng, PO, màu/bấc, kích thước và khối lượng được phủ trên khung hiển thị; dùng nút phóng to riêng cho video để mở toàn màn hình cùng con dấu. Menu chuột phải trên ảnh cho phép copy ảnh gốc hoặc copy ảnh kèm con dấu. File ảnh và video gốc không bị chèn con dấu. Những ảnh đã lưu trước thay đổi này có thể đã chứa con dấu trong file gốc. Video MP4, WEBM hoặc MOV được nhận khi dài tối đa 30 giây và dung lượng không quá 150 MB; quay trực tiếp bằng trình duyệt cần `getUserMedia`/`MediaRecorder`, còn camera gốc trên điện thoại cần quyền truy cập tệp media.
