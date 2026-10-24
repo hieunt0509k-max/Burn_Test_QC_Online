@@ -386,6 +386,8 @@ footer{text-align:center;padding:24px;font-size:11.5px;color:var(--ink-soft)}
 .customer-check-camera-stage{position:relative;min-height:360px;aspect-ratio:4/3;display:grid;place-items:center;overflow:hidden;background:#111}
 .customer-check-camera-stage video{width:100%;height:100%;position:absolute;inset:0;object-fit:contain;background:#111}
 .customer-check-camera-message{z-index:1;max-width:440px;padding:20px;color:#fff;text-align:center;font-size:13px;line-height:1.6}
+#view-customer-check .customer-check-camera-stage{background:#f4f7f9}
+#view-customer-check .customer-check-camera-message{color:var(--ink)}
 .customer-check-camera-message.error{color:#ffd4d4}
 .customer-check-camera-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px}
 .customer-check-camera-actions .btn{width:auto;margin:0}
@@ -428,25 +430,28 @@ body.photo-capture-mode #view-photo-capture.is-capturing .customer-check-code-li
 #view-customer-check.is-capturing>.module-title,
 #view-customer-check.is-capturing>.module-card,
 #view-customer-check.is-capturing>.customer-check-management{display:none}
-body.customer-check-capture-mode #view-customer-check.is-capturing{max-width:none;width:100%;min-height:100vh;margin:0;padding:12px 18px;box-sizing:border-box}
-body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-capture-layout{grid-template-columns:minmax(0,3.5fr) minmax(300px,1fr);height:calc(100vh - 24px)}
+body.customer-check-capture-mode #view-customer-check.is-capturing{max-width:none;width:100%;min-height:100vh;min-height:100dvh;margin:0;padding:12px 18px;box-sizing:border-box}
+body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-capture-layout{grid-template-columns:minmax(0,3.5fr) minmax(300px,1fr);height:calc(100vh - 24px);height:calc(100dvh - 24px)}
 body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-card,
 body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-panel{min-height:0;display:flex;flex-direction:column}
 body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-stage{flex:1 1 auto;min-height:480px;aspect-ratio:auto}
-body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-stage video{object-fit:cover}
+body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-stage video{object-fit:contain}
 body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-actions{flex:0 0 auto}
 body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-list{flex:1 1 auto;max-height:none;min-height:0;padding-bottom:84px}
 .customer-check-exit-capture{display:none}
 body.customer-check-capture-mode .customer-check-exit-capture{display:inline-flex}
+.customer-check-code-toggle,.customer-check-fullscreen-toggle{display:none}
 .photo-capture-fab{position:fixed;top:24px;right:24px;z-index:1100;width:auto;min-width:136px;min-height:52px;margin:0;padding:13px 20px;border-radius:999px!important;box-shadow:0 8px 24px rgba(0,0,0,.28)!important}
 .photo-capture-fab:disabled{opacity:.55;cursor:not-allowed}
-.customer-check-capture-fab{position:fixed;top:24px;right:24px;z-index:1100;width:auto;min-width:136px;min-height:52px;margin:0;padding:13px 20px;border-radius:999px!important;box-shadow:0 8px 24px rgba(0,0,0,.28)!important}
-.customer-check-capture-fab:disabled{opacity:.55;cursor:not-allowed}
 .view-tabs #tabPhotoCapture{padding-left:32px!important;font-size:12px!important}
 @media(max-width:760px){.burn-test-capture-layout{grid-template-columns:minmax(0,1fr)}.burn-test-capture-layout .customer-check-code-list{max-height:380px}.burn-test-capture-layout .customer-check-camera-stage{min-height:240px;aspect-ratio:4/3}body.photo-capture-mode #view-photo-capture.is-capturing .burn-test-capture-layout{grid-template-columns:minmax(0,1fr);height:auto}body.photo-capture-mode #view-photo-capture.is-capturing .customer-check-camera-card{min-height:calc(100vh - 24px)}body.photo-capture-mode #view-photo-capture.is-capturing .customer-check-camera-stage{min-height:45vh;flex:1 1 auto}body.photo-capture-mode #view-photo-capture.is-capturing .customer-check-code-panel{min-height:220px}body.photo-capture-mode #view-photo-capture.is-capturing .customer-check-code-list{max-height:34vh;flex:1 1 auto}.photo-capture-fab{top:16px;right:16px;min-height:48px;padding:11px 16px}}
 @media(max-width:760px){body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-capture-layout{grid-template-columns:minmax(0,1fr);height:auto}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-card{min-height:calc(100vh - 24px)}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-stage{min-height:45vh;flex:1 1 auto}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-panel{min-height:220px}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-list{max-height:34vh;flex:1 1 auto}}
-@media(max-width:760px){.customer-check-capture-fab{top:16px;right:16px;min-height:48px;padding:11px 16px}}
+@media(orientation:landscape) and (max-height:600px){body.customer-check-capture-mode #view-customer-check.is-capturing{position:fixed;inset:0;z-index:1000;width:100%;height:100vh;height:100dvh;min-height:0;padding:0;overflow:hidden;background:#111}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-capture-layout{position:absolute;inset:0;display:block;height:auto;min-height:0}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-card{position:absolute;inset:0;display:flex;min-height:0;border:0;border-radius:0}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-head{flex:0 0 auto;padding:6px 12px}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-stage{min-height:0;flex:1 1 0;aspect-ratio:auto}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-actions{flex:0 0 auto;gap:6px;padding:6px 10px;background:rgba(255,255,255,.92)}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-actions small{max-width:35%;font-size:10px}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-actions .btn{padding:6px 9px;font-size:11px}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-panel{display:none;position:absolute;top:max(8px,env(safe-area-inset-top));right:max(8px,env(safe-area-inset-right));bottom:max(8px,env(safe-area-inset-bottom));z-index:1090;width:min(340px,82vw);background:rgba(255,255,255,.97);box-shadow:0 6px 24px rgba(0,0,0,.35)}body.customer-check-capture-mode #view-customer-check.is-capturing.customer-check-code-list-open .customer-check-code-panel{display:flex}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-list{flex:1 1 auto;min-height:0;max-height:none;padding-bottom:12px}.customer-check-code-toggle,.customer-check-fullscreen-toggle{position:fixed;z-index:1101;display:inline-flex;align-items:center;justify-content:center;min-height:42px;margin:0;padding:8px 12px;border:1px solid rgba(255,255,255,.75);border-radius:999px;background:rgba(25,31,38,.82);color:#fff;font-size:12px;font-weight:700;box-shadow:0 3px 12px rgba(0,0,0,.3);backdrop-filter:blur(6px)}.customer-check-code-toggle{left:max(10px,env(safe-area-inset-left));top:max(58px,calc(env(safe-area-inset-top) + 50px))}.customer-check-fullscreen-toggle{left:max(10px,env(safe-area-inset-left));top:max(10px,env(safe-area-inset-top))}.customer-check-code-list-open .customer-check-code-toggle{background:#187dcc}}
+@media(orientation:landscape) and (max-height:600px){body:not(.customer-check-capture-mode) .customer-check-code-toggle,body:not(.customer-check-capture-mode) .customer-check-fullscreen-toggle{display:none}}
+@media(orientation:landscape) and (max-height:800px){body.customer-check-capture-mode #view-customer-check.is-capturing{position:fixed;inset:0;z-index:1000;width:100%;height:100vh;height:100dvh;min-height:0;padding:0;overflow:hidden;background:#111}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-capture-layout{position:absolute;inset:0;display:block;height:auto;min-height:0}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-card{position:absolute;inset:0;display:flex;min-height:0;border:0;border-radius:0}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-stage{min-height:0;flex:1 1 0;aspect-ratio:auto}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-panel{display:none;position:absolute;top:max(8px,env(safe-area-inset-top));right:max(8px,env(safe-area-inset-right));bottom:max(8px,env(safe-area-inset-bottom));z-index:1090;width:min(340px,82vw);background:rgba(255,255,255,.97);box-shadow:0 6px 24px rgba(0,0,0,.35)}body.customer-check-capture-mode #view-customer-check.is-capturing.customer-check-code-list-open .customer-check-code-panel{display:flex}.customer-check-code-toggle,.customer-check-fullscreen-toggle{position:fixed;z-index:1101;display:inline-flex;align-items:center;justify-content:center;min-height:42px;margin:0;padding:8px 12px;border:1px solid rgba(255,255,255,.75);border-radius:999px;background:rgba(25,31,38,.82);color:#fff;font-size:12px;font-weight:700;box-shadow:0 3px 12px rgba(0,0,0,.3);backdrop-filter:blur(6px)}.customer-check-code-toggle{left:max(10px,env(safe-area-inset-left));top:max(58px,calc(env(safe-area-inset-top) + 50px))}.customer-check-fullscreen-toggle{left:max(10px,env(safe-area-inset-left));top:max(10px,env(safe-area-inset-top))}}
+@media(orientation:landscape) and (max-width:950px){body.customer-check-capture-mode #view-customer-check.is-capturing{position:fixed;inset:0;z-index:1000;width:100%;height:100vh;height:100dvh;min-height:0;padding:0;overflow:hidden;background:#111}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-capture-layout{position:absolute;inset:0;display:block;height:auto;min-height:0}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-card{position:absolute;inset:0;display:flex;min-height:0;border:0;border-radius:0}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-stage{min-height:0;flex:1 1 0;aspect-ratio:auto}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-panel{display:none;position:absolute;top:max(8px,env(safe-area-inset-top));right:max(8px,env(safe-area-inset-right));bottom:max(8px,env(safe-area-inset-bottom));z-index:1090;width:min(340px,82vw);background:rgba(255,255,255,.97);box-shadow:0 6px 24px rgba(0,0,0,.35)}body.customer-check-capture-mode #view-customer-check.is-capturing.customer-check-code-list-open .customer-check-code-panel{display:flex}.customer-check-code-toggle,.customer-check-fullscreen-toggle{position:fixed;z-index:1101;display:inline-flex;align-items:center;justify-content:center;min-height:42px;margin:0;padding:8px 12px;border:1px solid rgba(255,255,255,.75);border-radius:999px;background:rgba(25,31,38,.82);color:#fff;font-size:12px;font-weight:700;box-shadow:0 3px 12px rgba(0,0,0,.3);backdrop-filter:blur(6px)}.customer-check-code-toggle{left:max(10px,env(safe-area-inset-left));top:max(58px,calc(env(safe-area-inset-top) + 50px))}.customer-check-fullscreen-toggle{left:max(10px,env(safe-area-inset-left));top:max(10px,env(safe-area-inset-top))}}
 @media(max-width:760px){.customer-check-capture-layout{grid-template-columns:minmax(0,1fr)}.customer-check-camera-stage{min-height:240px}.customer-check-code-list{max-height:360px}}
+@media(orientation:landscape) and (max-width:950px){body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-capture-layout{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,2.2fr) minmax(220px,1fr);gap:8px;height:auto;min-height:0}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-card{position:relative;inset:auto;min-width:0;min-height:0;border:0;border-radius:0}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-panel{position:relative;inset:auto;display:flex;width:auto;min-width:0;min-height:0;background:#fff;box-shadow:none}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-head{flex:0 0 auto;padding:8px}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-list{flex:1 1 auto;min-height:0;max-height:none;padding:8px}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-card{grid-template-columns:52px minmax(0,1fr);gap:6px;padding:6px}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-thumb{width:52px;height:52px}.customer-check-code-toggle{display:none}}
 .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;align-items:center;justify-content:center;padding:30px}
 .lightbox.show{display:flex}
 .lightbox-photo-frame{position:relative;display:flex;align-items:center;justify-content:center;max-width:100%;max-height:100%}
@@ -2314,25 +2319,16 @@ header{
   <section class="customer-check-capture-layout">
     <div class="customer-check-camera-card">
       <div class="customer-check-camera-head">
-        <b>📷 Camera</b>
+        <b>📷 Chụp ảnh khách kiểm</b>
         <small id="customerCheckSelectedLabel">Chọn mã ở danh sách bên phải</small>
       </div>
       <div class="customer-check-camera-stage">
-        <video id="customerCheckLiveCamera" autoplay playsinline muted></video>
-        <div class="customer-check-camera-message" id="customerCheckCameraMessage">Đang mở camera…</div>
-        <canvas id="customerCheckCaptureCanvas" hidden></canvas>
+        <div class="customer-check-camera-message">Chọn mã ở danh sách, sau đó nhấn nút bên dưới để mở camera của thiết bị và chụp ảnh.</div>
       </div>
       <div class="customer-check-camera-actions">
-        <small id="customerCheckCameraStatus" style="color:var(--ink-soft)">Camera chưa sẵn sàng</small>
+        <small id="customerCheckCameraStatus" style="color:var(--ink-soft)">Chưa mở camera</small>
         <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
-          <label for="customerCheckCameras" style="display:flex;align-items:center;gap:6px;color:var(--ink-soft);font-size:11px">
-            Camera
-            <select id="customerCheckCameras" aria-label="Chọn camera" disabled style="max-width:min(260px,45vw);padding:8px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink);font-size:11px">
-              <option value="">Camera mặc định</option>
-            </select>
-          </label>
-          <button type="button" class="btn btn-ghost" id="customerCheckCameraFallbackBtn" onclick="openCustomerCheckCamera()">Mở camera thiết bị</button>
-          <button type="button" class="btn btn-ghost customer-check-exit-capture" onclick="exitCustomerCheckCaptureMode()">Thoát chế độ chụp</button>
+          <button type="button" class="btn" id="customerCheckCaptureButton" onclick="startCustomerCheckCapture()">📷 Mở camera để chụp</button>
         </div>
       </div>
     </div>
@@ -2346,7 +2342,6 @@ header{
       </div>
     </div>
   </section>
-
   <details class="customer-check-management">
     <summary>⚙️ Quản lý mã hàng và mốc giờ</summary>
     <div class="customer-check-management-body">
@@ -2392,7 +2387,6 @@ header{
       <div id="customerCheckGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;min-height:180px"></div>
     </div>
   </section>
-  <button type="button" class="btn customer-check-capture-fab" id="customerCheckCaptureFab" disabled aria-label="Chụp ảnh cho mã đang chọn" onclick="startCustomerCheckCapture().catch(err => alert(err.message))">📷 Chụp ảnh</button>
 </main>
 
 <main id="view-report-templates" class="hidden">
@@ -7018,24 +7012,6 @@ function enterPhotoCaptureMode(){
   return true;
 }
 
-function enterCustomerCheckCaptureMode(){
-  const record = ensureCustomerCheckRecord();
-  if(!record.id || customerCheckLoadedKey !== record.key || record.isCompleted){
-    alert('Vui lòng chọn mã đang chụp trước khi chụp ảnh.');
-    return false;
-  }
-  document.body.classList.add('customer-check-capture-mode');
-  setPhotoCaptureSystemChrome(true);
-  document.getElementById('view-customer-check')?.classList.add('is-capturing');
-  return true;
-}
-
-function exitCustomerCheckCaptureMode(){
-  document.body.classList.remove('customer-check-capture-mode');
-  setPhotoCaptureSystemChrome(false);
-  document.getElementById('view-customer-check')?.classList.remove('is-capturing');
-}
-
 function exitPhotoCaptureMode(){
   document.body.classList.remove('photo-capture-mode');
   setPhotoCaptureSystemChrome(false);
@@ -8765,10 +8741,6 @@ const customerCheckSlots = [
 const customerCheckRecords = {};
 let customerCheckLoadedKey = '';
 let customerCheckCodeCards = [];
-let customerCheckInlineStream = null;
-let customerCheckCameraRequest = 0;
-let customerCheckDeviceId = '';
-let customerCheckCaptureBusy = false;
 
 function getCustomerCheckKey(){
   const select = document.getElementById('customerCheckOrderSelect');
@@ -8918,13 +8890,13 @@ function renderCustomerCheckSavedCodes(orderId, selectedCode = ''){
 function setCustomerCheckPhotoControls(enabled){
   const record = ensureCustomerCheckRecord();
   const canCapture = enabled && !record.isCompleted;
-  document.querySelectorAll('#customerCheckSchedule button, #customerCheckFileInput, #customerCheckChooseBtn, #customerCheckCaptureFab, #customerCheckAddSlotBtn').forEach(el => {
-    el.disabled = !canCapture || (el.id === 'customerCheckCaptureFab' && customerCheckCaptureBusy);
+  document.querySelectorAll('#customerCheckSchedule button, #customerCheckFileInput, #customerCheckChooseBtn, #customerCheckCaptureButton, #customerCheckAddSlotBtn').forEach(el => {
+    el.disabled = !canCapture;
   });
   const exportButton = document.getElementById('customerCheckExportBtn');
   if(exportButton) exportButton.disabled = !enabled;
   const completeButton = document.getElementById('customerCheckCompleteBtn');
-  if(completeButton) completeButton.disabled = !enabled || customerCheckCaptureBusy;
+  if(completeButton) completeButton.disabled = !enabled;
 }
 
 function updateCustomerCheckCompletionButton(record){
@@ -9403,7 +9375,6 @@ async function selectCustomerCheckCode(customerCode, purchaseOrderId = null){
   const code = String(customerCode || '').trim();
   if(!code) return;
   const selectedOrderId = String(purchaseOrderId || document.getElementById('customerCheckOrderSelect')?.value || '');
-  if(customerCheckCaptureBusy && `${selectedOrderId}::${code}` !== customerCheckLoadedKey) return;
   const item = customerCheckCodeCards.find(record =>
     record.customer_code === code && String(record.purchase_order_id) === selectedOrderId
   );
@@ -9422,12 +9393,20 @@ async function selectCustomerCheckCode(customerCode, purchaseOrderId = null){
   renderCustomerCheckCodeCards();
   const label = document.getElementById('customerCheckSelectedLabel');
   if(label) label.textContent = `Mã đang chọn: ${code} · ${item.po_number}`;
-  if(!Boolean(Number(item.is_completed))) enterCustomerCheckCaptureMode();
 }
 
-async function startCustomerCheckCapture(){
-  if(!enterCustomerCheckCaptureMode()) return;
-  await captureSelectedCustomerCheckPhoto();
+function startCustomerCheckCapture(){
+  const record = ensureCustomerCheckRecord();
+  if(!record.id || customerCheckLoadedKey !== record.key || record.isCompleted){
+    alert('Vui lòng chọn mã đang chụp trước khi chụp ảnh.');
+    return;
+  }
+  const slotId = getNextCustomerCheckCaptureSlot();
+  if(!slotId){
+    alert('Mã này đã chụp đủ 3 ảnh ở tất cả mốc giờ.');
+    return;
+  }
+  openCustomerCheckCamera(slotId);
 }
 
 function updateCustomerCheckCodeCard(record){
@@ -9442,171 +9421,6 @@ function updateCustomerCheckCodeCard(record){
     created_at: image.time
   })));
   renderCustomerCheckCodeCards();
-}
-
-async function startCustomerCheckCamera(){
-  const video = document.getElementById('customerCheckLiveCamera');
-  const message = document.getElementById('customerCheckCameraMessage');
-  const status = document.getElementById('customerCheckCameraStatus');
-  if(!video || customerCheckInlineStream || getActiveViewName() !== 'customer-check') return;
-  video.srcObject = null;
-  const request = ++customerCheckCameraRequest;
-  message.classList.remove('error');
-  message.textContent = 'Đang mở camera…';
-  message.style.display = 'block';
-  status.textContent = 'Đang kết nối camera…';
-  try{
-    if(!navigator.mediaDevices?.getUserMedia) throw new Error('Cần HTTPS hoặc localhost để mở camera.');
-    const base = {
-      facingMode: { ideal: 'environment' },
-      width: { ideal: 2048 },
-      height: { ideal: 1536 },
-      aspectRatio: { ideal: 4 / 3 }
-    };
-    const videoConstraints = customerCheckDeviceId
-      ? { width: base.width, height: base.height, aspectRatio: base.aspectRatio, deviceId: { exact: customerCheckDeviceId } }
-      : base;
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: false,
-      video: videoConstraints
-    });
-    if(request !== customerCheckCameraRequest){
-      stream.getTracks().forEach(track => track.stop());
-      return;
-    }
-    customerCheckInlineStream = stream;
-    video.srcObject = stream;
-    await video.play();
-    const trackSettings = stream.getVideoTracks()[0]?.getSettings?.() || {};
-    if(trackSettings.deviceId) customerCheckDeviceId = trackSettings.deviceId;
-    const cameras = await navigator.mediaDevices.enumerateDevices();
-    if(request !== customerCheckCameraRequest) return;
-    renderCustomerCheckCameras(cameras, trackSettings.deviceId || customerCheckDeviceId);
-    message.style.display = 'none';
-    status.textContent = trackSettings.width && trackSettings.height
-      ? `Camera đã sẵn sàng · ${trackSettings.width} × ${trackSettings.height}`
-      : 'Camera đã sẵn sàng';
-  }catch(err){
-    if(request !== customerCheckCameraRequest) return;
-    if(customerCheckInlineStream){
-      customerCheckInlineStream.getTracks().forEach(track => track.stop());
-      customerCheckInlineStream = null;
-      video.srcObject = null;
-    }
-    message.classList.add('error');
-    message.textContent = `Không mở được camera trực tiếp: ${err.message}. Kiểm tra quyền camera hoặc chọn camera khác.`;
-    status.textContent = 'Camera trực tiếp không khả dụng';
-  }
-}
-
-function renderCustomerCheckCameras(devices, selectedDeviceId){
-  const select = document.getElementById('customerCheckCameras');
-  if(!select) return;
-  const cameras = devices.filter(device => device.kind === 'videoinput');
-  select.replaceChildren();
-  if(!cameras.length){
-    select.add(new Option('Không tìm thấy camera', ''));
-    select.disabled = true;
-    return;
-  }
-  cameras.forEach((camera, index) => {
-    const option = new Option(camera.label || `Camera ${index + 1}`, camera.deviceId);
-    option.selected = camera.deviceId === selectedDeviceId;
-    select.add(option);
-  });
-  select.disabled = cameras.length < 2;
-}
-
-document.getElementById('customerCheckCameras')?.addEventListener('change', event => {
-  const select = event.currentTarget;
-  customerCheckDeviceId = select.value;
-  stopCustomerCheckCamera();
-  select.disabled = select.options.length < 2;
-  startCustomerCheckCamera().catch(err => {
-    document.getElementById('customerCheckCameraStatus').textContent = `Không mở được camera: ${err.message}`;
-  });
-});
-
-function stopCustomerCheckCamera(){
-  customerCheckCameraRequest++;
-  if(customerCheckInlineStream) customerCheckInlineStream.getTracks().forEach(track => track.stop());
-  customerCheckInlineStream = null;
-  const cameraSelect = document.getElementById('customerCheckCameras');
-  if(cameraSelect) cameraSelect.disabled = true;
-  const video = document.getElementById('customerCheckLiveCamera');
-  if(video) video.srcObject = null;
-  const message = document.getElementById('customerCheckCameraMessage');
-  const status = document.getElementById('customerCheckCameraStatus');
-  if(message){
-    message.classList.remove('error');
-    message.textContent = 'Camera tạm dừng. Chuyển lại màn hình này để mở camera.';
-    message.style.display = 'block';
-  }
-  if(status) status.textContent = 'Camera chưa sẵn sàng';
-}
-
-async function captureCustomerCheckCodePhoto(customerCode){
-  await selectCustomerCheckCode(customerCode);
-  const slotId = getNextCustomerCheckCaptureSlot();
-  const record = ensureCustomerCheckRecord();
-  if(!slotId){
-    alert('Mã này đã chụp đủ 3 ảnh ở tất cả mốc giờ.');
-    return;
-  }
-  if(!customerCheckInlineStream){
-    openCustomerCheckCamera(slotId);
-    return;
-  }
-  await captureCustomerCheckPhotoFromInlineCamera(record, slotId);
-}
-
-async function captureSelectedCustomerCheckPhoto(){
-  const code = document.getElementById('customerCheckCustomerCode')?.value.trim() || '';
-  if(!code){ alert('Vui lòng chọn mã hàng trước khi chụp.'); return; }
-  await captureCustomerCheckCodePhoto(code);
-}
-
-async function captureCustomerCheckPhotoFromInlineCamera(record, slotId){
-  if(customerCheckCaptureBusy) return;
-  const video = document.getElementById('customerCheckLiveCamera');
-  if(!customerCheckInlineStream || !video?.videoWidth || !video?.videoHeight){
-    throw new Error('Camera chưa sẵn sàng. Vui lòng thử lại.');
-  }
-  const slot = record.slots.find(item => Number(item.id) === Number(slotId));
-  if(!slot) throw new Error('Không tìm thấy mốc giờ để lưu ảnh.');
-  customerCheckCaptureBusy = true;
-  const button = document.getElementById('customerCheckCaptureFab');
-  const status = document.getElementById('customerCheckCameraStatus');
-  if(button) button.disabled = true;
-  renderCustomerCheckCodeCards();
-  if(status) status.textContent = `Đang lưu ảnh cho ${record.customerCode}…`;
-  try{
-    const canvas = document.getElementById('customerCheckCaptureCanvas');
-    const geometry = getCameraCaptureGeometry(video);
-    canvas.width = geometry.outputWidth;
-    canvas.height = geometry.outputHeight;
-    const context = canvas.getContext('2d');
-    if(!context) throw new Error('Không thể xử lý ảnh từ camera.');
-    if(geometry.rotation){
-      context.translate(canvas.width / 2, canvas.height / 2);
-      context.rotate(geometry.rotation * Math.PI / 180);
-      context.drawImage(video, geometry.sourceX, geometry.sourceY, geometry.sourceCropWidth, geometry.sourceCropHeight, -canvas.height / 2, -canvas.width / 2, canvas.height, canvas.width);
-    }else{
-      context.drawImage(video, geometry.sourceX, geometry.sourceY, geometry.sourceCropWidth, geometry.sourceCropHeight, 0, 0, canvas.width, canvas.height);
-    }
-    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.92));
-    if(!blob) throw new Error('Không tạo được ảnh. Vui lòng thử lại.');
-    const file = new File([blob], `customer-check-${Date.now()}.jpg`, { type: 'image/jpeg' });
-    await uploadCustomerCheckPhoto(record.id, slot.id, file);
-    if(status) status.textContent = `Đã lưu ảnh cho ${record.customerCode}`;
-  }catch(err){
-    if(status) status.textContent = `Lưu ảnh thất bại: ${err.message}`;
-    throw err;
-  }finally{
-    customerCheckCaptureBusy = false;
-    setCustomerCheckPhotoControls(Boolean(ensureCustomerCheckRecord().id && customerCheckLoadedKey === ensureCustomerCheckRecord().key));
-    renderCustomerCheckCodeCards();
-  }
 }
 
 function getNextCustomerCheckCaptureSlot(){
@@ -9724,10 +9538,6 @@ function switchView(view){
   const isSample = view === 'sample';
   const isReportTemplates = view === 'report-templates';
   const isSettings = view === 'settings';
-  if(!isCustomerCheck){
-    stopCustomerCheckCamera();
-    exitCustomerCheckCaptureMode();
-  }
   if(!isPhotoCapture){
     stopPhotoCaptureCamera();
     exitPhotoCaptureMode();
@@ -9769,7 +9579,6 @@ function switchView(view){
       await loadCustomerCheckCodes();
       renderCustomerCheckSchedule();
       renderCustomerCheckGrid();
-      await startCustomerCheckCamera();
     }).catch(err => alert('Không tải được danh sách đơn hàng: ' + err.message));
   }
   if(isSample){ loadSampleRefs(); loadSampleTests(); }

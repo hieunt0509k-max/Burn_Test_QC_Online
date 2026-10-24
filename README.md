@@ -21,7 +21,7 @@ Camera trực tiếp cần HTTPS. Khi chứng chỉ cục bộ đã được t�
 
 ## Chụp ảnh khách kiểm theo mã
 
-Trong **Nghiệp vụ > Ảnh khách kiểm**, chọn đơn hàng để mở camera trực tiếp ở bên trái và danh sách mã ở bên phải. Chọn một mã hoặc nhấn **Chụp ảnh** trên thẻ mã đó để lưu ảnh đúng hồ sơ. Nếu trình duyệt không cấp camera trực tiếp, dùng **Mở camera thiết bị**. Trang cần HTTPS hoặc localhost để truy cập camera; mã mới và mốc giờ vẫn được thêm trong phần **Quản lý mã hàng và mốc giờ**.
+Trong **Nghiệp vụ > Ảnh khách kiểm**, chọn đơn hàng và mã khách hàng, sau đó nhấn **Mở camera để chụp** để dùng camera của thiết bị. Màn hình không bật preview camera trực tiếp hoặc chuyển sang chế độ toàn màn hình; ảnh sau khi chụp vẫn được lưu vào đúng hồ sơ và mốc giờ. Trên iPhone, trình duyệt mở camera thiết bị; trên máy tính, ứng dụng mở cửa sổ chụp ảnh. Mã mới và mốc giờ vẫn được thêm trong phần **Quản lý mã hàng và mốc giờ**.
 
 Trong **Điều hướng > Chụp ảnh test**, camera trực tiếp nằm bên trái và danh sách lần Burn Test đang **PENDING** nằm bên phải. Tìm theo PO hoặc mã hàng, chọn lần test rồi dùng nút **Chụp ảnh** nổi dùng chung để chụp và lưu ảnh vào album của lần test đang chọn. Danh sách vẫn hiển thị trong khi chụp để có thể chuyển nhanh giữa các mã; **Thoát chế độ chụp** để quay lại điều hướng. Có thể chọn camera từ danh sách thiết bị (sau khi cấp quyền) và camera được yêu cầu ở độ phân giải ưu tiên 2048 × 1536, tỷ lệ 4:3; trình duyệt/thiết bị có thể chọn độ phân giải khác nếu không hỗ trợ. Ảnh lưu theo tỷ lệ 4:3. Nếu camera trực tiếp không dùng được, chọn **Mở camera thiết bị**.
 
