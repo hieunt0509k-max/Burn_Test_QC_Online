@@ -169,7 +169,6 @@ td.empty-state{text-align:center;color:var(--ink-soft);padding:40px 0;font-size:
 .pagination{display:flex;align-items:center;gap:10px}
 .pagination .icon-btn{width:26px;height:26px;font-size:14px}
 .pagination .icon-btn:disabled{opacity:.35;cursor:not-allowed;border-color:var(--line);color:var(--ink-soft);background:#fff}
-#pageLabel{font-family:'IBM Plex Mono',monospace;font-size:12px;min-width:70px;text-align:center}
 .card.editing{box-shadow:0 0 0 2px var(--copper)}
 .eyebrow.editing{color:var(--fail)}
 #cancelEditBtn{margin-top:8px}
@@ -205,6 +204,13 @@ tr.editing-row{background:rgba(181,98,44,.08) !important}
 .master-pagination .icon-btn{width:28px;height:28px;font-size:16px}
 .master-pagination .icon-btn:disabled{opacity:.35;cursor:not-allowed}
 .master-pagination span{font-family:'IBM Plex Mono',monospace;min-width:54px;text-align:center;font-size:11px}
+.numbered-pagination{gap:5px}
+.numbered-pagination .icon-btn{width:30px;height:30px;font-size:13px}
+.numbered-pagination .page-number{min-width:30px;padding:0 7px;font:600 12px 'IBM Plex Mono',monospace}
+.numbered-pagination .page-number.active{border-color:#1681d8;background:#eaf5fd;color:#126fb8}
+.numbered-pagination .page-gap{min-width:14px;text-align:center;color:var(--ink-soft)}
+.numbered-pagination .icon-btn:disabled{opacity:.35;cursor:not-allowed}
+@media(max-width:640px){.numbered-pagination{gap:4px;max-width:100%;overflow-x:auto;padding:2px}}
 .master-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;background:var(--paper-2);border:1px solid var(--line);font-size:10px;border-radius:10px}
 .master-empty{padding:30px;text-align:center;color:var(--ink-soft)}
 .master-actions{display:flex;gap:5px}
@@ -388,6 +394,7 @@ footer{text-align:center;padding:24px;font-size:11.5px;color:var(--ink-soft)}
 .customer-check-camera-message{z-index:1;max-width:440px;padding:20px;color:#fff;text-align:center;font-size:13px;line-height:1.6}
 #view-customer-check .customer-check-camera-stage{background:#f4f7f9}
 #view-customer-check .customer-check-camera-message{color:var(--ink)}
+.photo-upload-dropzone .customer-check-camera-stage{width:100%;min-height:150px;aspect-ratio:auto;background:transparent!important}
 .customer-check-camera-message.error{color:#ffd4d4}
 .customer-check-camera-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px}
 .customer-check-camera-actions .btn{width:auto;margin:0}
@@ -399,6 +406,9 @@ footer{text-align:center;padding:24px;font-size:11.5px;color:var(--ink-soft)}
 .customer-check-code-meta{min-width:0}
 .customer-check-code-meta b{display:block;overflow-wrap:anywhere;font-size:12px}
 .customer-check-code-meta small{display:block;margin-top:4px;color:var(--ink-soft);font-size:10px;line-height:1.4}
+.customer-check-code-meta-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.customer-check-code-meta-head b{min-width:0}
+.customer-check-card-camera{flex:0 0 auto;width:auto;margin:0;padding:5px 8px;font-size:11px}
 .customer-check-management{margin-top:14px}
 .customer-check-management>summary{padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);font-size:12px;font-weight:700;cursor:pointer}
 .customer-check-management[open]>summary{border-radius:8px 8px 0 0}
@@ -410,23 +420,16 @@ footer{text-align:center;padding:24px;font-size:11.5px;color:var(--ink-soft)}
 .burn-test-capture-layout .customer-check-code-list{max-height:620px}
 .burn-test-capture-layout .customer-check-code-card{grid-template-columns:112px minmax(0,1fr)}
 .burn-test-capture-layout .customer-check-code-thumb{width:112px;height:112px}
-.burn-test-capture-layout .customer-check-camera-stage{min-height:500px;aspect-ratio:16/9}
-#view-photo-capture.is-capturing>.module-title,
-#view-photo-capture.is-capturing>.module-card{display:none}
-#view-photo-capture.is-capturing{max-width:none;width:100%;padding:12px 18px}
-body.photo-capture-mode .view-tabs,
-body.photo-capture-mode header{display:none!important}
+.photo-capture-card-meta-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.photo-capture-card-meta-head .photo-capture-card-code{min-width:0;overflow-wrap:anywhere}
+.photo-capture-card-camera{flex:0 0 auto;width:auto;margin:0;padding:5px 8px;font-size:11px}
+.photo-upload-dropzone{min-height:240px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;border:2px dashed #9bb6c8;transition:background .15s,border-color .15s,box-shadow .15s}
+.photo-upload-dropzone.drag-over{background:#eef7fc;border-color:#1681d8;box-shadow:inset 0 0 0 2px rgba(22,129,216,.12)}
+.photo-upload-dropzone p{max-width:440px;margin:0;color:var(--ink-soft);font-size:13px;line-height:1.6}
+.photo-upload-dropzone .btn{width:auto;margin:0}
+.photo-upload-status{min-height:18px;color:var(--ink-soft);font-size:12px}
 body.customer-check-capture-mode .view-tabs,
 body.customer-check-capture-mode header{display:none!important}
-body.photo-capture-mode #view-photo-capture.is-capturing{max-width:none;width:100%;min-height:100vh;margin:0;padding:12px 18px;box-sizing:border-box}
-body.photo-capture-mode #view-photo-capture.is-capturing .burn-test-capture-layout{grid-template-columns:minmax(0,3.5fr) minmax(300px,1fr);height:calc(100vh + 40px)}
-body.photo-capture-mode #view-photo-capture.is-capturing .customer-check-camera-card,
-body.photo-capture-mode #view-photo-capture.is-capturing .customer-check-code-panel{min-height:0;display:flex;flex-direction:column}
-#view-photo-capture.is-capturing .customer-check-camera-head{flex:0 0 auto}
-body.photo-capture-mode #view-photo-capture.is-capturing .customer-check-camera-stage{flex:1 1 auto;min-height:480px;aspect-ratio:auto}
-#view-photo-capture.is-capturing .customer-check-camera-stage video{object-fit:cover}
-#view-photo-capture.is-capturing .customer-check-camera-actions{flex:0 0 auto}
-body.photo-capture-mode #view-photo-capture.is-capturing .customer-check-code-list{flex:1 1 auto;max-height:none;min-height:0;padding-bottom:84px}
 #view-customer-check.is-capturing>.module-title,
 #view-customer-check.is-capturing>.module-card,
 #view-customer-check.is-capturing>.customer-check-management{display:none}
@@ -441,10 +444,9 @@ body.customer-check-capture-mode #view-customer-check.is-capturing .customer-che
 .customer-check-exit-capture{display:none}
 body.customer-check-capture-mode .customer-check-exit-capture{display:inline-flex}
 .customer-check-code-toggle,.customer-check-fullscreen-toggle{display:none}
-.photo-capture-fab{position:fixed;top:24px;right:24px;z-index:1100;width:auto;min-width:136px;min-height:52px;margin:0;padding:13px 20px;border-radius:999px!important;box-shadow:0 8px 24px rgba(0,0,0,.28)!important}
-.photo-capture-fab:disabled{opacity:.55;cursor:not-allowed}
+.photo-capture-action:disabled{opacity:.55;cursor:not-allowed}
 .view-tabs #tabPhotoCapture{padding-left:32px!important;font-size:12px!important}
-@media(max-width:760px){.burn-test-capture-layout{grid-template-columns:minmax(0,1fr)}.burn-test-capture-layout .customer-check-code-list{max-height:380px}.burn-test-capture-layout .customer-check-camera-stage{min-height:240px;aspect-ratio:4/3}body.photo-capture-mode #view-photo-capture.is-capturing .burn-test-capture-layout{grid-template-columns:minmax(0,1fr);height:auto}body.photo-capture-mode #view-photo-capture.is-capturing .customer-check-camera-card{min-height:calc(100vh - 24px)}body.photo-capture-mode #view-photo-capture.is-capturing .customer-check-camera-stage{min-height:45vh;flex:1 1 auto}body.photo-capture-mode #view-photo-capture.is-capturing .customer-check-code-panel{min-height:220px}body.photo-capture-mode #view-photo-capture.is-capturing .customer-check-code-list{max-height:34vh;flex:1 1 auto}.photo-capture-fab{top:16px;right:16px;min-height:48px;padding:11px 16px}}
+@media(max-width:760px){.burn-test-capture-layout{grid-template-columns:minmax(0,1fr)}.burn-test-capture-layout .customer-check-code-list{max-height:380px}}
 @media(max-width:760px){body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-capture-layout{grid-template-columns:minmax(0,1fr);height:auto}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-card{min-height:calc(100vh - 24px)}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-stage{min-height:45vh;flex:1 1 auto}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-panel{min-height:220px}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-list{max-height:34vh;flex:1 1 auto}}
 @media(orientation:landscape) and (max-height:600px){body.customer-check-capture-mode #view-customer-check.is-capturing{position:fixed;inset:0;z-index:1000;width:100%;height:100vh;height:100dvh;min-height:0;padding:0;overflow:hidden;background:#111}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-capture-layout{position:absolute;inset:0;display:block;height:auto;min-height:0}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-card{position:absolute;inset:0;display:flex;min-height:0;border:0;border-radius:0}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-head{flex:0 0 auto;padding:6px 12px}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-stage{min-height:0;flex:1 1 0;aspect-ratio:auto}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-actions{flex:0 0 auto;gap:6px;padding:6px 10px;background:rgba(255,255,255,.92)}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-actions small{max-width:35%;font-size:10px}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-actions .btn{padding:6px 9px;font-size:11px}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-panel{display:none;position:absolute;top:max(8px,env(safe-area-inset-top));right:max(8px,env(safe-area-inset-right));bottom:max(8px,env(safe-area-inset-bottom));z-index:1090;width:min(340px,82vw);background:rgba(255,255,255,.97);box-shadow:0 6px 24px rgba(0,0,0,.35)}body.customer-check-capture-mode #view-customer-check.is-capturing.customer-check-code-list-open .customer-check-code-panel{display:flex}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-list{flex:1 1 auto;min-height:0;max-height:none;padding-bottom:12px}.customer-check-code-toggle,.customer-check-fullscreen-toggle{position:fixed;z-index:1101;display:inline-flex;align-items:center;justify-content:center;min-height:42px;margin:0;padding:8px 12px;border:1px solid rgba(255,255,255,.75);border-radius:999px;background:rgba(25,31,38,.82);color:#fff;font-size:12px;font-weight:700;box-shadow:0 3px 12px rgba(0,0,0,.3);backdrop-filter:blur(6px)}.customer-check-code-toggle{left:max(10px,env(safe-area-inset-left));top:max(58px,calc(env(safe-area-inset-top) + 50px))}.customer-check-fullscreen-toggle{left:max(10px,env(safe-area-inset-left));top:max(10px,env(safe-area-inset-top))}.customer-check-code-list-open .customer-check-code-toggle{background:#187dcc}}
 @media(orientation:landscape) and (max-height:600px){body:not(.customer-check-capture-mode) .customer-check-code-toggle,body:not(.customer-check-capture-mode) .customer-check-fullscreen-toggle{display:none}}
@@ -454,6 +456,8 @@ body.customer-check-capture-mode .customer-check-exit-capture{display:inline-fle
 @media(orientation:landscape) and (max-width:950px){body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-capture-layout{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,2.2fr) minmax(220px,1fr);gap:8px;height:auto;min-height:0}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-card{position:relative;inset:auto;min-width:0;min-height:0;border:0;border-radius:0}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-panel{position:relative;inset:auto;display:flex;width:auto;min-width:0;min-height:0;background:#fff;box-shadow:none}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-head{flex:0 0 auto;padding:8px}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-list{flex:1 1 auto;min-height:0;max-height:none;padding:8px}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-card{grid-template-columns:52px minmax(0,1fr);gap:6px;padding:6px}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-thumb{width:52px;height:52px}.customer-check-code-toggle{display:none}}
 .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;align-items:center;justify-content:center;padding:30px}
 .lightbox.show{display:flex}
+.lightbox.customer-check-lightbox .lightbox-photo-frame img{max-width:min(90vw,1200px);max-height:82vh}
+@media(max-width:640px){.lightbox.customer-check-lightbox .lightbox-photo-frame img{max-width:90vw;max-height:78vh}}
 .lightbox-photo-frame{position:relative;display:flex;align-items:center;justify-content:center;max-width:100%;max-height:100%}
 .lightbox-photo-frame img{max-width:100%;max-height:100%;border-radius:var(--radius)}
 .lightbox-photo-frame .burn-media-stamp{left:clamp(12px,3vw,32px);bottom:clamp(16px,3vh,32px);max-width:min(420px,calc(100% - 24px));padding:12px 16px 12px 20px;font-size:clamp(13px,1.5vw,18px)}
@@ -2245,29 +2249,13 @@ header{
     </div>
   </section>
   <section class="burn-test-capture-layout">
-    <div class="customer-check-camera-card">
-      <div class="customer-check-camera-head">
-        <b>📷 Camera</b>
-        <small id="photoCaptureSelectedLabel">Chọn mã test ở danh sách bên phải</small>
-      </div>
-      <div class="customer-check-camera-stage">
-        <video id="photoCaptureLiveCamera" autoplay playsinline muted></video>
-        <div class="customer-check-camera-message" id="photoCaptureCameraMessage">Đang mở camera…</div>
-        <canvas id="photoCaptureCanvas" hidden></canvas>
-      </div>
-      <div class="customer-check-camera-actions">
-        <small id="photoCaptureCameraStatus" style="color:var(--ink-soft)">Camera chưa sẵn sàng</small>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
-          <label for="photoCaptureCameras" style="display:flex;align-items:center;gap:6px;color:var(--ink-soft);font-size:11px">
-            Camera
-            <select id="photoCaptureCameras" aria-label="Chọn camera" disabled style="max-width:min(260px,45vw);padding:8px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink);font-size:11px">
-              <option value="">Camera mặc định</option>
-            </select>
-          </label>
-          <button type="button" class="btn btn-ghost" id="photoCaptureChooseTestButton" style="display:none" onclick="exitPhotoCaptureMode()">Thoát chế độ chụp</button>
-          <button type="button" class="btn btn-ghost" onclick="openSelectedBurnTestCamera()">Mở camera thiết bị</button>
-        </div>
-      </div>
+    <div class="customer-check-camera-card photo-upload-dropzone" id="photoCaptureDropzone">
+      <b>📷 Ảnh cho lần test</b>
+      <small id="photoCaptureSelectedLabel" style="color:var(--ink-soft)">Chọn lần test ở danh sách bên phải</small>
+      <p>Dùng camera của thiết bị để chụp ảnh, chọn ảnh có sẵn hoặc kéo thả ảnh vào đây. Ảnh sẽ được lưu trực tiếp vào lần Burn Test đang chọn.</p>
+      <button type="button" class="btn photo-capture-action" id="photoCaptureButton" disabled onclick="document.getElementById('photoCaptureFileInput').click()">📷 Chụp / chọn ảnh</button>
+      <input type="file" id="photoCaptureFileInput" accept="image/*" capture="environment" hidden onchange="uploadSelectedBurnTestPhoto(this.files).catch(err => alert(err.message)); this.value=''">
+      <small class="photo-upload-status" id="photoCaptureUploadStatus" aria-live="polite">Chưa chọn lần test</small>
     </div>
     <div class="customer-check-code-panel">
       <div class="customer-check-code-head">
@@ -2279,7 +2267,6 @@ header{
       </div>
     </div>
   </section>
-  <button type="button" class="btn photo-capture-fab" id="photoCaptureButton" disabled onclick="captureSelectedBurnTestPhoto().catch(err => alert(err.message))">📷 Chụp ảnh</button>
 </main>
 
 <main id="view-customer-check" class="hidden">
@@ -2317,19 +2304,17 @@ header{
   </section>
 
   <section class="customer-check-capture-layout">
-    <div class="customer-check-camera-card">
+    <div class="customer-check-camera-card photo-upload-dropzone" id="customerCheckCaptureDropzone">
       <div class="customer-check-camera-head">
-        <b>📷 Chụp ảnh khách kiểm</b>
+        <b>📷 Ảnh khách kiểm</b>
         <small id="customerCheckSelectedLabel">Chọn mã ở danh sách bên phải</small>
       </div>
       <div class="customer-check-camera-stage">
-        <div class="customer-check-camera-message">Chọn mã ở danh sách, sau đó nhấn nút bên dưới để mở camera của thiết bị và chụp ảnh.</div>
+        <div class="customer-check-camera-message">Chọn mã ở danh sách, sau đó chụp/chọn ảnh hoặc kéo thả ảnh vào đây. Ảnh sẽ được gắn vào mốc giờ kế tiếp còn chỗ.</div>
       </div>
       <div class="customer-check-camera-actions">
-        <small id="customerCheckCameraStatus" style="color:var(--ink-soft)">Chưa mở camera</small>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
-          <button type="button" class="btn" id="customerCheckCaptureButton" onclick="startCustomerCheckCapture()">📷 Mở camera để chụp</button>
-        </div>
+        <small id="customerCheckCameraStatus" class="photo-upload-status" aria-live="polite">Chưa chọn mã khách kiểm</small>
+        <button type="button" class="btn" id="customerCheckCaptureButton" onclick="startCustomerCheckCapture()">📷 Chụp / chọn ảnh</button>
       </div>
     </div>
     <div class="customer-check-code-panel">
@@ -2609,11 +2594,7 @@ header{
     </div>
     <div class="list-foot">
       <span id="countLabel">0 bản ghi</span>
-      <div class="pagination" id="paginationControls">
-        <button type="button" class="icon-btn" id="prevPageBtn" title="Trang trước">‹</button>
-        <span id="pageLabel">1 / 1</span>
-        <button type="button" class="icon-btn" id="nextPageBtn" title="Trang sau">›</button>
-      </div>
+      <div class="pagination numbered-pagination" id="paginationControls" aria-label="Phân trang nhật ký test đốt"></div>
       <span>Cập nhật lúc <span id="lastUpdated">–</span></span>
     </div>
   </section>
@@ -2809,7 +2790,7 @@ header{
           <tbody id="prod_table_body"><tr><td colspan="14" class="empty-state">Đang tải dữ liệu…</td></tr></tbody>
         </table>
       </div>
-      <div class="list-foot"><span id="prod_count_footer">0 sản phẩm</span><div class="pagination"><button type="button" class="icon-btn" id="prod_prev_btn">‹</button><span id="prod_page_label">1 / 1</span><button type="button" class="icon-btn" id="prod_next_btn">›</button></div></div>
+      <div class="list-foot"><span id="prod_count_footer">0 sản phẩm</span><div class="pagination numbered-pagination" id="prod_pagination" aria-label="Phân trang sản phẩm"></div></div>
     </div>
   </div>
 </main>
@@ -3677,9 +3658,7 @@ function renderPage(){
   }
   document.getElementById('countLabel').textContent = `${rows.length} bản ghi`;
   document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString('vi-VN');
-  document.getElementById('pageLabel').textContent = `${currentPage} / ${totalPages}`;
-  document.getElementById('prevPageBtn').disabled = currentPage <= 1;
-  document.getElementById('nextPageBtn').disabled = currentPage >= totalPages;
+  document.getElementById('paginationControls').innerHTML = buildNumberedPaginationHtml(currentPage, totalPages);
   const totalCount = rows.length;
   const passCount = rows.filter(r => String(r.Test_result || '').toUpperCase() === 'PASS').length;
   const failCount = rows.filter(r => String(r.Test_result || '').toUpperCase() === 'FAIL').length;
@@ -3775,10 +3754,16 @@ document.getElementById('tableBody')?.addEventListener('click', event => {
   if(Number.isInteger(id) && id > 0) editRow(id);
 });
 
-document.getElementById('prevPageBtn').addEventListener('click', () => { if(currentPage > 1){ currentPage--; renderPage(); } });
-document.getElementById('nextPageBtn').addEventListener('click', () => {
+function goToBurnTestPage(page){
   const totalPages = Math.max(1, Math.ceil(lastLoadedRows.length / PAGE_SIZE));
-  if(currentPage < totalPages){ currentPage++; renderPage(); }
+  if(!Number.isInteger(page) || page < 1 || page > totalPages || page === currentPage) return;
+  currentPage = page;
+  renderPage();
+}
+
+document.getElementById('paginationControls').addEventListener('click', event => {
+  const button = event.target.closest('button[data-page]');
+  if(button && !button.disabled) goToBurnTestPage(Number(button.dataset.page));
 });
 
 function renderPics(r){
@@ -4292,6 +4277,7 @@ function buildBurnPhotoList(){
 }
 
 function openLightbox(url, context){
+  document.getElementById('lightbox')?.classList.toggle('customer-check-lightbox', context === 'customer-check');
   // 1) Xây danh sách ảnh theo context
   let photos = [];
   if(context === 'sample'){
@@ -4417,7 +4403,7 @@ async function copyLightboxImage(withStamp = false){
   }
 }
 function closeLightbox(){
-  document.getElementById('lightbox').classList.remove('show');
+  document.getElementById('lightbox').classList.remove('show', 'customer-check-lightbox');
   document.getElementById('lightboxContextMenu')?.classList.remove('show');
   lightboxPhotos = [];
   lightboxIndex  = 0;
@@ -4864,25 +4850,28 @@ async function saveCapturedPhoto(){
     if(cameraTargetType === 'sample'){
       cameraTargetSlot = getNextSamplePhotoSlot(id, cameraTargetOrigin);
     }else if(cameraTargetType === 'customer-check'){
-      const currentRecord = ensureCustomerCheckRecord();
-      const currentSlot = currentRecord.slots.find(item => Number(item.id) === Number(slot));
-      const count = currentSlot ? currentSlot.images.length : 0;
-      cameraTargetSlot = count >= 3 ? null : slot;
+      cameraTargetSlot = getNextCustomerCheckCaptureSlot();
+    }else if(cameraTargetOrigin === 'photo-capture'){
+      const selectedCaptureRow = photoCaptureRows.find(row => Number(row.Id || row.id) === Number(id));
+      const [nextSlot] = selectedCaptureRow ? getAvailablePhotoCaptureSlots(selectedCaptureRow, 1) : [];
+      cameraTargetSlot = nextSlot ? `PIC_${nextSlot}` : null;
     }else{
-      const selectedCaptureRow = cameraTargetOrigin === 'photo-capture'
-        ? photoCaptureRows.find(row => Number(row.Id || row.id) === Number(id))
-        : null;
-      cameraTargetSlot = getNextPhotoSlot(selectedCaptureRow || currentModalRow);
+      cameraTargetSlot = getNextPhotoSlot(currentModalRow);
     }
     if(cameraTargetType === 'customer-check' && cameraTargetSlot){
-      document.getElementById('cameraSlotLabel').textContent = `Đã lưu ${slot} · còn ${3 - (ensureCustomerCheckRecord().slots.find(item => Number(item.id) === Number(slot))?.images.length || 0)} ảnh nữa`;
+      const currentSlot = ensureCustomerCheckRecord().slots.find(item => Number(item.id) === Number(slot));
+      const nextSlot = ensureCustomerCheckRecord().slots.find(item => Number(item.id) === Number(cameraTargetSlot));
+      const nextLabel = Number(cameraTargetSlot) === Number(slot)
+        ? `còn ${3 - (currentSlot?.images.length || 0)} ảnh ở mốc này`
+        : `tiếp theo mốc ${formatCustomerCheckHours(nextSlot?.hours ?? cameraTargetSlot)}`;
+      document.getElementById('cameraSlotLabel').textContent = `Đã lưu ${slot} · ${nextLabel}`;
       if(cameraStream){
-        button.textContent = `Chụp tiếp ${slot}`;
+        button.textContent = `Chụp & lưu ${formatCustomerCheckHours(nextSlot?.hours ?? cameraTargetSlot)}`;
         button.disabled = false;
       }else{
         button.style.display = 'none';
         const deviceButton = document.getElementById('deviceCameraBtn');
-        deviceButton.textContent = `Chụp tiếp ${slot}`;
+        deviceButton.textContent = `Chụp tiếp ${formatCustomerCheckHours(nextSlot?.hours ?? cameraTargetSlot)}`;
         deviceButton.style.display = 'inline-flex';
         deviceButton.disabled = false;
       }
@@ -4907,9 +4896,10 @@ async function saveCapturedPhoto(){
         const deviceButton = document.getElementById('deviceCameraBtn');
         deviceButton.textContent = `Chụp tiếp ${cameraTargetSlot}`;
         deviceButton.style.display = 'inline-flex';
+        deviceButton.disabled = false;
       }
     }else{
-      document.getElementById('cameraSlotLabel').textContent = `Đã lưu ${slot} · đủ ảnh cho mốc này`;
+      document.getElementById('cameraSlotLabel').textContent = `Đã lưu ${slot} · đã đạt giới hạn ảnh`;
       button.textContent = 'Đã chụp xong';
       button.disabled = true;
       if(!cameraStream){
@@ -4940,7 +4930,6 @@ function showCameraError(message){
   const error = document.getElementById('cameraError'); error.textContent = message; error.style.display = 'block';
 }
 function closeCamera(){
-  const resumePhotoCaptureCamera = cameraTargetOrigin === 'photo-capture';
   cameraRequestToken++;
   stopCameraStream();
   document.getElementById('cameraOverlay').classList.remove('show');
@@ -4949,7 +4938,6 @@ function closeCamera(){
   document.getElementById('cameraError').style.display = 'none';
   document.getElementById('capturePreviewImg').style.display = 'none';
   document.getElementById('liveCamera').style.display = 'none';
-  if(resumePhotoCaptureCamera) startPhotoCaptureCamera();
 }
 
 const MAX_BURN_VIDEO_SECONDS = 30;
@@ -6805,8 +6793,8 @@ function renderPhotoGallery(){
     box.innerHTML = '<div class="module-empty">Không tìm thấy test có ảnh phù hợp.</div>';
   }else{
     box.innerHTML = pageRows.map(r => {
-      const pics = [1,2,3,4,5].filter(i => r['PIC_'+i]);
-      const first = r['PIC_'+pics[0]];
+      const pics = getPhotoSlots(r).filter(slot => r[slot]);
+      const latest = r[pics[pics.length - 1]];
       const code = homeEscape(r.Product_Code || r.product_code || '—');
       const result = String(r.Test_result || r.test_result || 'PENDING').toUpperCase();
       const cls = result === 'PASS' ? 'pass' : result === 'FAIL' ? 'fail' : 'pending';
@@ -6814,14 +6802,14 @@ function renderPhotoGallery(){
 
       return `<div class="photo-card" onclick="openImageModal(${Number(r.Id||r.id)})">
         <div class="photo-thumb">
-          <img src="${homeEscape(first)}" loading="lazy" alt="${code}"
+          <img src="${homeEscape(latest)}" loading="lazy" alt="${code}"
                onerror="this.style.display='none';this.parentElement.innerHTML='<div class=photo-placeholder>▧</div>'">
         </div>
         <div class="photo-meta">
           <div class="photo-meta-info">
             <b>${code}</b>
             <span>PO: ${homeEscape(r.po_number||r.PO_Name||'—')}</span>
-            <span>${homeEscape(r.customer_name||r.Cus_Name||'—')} · <span class="photo-count">${pics.length}/5 ảnh</span></span>
+            <span>${homeEscape(r.customer_name||r.Cus_Name||'—')} · <span class="photo-count">${pics.length} ảnh</span></span>
           </div>
           <span class="photo-status-badge ${cls}">${label}</span>
         </div>
@@ -6887,7 +6875,7 @@ async function loadPhotoGallery(){
     const searchText = (document.getElementById('photoSearchInput')?.value || '').trim().toLowerCase();
 
     const data = (Array.isArray(rows) ? rows : []).filter(r => {
-      const photos = [1,2,3,4,5].filter(i => r['PIC_'+i]);
+      const photos = getPhotoSlots(r).filter(slot => r[slot]);
       if(!photos.length) return false;
       const haystack = [
         r.po_number || r.PO_Name || '',
@@ -6915,10 +6903,7 @@ async function loadPhotoGallery(){
 
 let photoCaptureRows = [];
 let photoCaptureSelectedId = null;
-let photoCaptureStream = null;
-let photoCaptureRequest = 0;
 let photoCaptureBusy = false;
-let photoCaptureDeviceId = '';
 
 async function loadPhotoCaptureTests(selectedId = photoCaptureSelectedId){
   const list = document.getElementById('photoCaptureTestCards');
@@ -6968,7 +6953,8 @@ function renderPhotoCaptureTests(){
     const id = Number(row.Id || row.id);
     const photos = Array.isArray(row.photos) ? row.photos : [];
     const latest = photos[photos.length - 1];
-    const thumbUrl = latest?.file_url || row['PIC_5'] || row['PIC_4'] || row['PIC_3'] || row['PIC_2'] || row['PIC_1'];
+    const thumbUrl = latest?.file_url || row['PIC_5'] || row['PIC_4'] || row['PIC_3'] || row['PIC_2'] || row['PIC_1']
+      || row.product_image_url || row.image_url;
     const thumb = thumbUrl
       ? `<img src="${homeEscape(thumbUrl)}" alt="Ảnh ${homeEscape(row.Product_Code || row.product_code || '')}" loading="lazy">`
       : 'Chưa có ảnh';
@@ -6979,7 +6965,10 @@ function renderPhotoCaptureTests(){
     const totalPhotos = Number(row.photo_count || photos.length || 0);
     return `<div class="customer-check-code-card${id === photoCaptureSelectedId ? ' selected' : ''}" data-photo-capture-id="${id}" tabindex="0" role="button" aria-pressed="${id === photoCaptureSelectedId}">
       <div class="customer-check-code-thumb">${thumb}</div>
-      <div class="customer-check-code-meta"><b>${homeEscape(code)}</b><small>PO: ${homeEscape(po)}<br>${homeEscape(date)} · ${totalPhotos} ảnh · ${homeEscape(result)}</small></div>
+      <div class="customer-check-code-meta">
+        <div class="photo-capture-card-meta-head"><b class="photo-capture-card-code">${homeEscape(code)}</b><button type="button" class="btn btn-ghost photo-capture-card-camera" data-photo-capture-camera="${id}" aria-label="Chụp ảnh ${homeEscape(code)}" title="Chụp ảnh liên tiếp">📷 Chụp</button></div>
+        <small>PO: ${homeEscape(po)}<br>${homeEscape(date)} · ${totalPhotos} ảnh · ${homeEscape(result)}</small>
+      </div>
     </div>`;
   }).join('');
   wrap.querySelectorAll('[data-photo-capture-id]').forEach(card => {
@@ -6989,36 +6978,17 @@ function renderPhotoCaptureTests(){
       if(event.key === 'Enter' || event.key === ' '){ event.preventDefault(); select(); }
     });
   });
+  wrap.querySelectorAll('[data-photo-capture-camera]').forEach(button => {
+    button.addEventListener('click', event => {
+      event.stopPropagation();
+      try{
+        openPhotoCaptureCamera(Number(button.dataset.photoCaptureCamera));
+      }catch(err){
+        alert(err.message);
+      }
+    });
+  });
   updatePhotoCaptureControls();
-}
-
-function setPhotoCaptureSystemChrome(hidden){
-  const navigation = document.querySelector('nav.view-tabs');
-  const header = document.querySelector('body > header');
-  for(const element of [navigation, header]){
-    if(!element) continue;
-    if(hidden) element.style.setProperty('display', 'none', 'important');
-    else element.style.removeProperty('display');
-  }
-}
-
-function enterPhotoCaptureMode(){
-  if(!photoCaptureSelectedId){ alert('Vui lòng chọn lần test trước khi chụp ảnh.'); return false; }
-  document.body.classList.add('photo-capture-mode');
-  setPhotoCaptureSystemChrome(true);
-  document.getElementById('view-photo-capture')?.classList.add('is-capturing');
-  const chooseButton = document.getElementById('photoCaptureChooseTestButton');
-  if(chooseButton) chooseButton.style.display = 'inline-flex';
-  return true;
-}
-
-function exitPhotoCaptureMode(){
-  document.body.classList.remove('photo-capture-mode');
-  setPhotoCaptureSystemChrome(false);
-  document.getElementById('view-photo-capture')?.classList.remove('is-capturing');
-  const chooseButton = document.getElementById('photoCaptureChooseTestButton');
-  if(chooseButton) chooseButton.style.display = 'none';
-  renderPhotoCaptureTests();
 }
 
 function selectPhotoCaptureTest(id){
@@ -7029,176 +6999,102 @@ function selectPhotoCaptureTest(id){
   const code = row.Product_Code || row.product_code || '—';
   const po = row.po_number || row.PO_Name || '—';
   document.getElementById('photoCaptureSelectedLabel').textContent = `${code} · ${po}`;
+  document.getElementById('photoCaptureUploadStatus').textContent = 'Sẵn sàng chụp hoặc chọn ảnh';
   renderPhotoCaptureTests();
-  enterPhotoCaptureMode();
 }
 
 function updatePhotoCaptureControls(){
   const button = document.getElementById('photoCaptureButton');
-  if(button) button.disabled = !photoCaptureStream || !photoCaptureSelectedId || photoCaptureBusy;
+  if(button) button.disabled = !photoCaptureSelectedId || photoCaptureBusy;
 }
 
-async function startPhotoCaptureCamera(){
-  const video = document.getElementById('photoCaptureLiveCamera');
-  const message = document.getElementById('photoCaptureCameraMessage');
-  const status = document.getElementById('photoCaptureCameraStatus');
-  if(!video || getActiveViewName() !== 'photo-capture') return;
-  if(photoCaptureStream){
-    photoCaptureStream.getTracks().forEach(track => track.stop());
-    photoCaptureStream = null;
-  }
-  video.srcObject = null;
-  const request = ++photoCaptureRequest;
-  message.classList.remove('error');
-  message.textContent = 'Đang mở camera…';
-  message.style.display = 'block';
-  status.textContent = 'Đang kết nối camera…';
-  updatePhotoCaptureControls();
-  try{
-    if(!navigator.mediaDevices?.getUserMedia) throw new Error('Cần HTTPS hoặc localhost để mở camera.');
-    const base = {
-      facingMode: { ideal: 'environment' },
-      width: { ideal: 2048 },
-      height: { ideal: 1536 },
-      aspectRatio: { ideal: 4 / 3 }
-    };
-    const videoConstraints = photoCaptureDeviceId
-      ? { width: base.width, height: base.height, aspectRatio: base.aspectRatio, deviceId: { exact: photoCaptureDeviceId } }
-      : base;
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: false,
-      video: videoConstraints
-    });
-    if(request !== photoCaptureRequest){
-      stream.getTracks().forEach(track => track.stop());
+const photoCaptureDropzone = document.querySelector('.photo-capture-upload-card');
+if(photoCaptureDropzone){
+  let dragDepth = 0;
+  photoCaptureDropzone.addEventListener('dragenter', event => {
+    event.preventDefault();
+    dragDepth++;
+    photoCaptureDropzone.classList.add('drag-over');
+  });
+  photoCaptureDropzone.addEventListener('dragover', event => {
+    event.preventDefault();
+    if(event.dataTransfer) event.dataTransfer.dropEffect = 'copy';
+  });
+  photoCaptureDropzone.addEventListener('dragleave', event => {
+    event.preventDefault();
+    dragDepth = Math.max(0, dragDepth - 1);
+    if(!dragDepth) photoCaptureDropzone.classList.remove('drag-over');
+  });
+  photoCaptureDropzone.addEventListener('drop', event => {
+    event.preventDefault();
+    dragDepth = 0;
+    photoCaptureDropzone.classList.remove('drag-over');
+    const files = Array.from(event.dataTransfer?.files || []);
+    const images = files.filter(file => file.type.startsWith('image/'));
+    if(!images.length){
+      document.getElementById('photoCaptureUploadStatus').textContent = 'Vui lòng thả file ảnh.';
       return;
     }
-    photoCaptureStream = stream;
-    video.srcObject = stream;
-    await video.play();
-    const trackSettings = stream.getVideoTracks()[0]?.getSettings?.() || {};
-    if(trackSettings.deviceId) photoCaptureDeviceId = trackSettings.deviceId;
-    const cameras = await navigator.mediaDevices.enumerateDevices();
-    if(request !== photoCaptureRequest) return;
-    renderPhotoCaptureCameras(cameras, trackSettings.deviceId || photoCaptureDeviceId);
-    message.style.display = 'none';
-    const width = trackSettings.width;
-    const height = trackSettings.height;
-    status.textContent = width && height
-      ? `Camera đã sẵn sàng · ${width} × ${height}`
-      : 'Camera đã sẵn sàng';
-    updatePhotoCaptureControls();
-  }catch(err){
-    if(request !== photoCaptureRequest) return;
-    if(photoCaptureStream){
-      photoCaptureStream.getTracks().forEach(track => track.stop());
-      photoCaptureStream = null;
-      video.srcObject = null;
-    }
-    message.classList.add('error');
-    message.textContent = `Không mở được camera trực tiếp: ${err.message}. Kiểm tra quyền camera hoặc chọn camera khác.`;
-    status.textContent = 'Camera trực tiếp không khả dụng';
-    updatePhotoCaptureControls();
-  }
-}
-
-function renderPhotoCaptureCameras(devices, selectedDeviceId){
-  const select = document.getElementById('photoCaptureCameras');
-  if(!select) return;
-  const cameras = devices.filter(device => device.kind === 'videoinput');
-  select.replaceChildren();
-  if(!cameras.length){
-    select.add(new Option('Không tìm thấy camera', ''));
-    select.disabled = true;
-    return;
-  }
-  cameras.forEach((camera, index) => {
-    const option = new Option(camera.label || `Camera ${index + 1}`, camera.deviceId);
-    option.selected = camera.deviceId === selectedDeviceId;
-    select.add(option);
+    uploadSelectedBurnTestPhoto(images).catch(err => alert(err.message));
   });
-  select.disabled = cameras.length < 2;
 }
 
-document.getElementById('photoCaptureCameras')?.addEventListener('change', event => {
-  photoCaptureDeviceId = event.currentTarget.value;
-  startPhotoCaptureCamera().catch(err => {
-    document.getElementById('photoCaptureCameraStatus').textContent = `Không mở được camera: ${err.message}`;
-  });
-});
-
-function stopPhotoCaptureCamera(){
-  photoCaptureRequest++;
-  if(photoCaptureStream) photoCaptureStream.getTracks().forEach(track => track.stop());
-  photoCaptureStream = null;
-  const cameraSelect = document.getElementById('photoCaptureCameras');
-  if(cameraSelect) cameraSelect.disabled = true;
-  const video = document.getElementById('photoCaptureLiveCamera');
-  if(video) video.srcObject = null;
-  const message = document.getElementById('photoCaptureCameraMessage');
-  const status = document.getElementById('photoCaptureCameraStatus');
-  if(message){
-    message.classList.remove('error');
-    message.textContent = 'Camera tạm dừng. Chuyển lại màn hình này để mở camera.';
-    message.style.display = 'block';
+function getAvailablePhotoCaptureSlots(row, count){
+  const occupiedSlots = new Set(
+    getPhotoSlots(row)
+      .filter(slot => row[slot])
+      .map(slot => Number(String(slot).match(/\d+$/)?.[0]))
+  );
+  const availableSlots = [];
+  for(let slot = 1; slot <= 99 && availableSlots.length < count; slot++){
+    if(occupiedSlots.has(slot)) continue;
+    availableSlots.push(slot);
+    occupiedSlots.add(slot);
   }
-  if(status) status.textContent = 'Camera chưa sẵn sàng';
-  updatePhotoCaptureControls();
+  return availableSlots;
 }
 
-function openSelectedBurnTestCamera(){
-  const row = photoCaptureRows.find(item => Number(item.Id || item.id) === Number(photoCaptureSelectedId));
-  if(!row){ alert('Vui lòng chọn lần test trước khi chụp ảnh.'); return; }
-  const slot = getNextPhotoSlot(row);
-  if(Number(String(slot).match(/\d+$/)?.[0]) > 99){ alert('Đã đạt giới hạn 99 ảnh cho lần test này.'); return; }
-  stopPhotoCaptureCamera();
-  openCamera(Number(row.Id || row.id), slot, 'burn', 'photo-capture');
-}
-
-async function captureSelectedBurnTestPhoto(){
-  const row = photoCaptureRows.find(item => Number(item.Id || item.id) === Number(photoCaptureSelectedId));
-  if(!row){ throw new Error('Vui lòng chọn lần test trước khi chụp ảnh.'); }
-  if(!photoCaptureStream){
-    await startPhotoCaptureCamera();
-    if(!photoCaptureStream) throw new Error('Camera live chưa mở được. Kiểm tra quyền camera hoặc dùng nút “Mở camera thiết bị”.');
-  }
+function openPhotoCaptureCamera(id){
   if(photoCaptureBusy) return;
-  const video = document.getElementById('photoCaptureLiveCamera');
-  if(!video?.videoWidth || !video?.videoHeight) throw new Error('Camera chưa sẵn sàng. Vui lòng thử lại.');
-  const slot = getNextPhotoSlot(row);
-  if(Number(String(slot).match(/\d+$/)?.[0]) > 99) throw new Error('Đã đạt giới hạn 99 ảnh cho lần test này.');
+  const row = photoCaptureRows.find(item => Number(item.Id || item.id) === Number(id));
+  if(!row) throw new Error('Không tìm thấy lần test cần chụp ảnh.');
+  const [slotNumber] = getAvailablePhotoCaptureSlots(row, 1);
+  if(!slotNumber) throw new Error('Đã đạt giới hạn 99 ảnh cho lần test này.');
+  selectPhotoCaptureTest(id);
+  openCamera(Number(row.Id || row.id), `PIC_${slotNumber}`, 'burn', 'photo-capture');
+}
+
+async function uploadSelectedBurnTestPhoto(files){
+  const images = Array.from(files || []).filter(file => file.type.startsWith('image/'));
+  if(!images.length) return;
+  const row = photoCaptureRows.find(item => Number(item.Id || item.id) === Number(photoCaptureSelectedId));
+  if(!row) throw new Error('Vui lòng chọn lần test trước khi chụp ảnh.');
+  if(photoCaptureBusy) return;
+  const slotNumbers = getAvailablePhotoCaptureSlots(row, images.length);
+  if(slotNumbers.length < images.length) throw new Error('Đã đạt giới hạn 99 ảnh cho lần test này.');
   photoCaptureBusy = true;
   const button = document.getElementById('photoCaptureButton');
-  const status = document.getElementById('photoCaptureCameraStatus');
+  const status = document.getElementById('photoCaptureUploadStatus');
   if(button) button.disabled = true;
   renderPhotoCaptureTests();
-  status.textContent = `Đang chụp ảnh ${slot} cho ${row.Product_Code || row.product_code}…`;
+  let savedCount = 0;
   try{
-    const canvas = document.getElementById('photoCaptureCanvas');
-    const videoWidth = video.videoWidth, videoHeight = video.videoHeight;
-    let sourceWidth = videoWidth, sourceHeight = videoHeight;
-    if(videoWidth / videoHeight > 4 / 3) sourceWidth = Math.round(videoHeight * 4 / 3);
-    else sourceHeight = Math.round(videoWidth * 3 / 4);
-    const sourceX = Math.round((videoWidth - sourceWidth) / 2);
-    const sourceY = Math.round((videoHeight - sourceHeight) / 2);
-    canvas.width = sourceWidth;
-    canvas.height = sourceHeight;
-    const context = canvas.getContext('2d');
-    if(!context) throw new Error('Không thể xử lý ảnh từ camera.');
-    context.drawImage(video, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, canvas.width, canvas.height);
-    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.92));
-    if(!blob) throw new Error('Không tạo được ảnh. Vui lòng chụp lại.');
-    const file = new File([blob], `burn-test-${row.Id || row.id}-${Date.now()}.jpg`, { type: 'image/jpeg' });
-    const saved = await uploadImageToSlot(Number(row.Id || row.id), slot, file, null, false);
-    if(!saved){
-      status.textContent = 'Lưu ảnh không thành công. Vui lòng thử lại.';
-      return;
+    for(let index = 0; index < images.length; index++){
+      const slot = `PIC_${slotNumbers[index]}`;
+      status.textContent = `Đang lưu ảnh ${index + 1}/${images.length} (${slot}) cho ${row.Product_Code || row.product_code}…`;
+      const saved = await uploadImageToSlot(Number(row.Id || row.id), slot, images[index], null, false);
+      if(!saved){
+        await loadPhotoCaptureTests(Number(row.Id || row.id));
+        status.textContent = `Đã lưu ${savedCount}/${images.length} ảnh. Không lưu được ${slot}.`;
+        return;
+      }
+      savedCount++;
     }
     await loadPhotoCaptureTests(Number(row.Id || row.id));
     const savedRow = photoCaptureRows.find(item => Number(item.Id || item.id) === Number(photoCaptureSelectedId));
-    status.textContent = `Đã lưu ${slot} cho ${savedRow?.Product_Code || row.Product_Code || row.product_code}`;
+    status.textContent = `Đã lưu ${savedCount} ảnh cho ${savedRow?.Product_Code || row.Product_Code || row.product_code}`;
   }catch(err){
-    status.textContent = `Lưu ảnh thất bại: ${err.message}`;
+    status.textContent = `Đã lưu ${savedCount}/${images.length} ảnh. Lưu ảnh thất bại: ${err.message}`;
     throw err;
   }finally{
     photoCaptureBusy = false;
@@ -8741,6 +8637,7 @@ const customerCheckSlots = [
 const customerCheckRecords = {};
 let customerCheckLoadedKey = '';
 let customerCheckCodeCards = [];
+let customerCheckCaptureBusy = false;
 
 function getCustomerCheckKey(){
   const select = document.getElementById('customerCheckOrderSelect');
@@ -8861,8 +8758,11 @@ async function loadCustomerCheckCodes(selectRecord = true){
     codeInput.value = selected.customer_code;
     renderCustomerCheckSavedCodes(selected.purchase_order_id, selected.customer_code);
     await loadCustomerCheckRecord();
-    updateCustomerCheckCompletionButton(customerCheckRecords[`${selected.purchase_order_id}::${selected.customer_code}`]);
+    const selectedRecord = customerCheckRecords[`${selected.purchase_order_id}::${selected.customer_code}`];
+    updateCustomerCheckCompletionButton(selectedRecord);
+    updateCustomerCheckCaptureButton(selectedRecord);
     if(label) label.textContent = `Mã đang chọn: ${selected.customer_code} · ${selected.po_number}`;
+    document.getElementById('customerCheckCameraStatus').textContent = 'Sẵn sàng chụp hoặc chọn ảnh';
     renderCustomerCheckSchedule();
     renderCustomerCheckGrid();
   }else{
@@ -8889,7 +8789,7 @@ function renderCustomerCheckSavedCodes(orderId, selectedCode = ''){
 
 function setCustomerCheckPhotoControls(enabled){
   const record = ensureCustomerCheckRecord();
-  const canCapture = enabled && !record.isCompleted;
+  const canCapture = enabled && !record.isCompleted && !customerCheckCaptureBusy;
   document.querySelectorAll('#customerCheckSchedule button, #customerCheckFileInput, #customerCheckChooseBtn, #customerCheckCaptureButton, #customerCheckAddSlotBtn').forEach(el => {
     el.disabled = !canCapture;
   });
@@ -8904,6 +8804,11 @@ function updateCustomerCheckCompletionButton(record){
   if(!button) return;
   button.textContent = record?.isCompleted ? '↻ Tiếp tục chụp' : '✓ Đã chụp xong';
   button.setAttribute('aria-pressed', String(Boolean(record?.isCompleted)));
+}
+
+function updateCustomerCheckCaptureButton(record){
+  const button = document.getElementById('customerCheckCaptureButton');
+  if(button) button.textContent = record?.slots.some(slot => slot.images.length) ? '📷 Chụp tiếp' : '📷 Chụp / chọn ảnh';
 }
 
 async function toggleCustomerCheckCompletion(){
@@ -9265,7 +9170,7 @@ function renderCustomerCheckSchedule(){
             <div style="font-weight:700;font-size:15px;color:#173a56">${formatCustomerCheckHours(slot.hours)}</div>
           </div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
-            <button type="button" class="btn btn-ghost" style="width:auto;margin:0;padding:6px 10px;font-size:11px" onclick="event.stopPropagation(); openCustomerCheckCamera(${slot.id})">📷 Chụp</button>
+            <button type="button" class="btn btn-ghost" style="width:auto;margin:0;padding:6px 10px;font-size:11px" onclick="event.stopPropagation(); document.getElementById('customerCheckFileInput_${slot.id}').click()">📷 Chụp</button>
             <button type="button" class="btn btn-ghost" style="width:auto;margin:0;padding:6px 10px;font-size:11px" onclick="document.getElementById('customerCheckFileInput_${slot.id}').click()">＋ Ảnh</button>
             ${Number(slot.hours) !== 0 ? `<button type="button" class="btn btn-ghost" style="width:auto;margin:0;padding:6px 10px;font-size:11px;color:#b23838" onclick="event.stopPropagation(); removeCustomerCheckSlot(${slot.id})">× Xóa mốc</button>` : ''}
           </div>
@@ -9357,9 +9262,13 @@ function renderCustomerCheckCodeCards(){
       : 'Chưa có ảnh';
     const latestLabel = latestPhoto ? `Ảnh gần nhất · ${formatCustomerCheckHours(latestPhoto.burn_hours)}` : 'Chưa chụp ảnh';
     const isSelected = String(item.purchase_order_id) === String(selectedOrderId) && item.customer_code === selectedCode;
+    const captureLabel = photos.length ? '📷 Chụp tiếp' : '📷 Chụp';
     return `<div class="customer-check-code-card${isSelected ? ' selected' : ''}" data-customer-check-order="${item.purchase_order_id}" data-customer-check-code="${escapeHtml(item.customer_code)}" tabindex="0" role="button" aria-pressed="${isSelected}">
       <div class="customer-check-code-thumb">${thumb}</div>
-      <div class="customer-check-code-meta"><b>${escapeHtml(item.customer_code)}</b><small>${escapeHtml(item.po_number)} · ${escapeHtml(item.customer_name)}<br>${photos.length} ảnh · ${latestLabel}</small></div>
+      <div class="customer-check-code-meta">
+        <div class="customer-check-code-meta-head"><b>${escapeHtml(item.customer_code)}</b><button type="button" class="btn btn-ghost customer-check-card-camera" data-customer-check-capture="${escapeHtml(item.customer_code)}" data-customer-check-order="${item.purchase_order_id}" aria-label="Chụp ảnh ${escapeHtml(item.customer_code)}" title="Chụp ảnh cho mã này">${captureLabel}</button></div>
+        <small>${escapeHtml(item.po_number)} · ${escapeHtml(item.customer_name)}<br>${photos.length} ảnh · ${latestLabel}</small>
+      </div>
     </div>`;
   }).join('');
   wrap.querySelectorAll('[data-customer-check-code]').forEach(card => {
@@ -9369,9 +9278,18 @@ function renderCustomerCheckCodeCards(){
       if(event.key === 'Enter' || event.key === ' '){ event.preventDefault(); selectCode(); }
     });
   });
+  wrap.querySelectorAll('[data-customer-check-capture]').forEach(button => {
+    button.addEventListener('click', event => {
+      event.preventDefault();
+      event.stopPropagation();
+      startCustomerCheckCaptureForCode(button.dataset.customerCheckCapture, button.dataset.customerCheckOrder)
+        .catch(err => alert(err.message));
+    });
+  });
 }
 
 async function selectCustomerCheckCode(customerCode, purchaseOrderId = null){
+  if(customerCheckCaptureBusy) return;
   const code = String(customerCode || '').trim();
   if(!code) return;
   const selectedOrderId = String(purchaseOrderId || document.getElementById('customerCheckOrderSelect')?.value || '');
@@ -9387,12 +9305,15 @@ async function selectCustomerCheckCode(customerCode, purchaseOrderId = null){
   renderCustomerCheckSavedCodes(selectedOrderId, code);
   if(savedSelect) savedSelect.value = code;
   await loadCustomerCheckRecord();
-  updateCustomerCheckCompletionButton(customerCheckRecords[`${selectedOrderId}::${code}`]);
+  const selectedRecord = customerCheckRecords[`${selectedOrderId}::${code}`];
+  updateCustomerCheckCompletionButton(selectedRecord);
+  updateCustomerCheckCaptureButton(selectedRecord);
   renderCustomerCheckSchedule();
   renderCustomerCheckGrid();
   renderCustomerCheckCodeCards();
   const label = document.getElementById('customerCheckSelectedLabel');
   if(label) label.textContent = `Mã đang chọn: ${code} · ${item.po_number}`;
+  document.getElementById('customerCheckCameraStatus').textContent = 'Sẵn sàng chụp hoặc chọn ảnh';
 }
 
 function startCustomerCheckCapture(){
@@ -9406,7 +9327,20 @@ function startCustomerCheckCapture(){
     alert('Mã này đã chụp đủ 3 ảnh ở tất cả mốc giờ.');
     return;
   }
-  openCustomerCheckCamera(slotId);
+  openCamera(record.id, slotId, 'customer-check', 'customer-check-capture');
+}
+
+async function startCustomerCheckCaptureForCode(customerCode, purchaseOrderId){
+  if(customerCheckCaptureBusy) return;
+  const item = customerCheckCodeCards.find(record =>
+    record.customer_code === customerCode && String(record.purchase_order_id) === String(purchaseOrderId)
+  );
+  if(!item || Boolean(Number(item.is_completed))){
+    alert('Mã khách kiểm này không khả dụng để chụp ảnh.');
+    return;
+  }
+  await selectCustomerCheckCode(customerCode, purchaseOrderId);
+  startCustomerCheckCapture();
 }
 
 function updateCustomerCheckCodeCard(record){
@@ -9431,23 +9365,77 @@ function getNextCustomerCheckCaptureSlot(){
   return next ? next.id : null;
 }
 
-function openCustomerCheckCamera(slotId = null){
+async function uploadCustomerCheckCaptureFiles(files){
+  const images = Array.from(files || []).filter(file => file && file.type && file.type.startsWith('image/'));
+  if(!images.length) return;
   const record = ensureCustomerCheckRecord();
-  if(!record.id){
-    alert('Vui lòng lưu mã khách hàng trước khi chụp ảnh.');
-    return;
+  if(!record.id || customerCheckLoadedKey !== record.key || record.isCompleted){
+    throw new Error('Vui lòng chọn mã khách kiểm đang chụp trước khi tải ảnh.');
   }
-  const target = slotId ?? getNextCustomerCheckCaptureSlot();
-  if(!target){
-    alert('Tất cả mốc giờ đã đạt tối đa 3 ảnh.');
-    return;
+  if(customerCheckCaptureBusy) return;
+  const slotId = getNextCustomerCheckCaptureSlot();
+  if(!slotId) throw new Error('Mã này đã chụp đủ 3 ảnh ở tất cả mốc giờ.');
+  const slot = record.slots.find(item => Number(item.id) === Number(slotId));
+  if(!slot) throw new Error('Không tìm thấy mốc giờ để lưu ảnh.');
+  const uploadCount = Math.min(images.length, 3 - slot.images.length);
+  const status = document.getElementById('customerCheckCameraStatus');
+  const selectionControls = ['customerCheckOrderSelect', 'customerCheckSavedCodeSelect', 'customerCheckCustomerCode']
+    .map(id => document.getElementById(id))
+    .filter(Boolean)
+    .map(control => ({ control, disabled: control.disabled }));
+  customerCheckCaptureBusy = true;
+  selectionControls.forEach(({ control }) => { control.disabled = true; });
+  setCustomerCheckPhotoControls(true);
+  status.textContent = `Đang lưu ${uploadCount} ảnh vào mốc ${formatCustomerCheckHours(slot.hours)}…`;
+  try{
+    await addCustomerCheckImagesToSlot(slotId, images.slice(0, uploadCount));
+    const updatedRecord = ensureCustomerCheckRecord();
+    const updatedSlot = updatedRecord.slots.find(item => Number(item.id) === Number(slotId));
+    const skippedCount = images.length - uploadCount;
+    const skippedMessage = skippedCount ? ` · Bỏ qua ${skippedCount} ảnh do giới hạn 3 ảnh/mốc` : '';
+    status.textContent = `Đã lưu ${uploadCount} ảnh vào mốc ${formatCustomerCheckHours(slot.hours)} · ${updatedSlot?.images.length || 0}/3 ảnh${skippedMessage} · Nhấn “Chụp tiếp” để chụp tiếp`;
+    document.getElementById('customerCheckCaptureButton').textContent = '📷 Chụp tiếp';
+  }catch(err){
+    status.textContent = `Lưu ảnh thất bại: ${err.message}`;
+    throw err;
+  }finally{
+    customerCheckCaptureBusy = false;
+    selectionControls.forEach(({ control, disabled }) => { control.disabled = disabled; });
+    renderCustomerCheckSchedule();
+    renderCustomerCheckGrid();
+    setCustomerCheckPhotoControls(Boolean(ensureCustomerCheckRecord().id && customerCheckLoadedKey === ensureCustomerCheckRecord().key));
   }
-  const slot = record.slots.find(item => Number(item.id) === Number(target));
-  if(slot && slot.images.length >= 3){
-    alert(`Mốc ${formatCustomerCheckHours(slot.hours)} đã đủ 3 ảnh rồi.`);
-    return;
-  }
-  openCamera(record.id, target, 'customer-check');
+}
+
+const customerCheckCaptureDropzone = document.getElementById('customerCheckCaptureDropzone');
+if(customerCheckCaptureDropzone){
+  let dragDepth = 0;
+  customerCheckCaptureDropzone.addEventListener('dragenter', event => {
+    event.preventDefault();
+    dragDepth++;
+    customerCheckCaptureDropzone.classList.add('drag-over');
+  });
+  customerCheckCaptureDropzone.addEventListener('dragover', event => {
+    event.preventDefault();
+    if(event.dataTransfer) event.dataTransfer.dropEffect = 'copy';
+  });
+  customerCheckCaptureDropzone.addEventListener('dragleave', event => {
+    event.preventDefault();
+    dragDepth = Math.max(0, dragDepth - 1);
+    if(!dragDepth) customerCheckCaptureDropzone.classList.remove('drag-over');
+  });
+  customerCheckCaptureDropzone.addEventListener('drop', event => {
+    event.preventDefault();
+    dragDepth = 0;
+    customerCheckCaptureDropzone.classList.remove('drag-over');
+    const files = Array.from(event.dataTransfer?.files || []);
+    const images = files.filter(file => file.type.startsWith('image/'));
+    if(!images.length){
+      document.getElementById('customerCheckCameraStatus').textContent = 'Vui lòng thả file ảnh.';
+      return;
+    }
+    uploadCustomerCheckCaptureFiles(images).catch(err => alert(err.message));
+  });
 }
 
 async function uploadCustomerCheckPhoto(recordId, slotId, file){
@@ -9538,10 +9526,6 @@ function switchView(view){
   const isSample = view === 'sample';
   const isReportTemplates = view === 'report-templates';
   const isSettings = view === 'settings';
-  if(!isPhotoCapture){
-    stopPhotoCaptureCamera();
-    exitPhotoCaptureMode();
-  }
   document.getElementById('view-home').classList.toggle('hidden', !isHome);
   document.getElementById('view-tests').classList.toggle('hidden', !isTests);
   document.getElementById('view-products').classList.toggle('hidden', !isProducts);
@@ -9571,7 +9555,7 @@ function switchView(view){
   if(isMaster){ loadMasterData(); loadClientsAndPos().catch(console.error); }
   if(isPhotos) loadPhotoGallery();
   if(isPhotoCapture){
-    loadPhotoCaptureTests().then(() => startPhotoCaptureCamera()).catch(err => alert('Không tải được danh sách ảnh test: ' + err.message));
+    loadPhotoCaptureTests().catch(err => alert('Không tải được danh sách ảnh test: ' + err.message));
   }
   if(isCustomerCheck){
     loadClientsAndPos().then(async () => {
@@ -9773,12 +9757,62 @@ function renderProductsPage(){
       <td>${highlightProductMatch(r.Notes, keyword) || '—'}</td>
       <td><div class="row-actions" style="justify-content:center"><button type="button" class="icon-btn" title="Sửa" onclick="openProductEditModal(${r.Id})">✎</button><button type="button" class="icon-btn danger" title="Xóa" onclick="deleteProduct(${r.Id})">🗑</button></div></td></tr>`).join('');
   }
-  document.getElementById('prod_page_label').textContent = `${prodCurrentPage} / ${totalPages}`;
   document.getElementById('prod_page_label_top').textContent = `${prodCurrentPage} / ${totalPages}`;
-  document.getElementById('prod_prev_btn').disabled = prodCurrentPage <= 1;
-  document.getElementById('prod_next_btn').disabled = prodCurrentPage >= totalPages;
+  renderProductPagination(totalPages);
   syncProductSelectionUI();
 }
+
+function renderProductPagination(totalPages){
+  const pagination = document.getElementById('prod_pagination');
+  if(!pagination) return;
+  pagination.innerHTML = buildNumberedPaginationHtml(prodCurrentPage, totalPages);
+}
+
+function buildNumberedPaginationHtml(currentPage, totalPages){
+  const button = (label, page, title, disabled = false, className = 'icon-btn') =>
+    `<button type="button" class="${className}" data-page="${page}" title="${title}" aria-label="${title}" ${disabled ? 'disabled' : ''}>${label}</button>`;
+  let pageButtons = '';
+  const addPage = page => {
+    pageButtons += button(page, page, `Trang ${page}`, false, `icon-btn page-number${page === currentPage ? ' active' : ''}`);
+  };
+  const addGap = () => { pageButtons += '<span class="page-gap" aria-hidden="true">…</span>'; };
+
+  if(totalPages <= 5){
+    for(let page = 1; page <= totalPages; page++) addPage(page);
+  }else if(currentPage <= 3){
+    for(let page = 1; page <= 4; page++) addPage(page);
+    addGap();
+    addPage(totalPages);
+  }else if(currentPage >= totalPages - 2){
+    addPage(1);
+    addGap();
+    for(let page = totalPages - 3; page <= totalPages; page++) addPage(page);
+  }else{
+    addPage(1);
+    addGap();
+    for(let page = currentPage - 1; page <= currentPage + 1; page++) addPage(page);
+    addGap();
+    addPage(totalPages);
+  }
+
+  return button('|‹', 1, 'Trang đầu', currentPage <= 1) +
+    button('‹', currentPage - 1, 'Trang trước', currentPage <= 1) +
+    pageButtons +
+    button('›', currentPage + 1, 'Trang sau', currentPage >= totalPages) +
+    button('›|', totalPages, 'Trang cuối', currentPage >= totalPages);
+}
+
+function goToProductPage(page){
+  const totalPages = Math.max(1, Math.ceil(prodLastLoadedRows.length / PROD_PAGE_SIZE));
+  if(!Number.isInteger(page) || page < 1 || page > totalPages || page === prodCurrentPage) return;
+  prodCurrentPage = page;
+  renderProductsPage();
+}
+
+document.getElementById('prod_pagination').addEventListener('click', event => {
+  const button = event.target.closest('button[data-page]');
+  if(button && !button.disabled) goToProductPage(Number(button.dataset.page));
+});
 
 function setProductSelectionForCurrentRows(checked){
   const currentIds = prodLastLoadedRows.map(r => Number(r.Id));
@@ -9811,9 +9845,6 @@ document.getElementById('prod_select_all_btn').addEventListener('click', () => {
 document.getElementById('prod_clear_selection_btn').addEventListener('click', () => {
   setProductSelectionForCurrentRows(false);
 });
-
-document.getElementById('prod_prev_btn').addEventListener('click', () => { if(prodCurrentPage > 1){ prodCurrentPage--; renderProductsPage(); } });
-document.getElementById('prod_next_btn').addEventListener('click', () => { const totalPages = Math.max(1, Math.ceil(prodLastLoadedRows.length / PROD_PAGE_SIZE)); if(prodCurrentPage < totalPages){ prodCurrentPage++; renderProductsPage(); } });
 
 async function deleteProduct(id){
   if(!confirm('Xóa sản phẩm này?')) return;
