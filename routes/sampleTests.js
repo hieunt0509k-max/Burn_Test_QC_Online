@@ -136,7 +136,9 @@ router.get('/refs',(req,res,next)=>{try{
   res.json({customers, purchase_orders});
 }catch(e){next(e)}});
 router.get('/',(req,res,next)=>{try{
-  let sql=`SELECT s.*, c.name customer_name, po.po_number, (SELECT COUNT(*) FROM sample_burn_test_photos p WHERE p.sample_test_id=s.id) photo_count
+  let sql=`SELECT s.*, c.name customer_name, po.po_number,
+    (SELECT COUNT(*) FROM sample_burn_test_photos p WHERE p.sample_test_id=s.id) photo_count,
+    (SELECT p.file_url FROM sample_burn_test_photos p WHERE p.sample_test_id=s.id ORDER BY p.slot DESC, p.id DESC LIMIT 1) last_photo_url
     FROM sample_burn_tests s LEFT JOIN customers c ON c.id=s.customer_id LEFT JOIN purchase_orders po ON po.id=s.purchase_order_id WHERE 1=1`;
   const p=[]; if(req.query.q){sql+=' AND (s.product_code LIKE ? OR s.product_name LIKE ? OR c.name LIKE ? OR po.po_number LIKE ?)'; const q='%'+req.query.q+'%'; p.push(q,q,q,q)}
   sql+=' ORDER BY s.test_date DESC, s.id DESC';

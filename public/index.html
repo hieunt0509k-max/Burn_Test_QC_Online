@@ -42,11 +42,14 @@ header{background:var(--charcoal);color:var(--paper);padding:22px 32px;display:f
 .product-summary-card b{display:inline-block;margin:5px 5px 0 0;font:700 22px 'Space Grotesk',sans-serif;color:var(--ink)}
 .product-list-card{overflow:hidden}
 .product-filters{padding:12px 20px;border-bottom:1px solid var(--line);background:#fbfcfd;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.product-untested-filter{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-size:12px;color:var(--ink-soft);cursor:pointer}
+#view-products .product-filters input[type="checkbox"].product-untested-checkbox{width:16px !important;height:16px !important;min-width:16px !important;max-width:16px !important;padding:0 !important;margin:0 !important;flex:0 0 16px !important}
 #view-products .product-filters select,
 #view-products .product-filters input{min-width:0 !important;height:34px !important;padding:7px 10px !important;font-size:12.5px !important;line-height:1.2 !important;box-sizing:border-box !important}
 #view-products .product-filters select{width:150px !important;flex:0 0 150px !important}
 #view-products .product-filters input{width:100% !important;max-width:420px !important;flex:1 1 240px !important}
-.product-po-select{height:30px;min-width:150px;max-width:180px;padding:6px 9px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink);font-size:12px;line-height:1.2;box-sizing:border-box}
+#view-products .product-filters .product-po-search{width:280px !important;max-width:280px !important;min-width:210px !important;flex:0 1 280px !important}
+.product-po-search{height:34px;min-width:210px;max-width:280px;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink);font-size:12.5px;line-height:1.2;box-sizing:border-box}
 
 .product-test-menu-overlay{position:fixed;inset:0;z-index:3000;background:rgba(15,26,60,.28);display:flex;align-items:center;justify-content:center;padding:18px;box-sizing:border-box}
 .product-test-menu-card{width:min(560px,100%);background:#fff;border:1px solid #d8e1e8;border-radius:14px;box-shadow:0 22px 70px rgba(15,26,60,.25);overflow:hidden}
@@ -221,6 +224,8 @@ footer{text-align:center;padding:24px;font-size:11.5px;color:var(--ink-soft)}
 .product-code-cell{position:relative}
 .product-code-btn{background:none;border:none;color:var(--copper-dark);font-weight:600;cursor:pointer;font-family:inherit;font-size:inherit;padding:0;text-decoration:underline dashed var(--copper-dark);transition:all .12s ease}
 .product-code-btn:hover{color:var(--copper);text-decoration:underline solid var(--copper)}
+#view-products #prod_table_body tr[data-product-id]{cursor:pointer}
+#view-products #prod_table_body tr[data-product-id]:hover{background:#f5f9fc}
 .product-code-wrap{position:relative;display:inline-flex;align-items:center;gap:6px}
 .product-code-wrap .product-code-thumb{position:absolute;left:0;top:calc(100% + 10px);width:180px;height:120px;padding:4px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:var(--sh-md);opacity:0;visibility:hidden;transform:translateY(6px);transition:all .18s ease;z-index:50;pointer-events:none}
 .product-code-wrap .product-code-thumb::before{content:'';position:absolute;left:16px;top:-8px;width:12px;height:12px;background:#fff;border-left:1px solid var(--line);border-top:1px solid var(--line);transform:rotate(45deg)}
@@ -242,6 +247,8 @@ footer{text-align:center;padding:24px;font-size:11.5px;color:var(--ink-soft)}
 .burn-video-section{padding:0 26px 24px}
 .burn-video-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
 .burn-video-head h3{margin:0;font:600 14px 'Space Grotesk',sans-serif}
+.burn-video-dropzone{display:flex;width:100%;min-height:54px;margin:0 0 12px;padding:12px;align-items:center;justify-content:center;border:1.5px dashed #aebbc4;border-radius:8px;background:#f8fafb;color:var(--ink-soft);font:500 12px 'Inter',sans-serif;cursor:pointer;transition:background .15s,border-color .15s}
+.burn-video-dropzone:hover,.burn-video-dropzone.is-over{border-color:#187dcc;background:#edf6fc;color:#1769a5}
 .burn-video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
 .burn-video-card{min-width:0;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff}
 .burn-video-frame{position:relative;overflow:hidden;background:#111;border-radius:6px}
@@ -423,6 +430,11 @@ footer{text-align:center;padding:24px;font-size:11.5px;color:var(--ink-soft)}
 .photo-capture-card-meta-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .photo-capture-card-meta-head .photo-capture-card-code{min-width:0;overflow-wrap:anywhere}
 .photo-capture-card-camera{flex:0 0 auto;width:auto;margin:0;padding:5px 8px;font-size:11px}
+.photo-capture-test-gallery{display:grid;width:100%;max-height:320px;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;overflow:auto}
+.photo-capture-test-gallery[hidden]{display:none}
+.photo-capture-test-thumb{min-width:0;padding:4px;border:1px solid #e3e9ee;border-radius:8px;background:#f8fafb;cursor:zoom-in}
+.photo-capture-test-thumb img{display:block;width:100%;height:118px;object-fit:contain;border-radius:4px;background:#fff}
+.photo-capture-test-thumb span{display:block;padding:4px 2px 1px;color:var(--ink-soft);font-size:10px;text-align:center}
 .photo-upload-dropzone{min-height:240px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;border:2px dashed #9bb6c8;transition:background .15s,border-color .15s,box-shadow .15s}
 .photo-upload-dropzone.drag-over{background:#eef7fc;border-color:#1681d8;box-shadow:inset 0 0 0 2px rgba(22,129,216,.12)}
 .photo-upload-dropzone p{max-width:440px;margin:0;color:var(--ink-soft);font-size:13px;line-height:1.6}
@@ -1967,6 +1979,9 @@ header{
 .sample-po-wrap .sample-po-thumb::before{content:'';position:absolute;left:50%;top:-8px;transform:translateX(-50%) rotate(45deg);width:12px;height:12px;background:#fff;border-left:1px solid var(--line);border-top:1px solid var(--line)}
 .sample-po-wrap:hover .sample-po-thumb,.sample-po-wrap:focus-within .sample-po-thumb{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
 .sample-po-wrap .sample-po-thumb img{width:100%;height:100%;object-fit:cover;border-radius:8px;display:block;background:var(--paper-2)}
+#sampleListBody .sample-last-photo{display:inline-flex;width:58px;height:44px;padding:2px;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:5px;background:#fff;cursor:pointer}
+#sampleListBody .sample-last-photo img{width:100%;height:100%;object-fit:cover;border-radius:3px;display:block}
+#sampleListBody .sample-last-photo-empty{color:var(--ink-soft);font-size:12px}
 </style>
 
 <style id="v84-sample-quick-result">
@@ -2252,6 +2267,7 @@ header{
     <div class="customer-check-camera-card photo-upload-dropzone" id="photoCaptureDropzone">
       <b>📷 Ảnh cho lần test</b>
       <small id="photoCaptureSelectedLabel" style="color:var(--ink-soft)">Chọn lần test ở danh sách bên phải</small>
+      <div id="photoCaptureTestGallery" class="photo-capture-test-gallery" aria-label="Ảnh test đốt của lần test đang chọn" hidden></div>
       <p>Dùng camera của thiết bị để chụp ảnh, chọn ảnh có sẵn hoặc kéo thả ảnh vào đây. Ảnh sẽ được lưu trực tiếp vào lần Burn Test đang chọn.</p>
       <button type="button" class="btn photo-capture-action" id="photoCaptureButton" disabled onclick="document.getElementById('photoCaptureFileInput').click()">📷 Chụp / chọn ảnh</button>
       <input type="file" id="photoCaptureFileInput" accept="image/*" capture="environment" hidden onchange="uploadSelectedBurnTestPhoto(this.files).catch(err => alert(err.message)); this.value=''">
@@ -2274,7 +2290,6 @@ header{
     <div><h2>📸 Ảnh khách kiểm</h2><p>Theo dõi ảnh chiếu sáng / kiểm tra thực tế của khách hàng theo mốc tổng giờ đốt; mặc định chỉ có mốc Start.</p></div>
     <div class="module-actions">
       <button class="btn btn-ghost" type="button" onclick="loadCustomerCheckCodes().catch(err => alert(err.message))">↻ Làm mới</button>
-      <button class="btn" type="button" id="customerCheckExportBtn" disabled>⇩ Xuất Excel</button>
     </div>
   </div>
 
@@ -2344,6 +2359,7 @@ header{
         <button type="button" class="btn btn-ghost" id="customerCheckEditCodeBtn" style="width:auto;margin:0">Sửa mã</button>
         <button type="button" class="btn btn-ghost" id="customerCheckDeleteCodeBtn" style="width:auto;margin:0;color:#b23838">Xóa mã</button>
         <button type="button" class="btn btn-ghost" id="customerCheckCompleteBtn" style="width:auto;margin:0">✓ Đã chụp xong</button>
+        <button type="button" class="btn" id="customerCheckExportBtn" style="width:auto;margin:0" disabled>⇩ Xuất Excel</button>
       </div>
 
       <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px">
@@ -2432,13 +2448,14 @@ header{
     <th>Ngày</th>
     <th>Khách hàng</th>
     <th>PO</th>
+    <th>Ảnh đốt cuối</th>
     <th>Quy cách</th>
     <th>Bấc</th>
     <th>Bắt đầu</th>
     <th>Kết thúc</th>
     <th>Tổng đốt</th>
     <th>Kết quả</th>
-    <th>Ảnh</th>
+    <th>Số ảnh</th>
     <th>Thao tác</th>
   </tr>
 </thead>
@@ -2769,9 +2786,9 @@ header{
     <div class="card product-list-card">
       <div class="card-head"><h2>Danh sách sản phẩm</h2><span class="eyebrow">MASTER</span></div>
      <div class="filters product-filters">
-  <select id="prod_filter_po_select" class="product-po-select" aria-label="Lọc theo PO">
-    <option value="">Tất cả PO</option>
-  </select>
+  <input type="search" id="prod_filter_po_search" class="product-po-search" list="prod_filter_po_options" placeholder="Gõ để tìm đơn hàng / PO..." aria-label="Tìm và chọn đơn hàng / PO" autocomplete="off">
+  <datalist id="prod_filter_po_options"></datalist>
+  <label class="product-untested-filter"><input type="checkbox" class="product-untested-checkbox" id="prod_filter_untested"> Chỉ mã chưa test</label>
   <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:240px">
     <input type="text" id="prod_filter_code" placeholder="🔎 Tìm mã hàng, PO, size, màu, hương, wick" style="width:100%">
     <span id="prod_search_hint" style="display:none;font-size:11.5px;color:#4d5963;white-space:nowrap"></span>
@@ -2976,6 +2993,7 @@ header{
     <div class="pic-grid" id="picGrid"></div>
     <section class="burn-video-section" aria-labelledby="burnVideosTitle">
       <div class="burn-video-head"><h3 id="burnVideosTitle">Video bằng chứng</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn btn-ghost" data-require-auth="1" onclick="openBurnTestVideoRecorder()">🎥 Quay video · tối đa 30 giây</button><button type="button" class="btn btn-ghost" data-require-auth="1" onclick="selectBurnTestVideoFile()">⬆ Tải video từ máy tính</button></div></div>
+      <button type="button" class="burn-video-dropzone" id="burnTestVideoDropzone" data-require-auth="1" onclick="selectBurnTestVideoFile()">Kéo thả video vào đây hoặc bấm để chọn · MP4, WEBM, MOV · tối đa 30 giây / 150 MB</button>
       <div class="burn-video-grid" id="burnTestVideos"></div>
     </section>
     <div class="log-section">
@@ -4284,6 +4302,8 @@ function openLightbox(url, context){
     photos = Array.isArray(window._sampleViewerPhotos) ? window._sampleViewerPhotos.slice() : [];
   } else if(context === 'customer-check'){
     photos = Array.isArray(window._customerCheckViewerPhotos) ? window._customerCheckViewerPhotos.slice() : [];
+  } else if(context === 'photo-capture'){
+    photos = Array.isArray(window._photoCaptureViewerPhotos) ? window._photoCaptureViewerPhotos.slice() : [];
   } else {
     photos = buildBurnPhotoList();
   }
@@ -4960,8 +4980,10 @@ async function uploadSelectedBurnTestVideo(file){
     alert('Video vượt quá giới hạn 150 MB.');
     return;
   }
-  const acceptedTypes = ['video/mp4','video/webm','video/quicktime'];
-  if(!acceptedTypes.includes(file.type.toLowerCase())){
+  const acceptedTypes = ['video/mp4','video/x-m4v','video/webm','video/quicktime'];
+  const acceptedExtensions = ['.mp4','.m4v','.webm','.mov'];
+  const extension = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
+  if(!acceptedTypes.includes(file.type.toLowerCase()) && !acceptedExtensions.includes(extension)){
     alert('Chỉ chấp nhận video MP4, WEBM hoặc MOV.');
     return;
   }
@@ -5260,6 +5282,28 @@ document.getElementById('burnTestVideoFileInput').addEventListener('change', eve
 document.getElementById('burnTestVideoCameraInput').addEventListener('change', event => {
   const file = event.target.files?.[0];
   if(file) uploadSelectedBurnTestVideo(file);
+});
+const burnTestVideoDropzone = document.getElementById('burnTestVideoDropzone');
+['dragenter','dragover'].forEach(eventName => burnTestVideoDropzone.addEventListener(eventName, event => {
+  event.preventDefault();
+  event.stopPropagation();
+  burnTestVideoDropzone.classList.add('is-over');
+}));
+['dragleave','dragend'].forEach(eventName => burnTestVideoDropzone.addEventListener(eventName, event => {
+  event.preventDefault();
+  burnTestVideoDropzone.classList.remove('is-over');
+}));
+burnTestVideoDropzone.addEventListener('drop', event => {
+  event.preventDefault();
+  event.stopPropagation();
+  burnTestVideoDropzone.classList.remove('is-over');
+  const files = event.dataTransfer?.files;
+  if(!files?.length) return;
+  if(files.length > 1){
+    alert('Vui lòng kéo thả từng video một.');
+    return;
+  }
+  uploadSelectedBurnTestVideo(files[0]);
 });
 
 document.getElementById('capturePhotoBtn').addEventListener('click', () => {
@@ -6916,6 +6960,9 @@ async function loadPhotoCaptureTests(selectedId = photoCaptureSelectedId){
     const stillExists = photoCaptureRows.some(row => Number(row.Id || row.id) === Number(selectedId));
     photoCaptureSelectedId = stillExists ? Number(selectedId) : null;
     renderPhotoCaptureTests();
+    updatePhotoCaptureTestImage(
+      photoCaptureRows.find(row => Number(row.Id || row.id) === Number(photoCaptureSelectedId))
+    );
   }catch(err){
     if(list) list.innerHTML = `<div class="module-empty">Không tải được danh sách test: ${homeEscape(err.message)}</div>`;
     throw err;
@@ -7000,7 +7047,50 @@ function selectPhotoCaptureTest(id){
   const po = row.po_number || row.PO_Name || '—';
   document.getElementById('photoCaptureSelectedLabel').textContent = `${code} · ${po}`;
   document.getElementById('photoCaptureUploadStatus').textContent = 'Sẵn sàng chụp hoặc chọn ảnh';
+  updatePhotoCaptureTestImage(row);
   renderPhotoCaptureTests();
+}
+
+function updatePhotoCaptureTestImage(row){
+  const gallery = document.getElementById('photoCaptureTestGallery');
+  if(!gallery) return;
+  const photos = Array.isArray(row?.photos)
+    ? row.photos
+      .map(photo => ({ slot: Number(photo.slot), url: photo.file_url || photo.url || photo.image_url || '' }))
+      .filter(photo => photo.url)
+      .sort((a, b) => a.slot - b.slot)
+    : [];
+  if(!photos.length){
+    photos.push(...Object.keys(row || {})
+      .map(key => {
+        const match = key.toUpperCase().match(/^PIC[_-]?(\d+)$/);
+        return match ? { slot: Number(match[1]), url: row[key] } : null;
+      })
+      .filter(photo => photo?.url)
+      .sort((a, b) => a.slot - b.slot));
+  }
+  window._photoCaptureViewerPhotos = photos.map(photo => photo.url);
+  gallery.replaceChildren();
+  gallery.hidden = photos.length === 0;
+  photos.forEach(photo => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'photo-capture-test-thumb';
+    button.title = `Xem ảnh PIC_${photo.slot}`;
+    const image = document.createElement('img');
+    image.src = photo.url;
+    image.alt = `Ảnh test đốt PIC_${photo.slot}`;
+    image.loading = 'lazy';
+    image.onerror = () => { button.remove(); };
+    const label = document.createElement('span');
+    label.textContent = `Ảnh ${photo.slot}`;
+    button.append(image, label);
+    button.addEventListener('click', event => {
+      event.stopPropagation();
+      openLightbox(photo.url, 'photo-capture');
+    });
+    gallery.appendChild(button);
+  });
 }
 
 function updatePhotoCaptureControls(){
@@ -7934,54 +8024,6 @@ const displayDate = (x) => {
   if(s) return s.slice(0,10);
   return x.test_date || '—';
 };
-  const firstSamplePhoto = (x) => {
-    const photos = Array.isArray(x?.photos) ? x.photos : [];
-    const first = photos.find(p => p && (p.file_url || p.url || p.image_url)) || null;
-    return first ? (first.file_url || first.url || first.image_url) : '';
-  };
-
-  function getLastPhotoFromBurnRecord(r){
-    if(!r) return '';
-    const photoSlots = getPhotoSlots(r);
-    let lastUrl = '';
-    let lastSlot = -1;
-    for(const slot of photoSlots){
-      const url = r[slot];
-      if(url){
-        const num = Number(String(slot).match(/\d+$/)?.[0] || 0);
-        if(num > lastSlot){ lastSlot = num; lastUrl = url; }
-      }
-    }
-    if(!lastUrl && Array.isArray(r.photos)){
-      const photos = [...r.photos].sort((a,b) => Number(b.slot || 0) - Number(a.slot || 0));
-      const first = photos.find(p => p && (p.file_url || p.url || p.image_url)) || null;
-      lastUrl = first ? (first.file_url || first.url || first.image_url) : '';
-    }
-    return lastUrl;
-  }
-
-  async function loadSampleLastPhotoPreview(sampleId, thumbEl, imgEl){
-    if(!sampleId || !thumbEl || !imgEl) return;
-    if(imgEl.dataset.loaded === '1') return;
-    try{
-      const r = await fetch(`${API}/sample-tests/${sampleId}`, { cache: 'no-store' });
-      const d = await r.json();
-      if(!r.ok) throw new Error(d.error || 'Không tải được ảnh mẫu');
-      const photos = Array.isArray(d.photos) ? d.photos : [];
-      const last = [...photos]
-        .filter(p => p && Number(p.slot) >= 1 && Number(p.slot) <= 5 && (p.file_url || p.url || p.image_url))
-        .sort((a, b) => Number(b.slot || 0) - Number(a.slot || 0))[0] || null;
-      const src = last ? (last.file_url || last.url || last.image_url) : '';
-      if(!src){ thumbEl.style.display = 'none'; imgEl.dataset.loaded = '1'; return; }
-      imgEl.src = src;
-      thumbEl.style.display = 'block';
-      imgEl.dataset.loaded = '1';
-    }catch(_){
-      thumbEl.style.display = 'none';
-      imgEl.dataset.loaded = '1';
-    }
-  }
-
   const stamp = (v) => {
     const r = String(v||'PENDING').toUpperCase();
     if(r === 'PASS') return '<span class="stamp pass">PASS</span>';
@@ -7995,7 +8037,7 @@ const displayDate = (x) => {
 
   const todayStr = todayISO();
   b.innerHTML = pageRows.length ? pageRows.map(x => {
-    const sampleThumb = firstSamplePhoto(x);
+    const sampleThumb = x.last_photo_url || '';
     const checked = sampleSelectedIds.has(Number(x.id)) ? 'checked' : '';
     const rowDate = displayDate(x);
     const isToday = rowDate === todayStr;
@@ -8011,9 +8053,14 @@ const displayDate = (x) => {
             ${sampleEsc(x.po_number||'—')}
           </button>
           <div class="sample-po-thumb" style="${sampleThumb ? '' : 'display:none'}">
-            <img src="${sampleThumb || ''}" data-sample-img="${x.id}" alt="${sampleEsc(x.po_number||'PO')}" onerror="this.parentElement.style.display='none'">
+            <img src="${sampleEsc(sampleThumb)}" alt="${sampleEsc(x.po_number||'PO')}" onerror="this.parentElement.style.display='none'">
           </div>
         </div>
+      </td>
+      <td>
+        ${sampleThumb
+          ? `<button type="button" class="sample-last-photo" title="Xem ảnh đốt cuối" aria-label="Xem ảnh đốt cuối cho ${sampleEsc(x.po_number||'test hàng mẫu')}" onclick="event.stopPropagation();openSamplePhotoViewer(${x.id})"><img src="${sampleEsc(sampleThumb)}" alt="Ảnh đốt cuối" loading="lazy" onerror="this.parentElement.replaceWith(document.createTextNode('—'))"></button>`
+          : '<span class="sample-last-photo-empty">—</span>'}
       </td>
       <td class="left">${sampleEsc(x.product_name||x.size||'—')}</td>
       <td>${sampleEsc(x.wick_spec||'—')}</td>
@@ -8132,17 +8179,6 @@ function getLastPhotoFromBurnRecord(r){
 }
 
 document.addEventListener('mouseover', async (event) => {
-  const btn = event.target.closest('.sample-po-link');
-  if(btn){
-    const wrap = btn.closest('.sample-po-wrap');
-    if(!wrap) return;
-    const thumb = wrap.querySelector('.sample-po-thumb');
-    const img = wrap.querySelector('img[data-sample-img]');
-    if(!thumb || !img) return;
-    await loadSampleLastPhotoPreview(btn.dataset.sampleId, thumb, img);
-    return;
-  }
-
   const homeLink = event.target.closest('.home-recent-link');
   if(!homeLink) return;
   const homeWrap = homeLink.closest('.home-link-wrap');
@@ -9576,34 +9612,36 @@ function populateProductPoSelects(){
   const opts = (posCache || []).map(p => `<option value="${p.PO_Id}">${p.PO_Name} — ${p.Cus_Name || ''}</option>`).join('') || '<option value="">Chưa có PO nào</option>';
   const importPo = document.getElementById('prod_import_po'); if(importPo) importPo.innerHTML = opts;
   const addPo = document.getElementById('prod_add_po'); if(addPo) addPo.innerHTML = opts;
-  const filterSelect = document.getElementById('prod_filter_po_select');
-  if(filterSelect){
-    const selectedBefore = Array.from(filterSelect.selectedOptions).map(opt => String(opt.value));
-    filterSelect.innerHTML = '<option value="">Tất cả PO</option>' + (posCache || []).map(p => `<option value="${p.PO_Id}">${p.PO_Name}</option>`).join('');
-    Array.from(filterSelect.options).forEach(opt => {
-      if (selectedBefore.includes(String(opt.value)) && opt.value !== '') opt.selected = true;
-    });
-    if (!selectedBefore.length) {
-      filterSelect.options[0].selected = true;
-    }
+  const filterSearch = document.getElementById('prod_filter_po_search');
+  const filterOptions = document.getElementById('prod_filter_po_options');
+  if(filterSearch && filterOptions){
+    const selectedId = filterSearch.dataset.poId || '';
+    filterOptions.innerHTML = (posCache || []).map(p => `<option value="${escapeHtmlProd(getProductPoLabel(p))}"></option>`).join('');
+    filterSearch.dataset.poId = (posCache || []).some(p => String(p.PO_Id) === selectedId) ? selectedId : '';
     updateProductPoFilterSummary();
   }
 }
+function getProductPoLabel(po){
+  return `${po.PO_Name || po.po_number || ''} — ${po.Cus_Name || po.customer_name || ''}`.trim();
+}
 function escapeHtmlProd(str){ return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function getSelectedProductPoIds(){
-  const select = document.getElementById('prod_filter_po_select');
-  if(!select) return [];
-  const value = String(select.value || '').trim();
+  const search = document.getElementById('prod_filter_po_search');
+  if(!search) return [];
+  const value = String(search.dataset.poId || '').trim();
   return value ? [value] : [];
 }
 function updateProductPoFilterSummary(){
-  const select = document.getElementById('prod_filter_po_select');
-  if(!select) return;
+  const search = document.getElementById('prod_filter_po_search');
+  if(!search) return;
   const selected = getSelectedProductPoIds();
-  const label = selected.length ? `Đã chọn PO ${selected[0]}` : 'Tất cả PO';
-  select.title = label;
-  const summary = document.getElementById('prod_filter_po_summary');
-  if (summary) summary.textContent = label;
+  const po = selected.length ? (posCache || []).find(p => String(p.PO_Id) === selected[0]) : null;
+  const label = po ? `Đã chọn ${getProductPoLabel(po)}` : 'Tất cả đơn hàng';
+  search.title = label;
+  search.setAttribute('aria-description', label);
+  if(document.activeElement !== search){
+    search.value = po ? getProductPoLabel(po) : '';
+  }
 }
 
 // Chuẩn hoá text để tìm không phân biệt dấu / hoa thường
@@ -9671,6 +9709,9 @@ async function loadProducts(resetPage = true, forceRefresh = false){
     if(po_ids.length){
       const selectedPoIds = new Set(po_ids);
       rows = rows.filter(r => selectedPoIds.has(String(r.Order_Id || r.order_id || r.PO_Id || r.po_id)));
+    }
+    if(document.getElementById('prod_filter_untested').checked){
+      rows = rows.filter(r => !Number(r.has_test));
     }
     if(keyword){
       const k = normalizeSearch(keyword);
@@ -9741,7 +9782,7 @@ function renderProductsPage(){
   } else {
     const start = (prodCurrentPage - 1) * PROD_PAGE_SIZE;
     const pageRows = rows.slice(start, start + PROD_PAGE_SIZE);
-    tbody.innerHTML = pageRows.map(r => `<tr>
+    tbody.innerHTML = pageRows.map(r => `<tr data-product-id="${Number(r.Id)}">
       <td><input type="checkbox" class="prod-row-select" value="${r.Id}" ${prodSelectedIds.has(Number(r.Id)) ? 'checked' : ''} aria-label="Chọn ${escapeHtmlProd(r.Product_Code)}"></td>
       <td class="mono product-code-cell"><button type="button" class="product-code-btn" title="Tạo test hàng mẫu" onclick="event.preventDefault();createSampleTestFromProduct(${r.Id},${r.Order_Id || r.PO_Id || r.po_id},'${escapeHtmlProd(r.Product_Code)}','${escapeHtmlProd(r.Size || '')}','${escapeHtmlProd(r.Wick || '')}',${r.Diameter ?? 'null'},${r.Height ?? 'null'},'${escapeHtmlProd(r.Color || '')}','${escapeHtmlProd(r.Fragrance || '')}')">${highlightProductMatch(r.Product_Code, keyword)}</button></td>
       <td class="product-image-cell">${r.image_url ? `<button type="button" class="product-image-thumb" data-image="${escapeHtmlProd(r.image_url)}" data-code="${escapeHtmlProd(r.Product_Code)}" aria-label="Xem ảnh ${escapeHtmlProd(r.Product_Code)}"><img src="${escapeHtmlProd(r.image_url)}" alt="${escapeHtmlProd(r.Product_Code)}" loading="lazy"></button>` : '<span class="product-image-empty">—</span>'}</td>
@@ -9831,7 +9872,13 @@ document.getElementById('prod_table_body').addEventListener('change', (event) =>
 });
 document.getElementById('prod_table_body').addEventListener('click', (event) => {
   const button = event.target.closest('.product-image-thumb');
-  if(button) openProductImage(button.dataset.image, button.dataset.code);
+  if(button){
+    openProductImage(button.dataset.image, button.dataset.code);
+    return;
+  }
+  if(event.target.closest('button, a, input, select, textarea, label')) return;
+  const row = event.target.closest('tr[data-product-id]');
+  if(row) openProductEditModal(Number(row.dataset.productId));
 });
 
 document.getElementById('prod_select_all').addEventListener('change', (event) => {
@@ -10152,13 +10199,23 @@ async function downloadProductLabels(format){
 }
 document.getElementById('prod_labels_btn').addEventListener('click', () => downloadProductLabels('pdf'));
 document.getElementById('prod_labels_xlsx_btn').addEventListener('click', () => downloadProductLabels('xlsx'));
-const prodFilterPoSelect = document.getElementById('prod_filter_po_select');
-if(prodFilterPoSelect){
-  prodFilterPoSelect.addEventListener('change', () => {
+const prodFilterPoSearch = document.getElementById('prod_filter_po_search');
+if(prodFilterPoSearch){
+  prodFilterPoSearch.addEventListener('input', () => {
+    const typedLabel = prodFilterPoSearch.value.trim();
+    const match = (posCache || []).find(p => getProductPoLabel(p).toLocaleLowerCase() === typedLabel.toLocaleLowerCase());
+    prodFilterPoSearch.dataset.poId = match ? String(match.PO_Id) : '';
+    updateProductPoFilterSummary();
+  });
+  prodFilterPoSearch.addEventListener('change', () => {
+    const typedLabel = prodFilterPoSearch.value.trim();
+    const match = (posCache || []).find(p => getProductPoLabel(p).toLocaleLowerCase() === typedLabel.toLocaleLowerCase());
+    prodFilterPoSearch.dataset.poId = match ? String(match.PO_Id) : '';
     updateProductPoFilterSummary();
     loadProducts();
   });
 }
+document.getElementById('prod_filter_untested').addEventListener('change', () => loadProducts());
 document.getElementById('prod_filter_code').addEventListener('input', () => { clearTimeout(window._pft); window._pft = setTimeout(() => loadProducts(), 350); });
 
 let prodEditMode = false;

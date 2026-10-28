@@ -138,7 +138,16 @@ function getProduct(id) {
 router.get('/', (req, res, next) => {
   try {
     let sql = `
-      SELECT p.*, po.po_number AS po_number, c.name AS customer_name
+      SELECT p.*, po.po_number AS po_number, c.name AS customer_name,
+        CASE WHEN EXISTS (
+          SELECT 1 FROM burn_tests bt
+          WHERE bt.purchase_order_id = p.order_id
+            AND lower(bt.product_code) = lower(p.product_code)
+        ) OR EXISTS (
+          SELECT 1 FROM sample_burn_tests st
+          WHERE st.purchase_order_id = p.order_id
+            AND lower(st.product_code) = lower(p.product_code)
+        ) THEN 1 ELSE 0 END AS has_test
       FROM products p
       JOIN purchase_orders po ON po.id = p.order_id
       JOIN customers c ON c.id = po.customer_id
