@@ -111,6 +111,20 @@ router.get('/codes', (req, res, next) => {
     }
     const rows = prepare(`SELECT r.id, r.purchase_order_id, po.po_number, c.name AS customer_name,
       r.customer_code, r.is_completed, r.created_at, r.updated_at,
+      COALESCE(
+        (SELECT customer_product.image_url
+          FROM products customer_product
+          WHERE customer_product.order_id = r.purchase_order_id
+            AND customer_product.image_url IS NOT NULL
+            AND lower(trim(COALESCE(customer_product.customer_code, ''))) = lower(trim(r.customer_code))
+          ORDER BY customer_product.id DESC LIMIT 1),
+        (SELECT product_product.image_url
+          FROM products product_product
+          WHERE product_product.order_id = r.purchase_order_id
+            AND product_product.image_url IS NOT NULL
+            AND lower(trim(product_product.product_code)) = lower(trim(r.customer_code))
+          ORDER BY product_product.id DESC LIMIT 1)
+      ) AS product_image_url,
       p.id AS photo_id, p.burn_hours AS photo_hours, p.file_url AS photo_url, p.created_at AS photo_created_at
       FROM customer_check_records r
       JOIN purchase_orders po ON po.id = r.purchase_order_id
@@ -129,6 +143,7 @@ router.get('/codes', (req, res, next) => {
           po_number: row.po_number,
           customer_name: row.customer_name,
           customer_code: row.customer_code,
+          product_image_url: row.product_image_url,
           is_completed: row.is_completed,
           created_at: row.created_at,
           updated_at: row.updated_at,

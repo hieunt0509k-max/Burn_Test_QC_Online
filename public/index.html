@@ -391,6 +391,7 @@ footer{text-align:center;padding:24px;font-size:11.5px;color:var(--ink-soft)}
 .camera-controls .btn{width:auto;padding:12px 26px;margin:0}
 .customer-check-toolbar{display:flex;align-items:end;gap:12px;flex-wrap:wrap}
 .customer-check-toolbar .field{flex:1 1 280px;margin:0}
+.customer-check-create-hint{flex:1 1 100%;margin:0;color:var(--ink-soft);font-size:11px}
 .customer-check-capture-layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(300px,1fr);gap:14px;align-items:stretch}
 .customer-check-camera-card,.customer-check-code-panel{min-width:0;border:1px solid var(--line);border-radius:10px;background:#fff;overflow:hidden}
 .customer-check-camera-head,.customer-check-code-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);background:#fbfcfd}
@@ -2303,13 +2304,15 @@ header{
       <button class="btn btn-ghost" type="button" onclick="loadCustomerCheckCodes().catch(err => alert(err.message))">↻ Tải lại mã</button>
     </div>
     <div class="module-body" id="customerCheckCreatePanel" style="display:none;align-items:end;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line)">
+      <small id="customerCheckCreateCodeHint" class="customer-check-create-hint">Chọn đơn hàng để tải mã khách hàng.</small>
       <div class="field" style="flex:1 1 260px;margin:0">
         <label for="customerCheckCreateOrderSelect">Đơn hàng mới</label>
         <select id="customerCheckCreateOrderSelect" aria-label="Chọn đơn hàng để tạo mã"></select>
       </div>
       <div class="field" style="flex:1 1 220px;margin:0">
         <label for="customerCheckCreateCodeInput">Mã khách hàng mới</label>
-        <input id="customerCheckCreateCodeInput" type="text" placeholder="Nhập mã khách hàng">
+        <input id="customerCheckCreateCodeInput" type="text" list="customerCheckCreateCodeOptions" placeholder="Chọn mã có sẵn hoặc nhập mã mới" autocomplete="off">
+        <datalist id="customerCheckCreateCodeOptions"></datalist>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn" type="button" id="customerCheckCreateSubmitBtn" onclick="createCustomerCheckCode().catch(err => alert(err.message))">Tạo mã</button>
@@ -2799,12 +2802,13 @@ header{
           <button type="button" class="btn" id="prod_report_btn">📤 Xuất</button>
           <button type="button" class="btn" id="prod_labels_btn">🗂️ Tem PDF</button>
           <button type="button" class="btn" id="prod_labels_xlsx_btn">📄 Tem Excel</button>
+          <button type="button" class="btn btn-ghost" id="prod_customer_codes_xlsx_btn" title="In mã PO khách và mã khách hàng theo mẫu A5">📋 Mã PO khách / SKU</button>
         </div>
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th style="width:42px"><input type="checkbox" id="prod_select_all" aria-label="Chọn tất cả"></th><th>Mã SP</th><th>Ảnh</th><th>PO</th><th>Khách hàng</th><th>Size</th><th>Weight</th><th>Wick</th><th>Color</th><th>Fragrance</th><th>Ø (mm)</th><th>H (mm)</th><th>Ghi chú</th><th>Thao tác</th></tr></thead>
-          <tbody id="prod_table_body"><tr><td colspan="14" class="empty-state">Đang tải dữ liệu…</td></tr></tbody>
+          <thead><tr><th style="width:42px"><input type="checkbox" id="prod_select_all" aria-label="Chọn tất cả"></th><th>Mã SP</th><th>Ảnh</th><th>PO</th><th>Mã PO khách</th><th>Khách hàng</th><th>Mã khách hàng</th><th>Size</th><th>Weight</th><th>Wick</th><th>Color</th><th>Fragrance</th><th>Ø (mm)</th><th>H (mm)</th><th>Ghi chú</th><th>Thao tác</th></tr></thead>
+          <tbody id="prod_table_body"><tr><td colspan="16" class="empty-state">Đang tải dữ liệu…</td></tr></tbody>
         </table>
       </div>
       <div class="list-foot"><span id="prod_count_footer">0 sản phẩm</span><div class="pagination numbered-pagination" id="prod_pagination" aria-label="Phân trang sản phẩm"></div></div>
@@ -2819,6 +2823,7 @@ header{
       <input type="hidden" id="prod_edit_id" value="">
       <div class="product-form-section-title">Thông tin cơ bản</div>
       <div class="field-row"><div class="field"><label for="prod_add_po">PO <span class="required">*</span></label><select id="prod_add_po"></select></div><div class="field mono"><label for="prod_add_code">Mã sản phẩm <span class="required">*</span></label><input type="text" id="prod_add_code" placeholder="VD: 22017BK-2"></div></div>
+      <div class="field-row"><div class="field mono"><label for="prod_add_customer_po_code">Mã PO khách</label><input type="text" id="prod_add_customer_po_code"></div><div class="field mono"><label for="prod_add_customer_code">Mã khách hàng</label><input type="text" id="prod_add_customer_code"></div></div>
       <div class="field-row"><div class="field"><label for="prod_add_size">Size</label><input type="text" id="prod_add_size" placeholder="1000x90xH10mm"></div><div class="field"><label for="prod_add_weight">Weight</label><input type="number" step="0.01" id="prod_add_weight" placeholder="180"></div></div>
       <div class="field-row"><div class="field"><label for="prod_add_wick">Wick</label><input type="text" id="prod_add_wick" placeholder="T18"></div><div class="field"><label for="prod_add_color">Color</label><input type="text" id="prod_add_color" placeholder="White"></div></div>
       <div class="field"><label for="prod_add_frag">Fragrance</label><input type="text" id="prod_add_frag" placeholder="F24-1041 Date Night"></div>
@@ -2838,7 +2843,7 @@ header{
     <div class="product-modal-body">
       <div class="import-dropzone" id="prodImportDropzone"><div class="import-drop-icon">⇧</div><div><b>Chọn file Excel</b><p>Hỗ trợ .xlsx / .xls</p></div><input type="file" id="prod_import_file" accept=".xlsx,.xls"><button type="button" class="btn btn-ghost" id="prod_choose_file_btn">Chọn file</button></div>
       <div class="import-file-name" id="prod_import_file_name">Chưa chọn file</div>
-      <div class="import-help-box"><b>Quy tắc import</b><div>• A = Khách hàng &nbsp; • B = PO &nbsp; • F = Ảnh nhúng theo dòng &nbsp; • I = Mã hàng ưu tiên, G = dự phòng</div><div>• M = Size &nbsp; • S = Weight &nbsp; • X = Wick &nbsp; • Y = Color &nbsp; • AB = Hương</div></div>
+      <div class="import-help-box"><b>Quy tắc import</b><div>• A = Khách hàng &nbsp; • B = PO &nbsp; • E = Mã PO khách &nbsp; • F = Ảnh nhúng theo dòng</div><div>• H = Mã khách hàng &nbsp; • I = Mã hàng ưu tiên, G = dự phòng</div><div>• M = Size &nbsp; • S = Weight &nbsp; • X = Wick &nbsp; • Y = Color &nbsp; • AB = Hương</div></div>
       <div class="import-result-box" id="prod_import_msg">Sau khi chọn file, bấm <b>Import</b> để bắt đầu.</div>
       <div class="product-modal-footer"><div></div><div class="product-modal-actions"><button type="button" class="btn btn-ghost" id="productImportCancel">Hủy</button><button type="button" class="btn" id="prod_import_btn">⇩ Import</button></div></div>
     </div>
@@ -3560,7 +3565,7 @@ document.getElementById('po_id').addEventListener('change', (e) => loadProductCo
 document.getElementById('product_code').addEventListener('input', tryAutofillFromProductCode);
 
 // ==================== TEST TABLE ====================
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 20;
 let currentPage = 1;
 let lastLoadedRows = [];
 
@@ -8997,16 +9002,49 @@ function populateCustomerCheckCreateOrderSelect(){
   if(submitButton) submitButton.disabled = orders.length === 0;
 }
 
+let customerCheckCreateCodeLoadId = 0;
+async function loadCustomerCheckCreateCodes(){
+  const orderId = document.getElementById('customerCheckCreateOrderSelect')?.value || '';
+  const options = document.getElementById('customerCheckCreateCodeOptions');
+  const hint = document.getElementById('customerCheckCreateCodeHint');
+  if(!options || !hint) return;
+  const loadId = ++customerCheckCreateCodeLoadId;
+  options.innerHTML = '';
+  if(!orderId){
+    hint.textContent = 'Chọn đơn hàng để tải mã khách hàng.';
+    return;
+  }
+  hint.textContent = 'Đang tải mã khách hàng của đơn hàng…';
+  const response = await fetch(`${API}/products?order_id=${encodeURIComponent(orderId)}`);
+  const products = await response.json();
+  if(!response.ok) throw new Error(products.error || 'Không tải được mã sản phẩm của đơn hàng');
+  if(loadId !== customerCheckCreateCodeLoadId) return;
+  const codes = [...new Set(products
+    .map(product => String(product.Customer_Code || product.customer_code || '').trim())
+    .filter(Boolean))];
+  options.innerHTML = codes.map(code => `<option value="${escapeHtml(code)}"></option>`).join('');
+  hint.textContent = codes.length
+    ? `Đã tải ${codes.length} mã khách hàng. Có thể chọn gợi ý hoặc nhập mã khác.`
+    : 'Đơn hàng chưa có mã khách hàng; bạn có thể nhập mã mới.';
+}
+
 function toggleCustomerCheckCreateForm(show){
   const panel = document.getElementById('customerCheckCreatePanel');
   const button = document.getElementById('customerCheckCreateNewBtn');
   if(!panel) return;
   const shouldShow = show == null ? panel.style.display === 'none' : Boolean(show);
-  if(shouldShow) populateCustomerCheckCreateOrderSelect();
+  if(shouldShow){
+    populateCustomerCheckCreateOrderSelect();
+    loadCustomerCheckCreateCodes().catch(err => alert(err.message));
+  }
   panel.style.display = shouldShow ? 'flex' : 'none';
   if(button) button.setAttribute('aria-expanded', String(shouldShow));
   if(shouldShow) document.getElementById('customerCheckCreateCodeInput')?.focus();
 }
+
+document.getElementById('customerCheckCreateOrderSelect')?.addEventListener('change', () => {
+  loadCustomerCheckCreateCodes().catch(err => alert(err.message));
+});
 
 async function createCustomerCheckCode(){
   const orderId = document.getElementById('customerCheckCreateOrderSelect')?.value || '';
@@ -9294,9 +9332,13 @@ function renderCustomerCheckCodeCards(){
     const photos = item.photos || [];
     const latestPhoto = photos[0];
     const thumb = latestPhoto
-      ? `<img src="${escapeHtml(latestPhoto.file_url)}" alt="Ảnh ${escapeHtml(item.customer_code)}" loading="lazy">`
-      : 'Chưa có ảnh';
-    const latestLabel = latestPhoto ? `Ảnh gần nhất · ${formatCustomerCheckHours(latestPhoto.burn_hours)}` : 'Chưa chụp ảnh';
+      ? `<img src="${escapeHtml(latestPhoto.file_url)}" alt="Ảnh khách kiểm ${escapeHtml(item.customer_code)}" loading="lazy">`
+      : item.product_image_url
+        ? `<img src="${escapeHtml(item.product_image_url)}" alt="Ảnh sản phẩm ${escapeHtml(item.customer_code)}" loading="lazy">`
+        : 'Chưa có ảnh';
+    const latestLabel = latestPhoto
+      ? `Ảnh gần nhất · ${formatCustomerCheckHours(latestPhoto.burn_hours)}`
+      : item.product_image_url ? 'Ảnh sản phẩm · Chưa chụp ảnh' : 'Chưa chụp ảnh';
     const isSelected = String(item.purchase_order_id) === String(selectedOrderId) && item.customer_code === selectedCode;
     const captureLabel = photos.length ? '📷 Chụp tiếp' : '📷 Chụp';
     return `<div class="customer-check-code-card${isSelected ? ' selected' : ''}" data-customer-check-order="${item.purchase_order_id}" data-customer-check-code="${escapeHtml(item.customer_code)}" tabindex="0" role="button" aria-pressed="${isSelected}">
@@ -9697,7 +9739,7 @@ async function loadProducts(resetPage = true, forceRefresh = false){
   const needFetch = forceRefresh || !prodCacheAll.length;
 
   // Chỉ hiện loading khi thực sự phải fetch từ server
-  if(needFetch) tbody.innerHTML = '<tr><td colspan="13" class="empty-state">Đang tải dữ liệu…</td></tr>';
+  if(needFetch) tbody.innerHTML = '<tr><td colspan="16" class="empty-state">Đang tải dữ liệu…</td></tr>';
 
   try{
     if(needFetch){
@@ -9719,6 +9761,8 @@ async function loadProducts(resetPage = true, forceRefresh = false){
         [
           r.Product_Code,
           r.po_number,
+          r.Customer_PO_Code,
+          r.Customer_Code,
           r.Size,
           r.Weight,
           r.Wick,
@@ -9738,7 +9782,7 @@ async function loadProducts(resetPage = true, forceRefresh = false){
     renderProductsPage();
     updateProductSearchHint(keyword, rows.length, prodCacheAll.length);
   } catch(_e){
-    tbody.innerHTML = '<tr><td colspan="13" class="empty-state">Không tải được dữ liệu.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="16" class="empty-state">Không tải được dữ liệu.</td></tr>';
   }
 }
 
@@ -9778,7 +9822,7 @@ function renderProductsPage(){
   if(prodCurrentPage > totalPages) prodCurrentPage = totalPages;
   if(prodCurrentPage < 1) prodCurrentPage = 1;
   if(!rows.length){
-    tbody.innerHTML = '<tr><td colspan="14" class="empty-state">Chưa có sản phẩm nào.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="16" class="empty-state">Chưa có sản phẩm nào.</td></tr>';
   } else {
     const start = (prodCurrentPage - 1) * PROD_PAGE_SIZE;
     const pageRows = rows.slice(start, start + PROD_PAGE_SIZE);
@@ -9787,7 +9831,9 @@ function renderProductsPage(){
       <td class="mono product-code-cell"><button type="button" class="product-code-btn" title="Tạo test hàng mẫu" onclick="event.preventDefault();createSampleTestFromProduct(${r.Id},${r.Order_Id || r.PO_Id || r.po_id},'${escapeHtmlProd(r.Product_Code)}','${escapeHtmlProd(r.Size || '')}','${escapeHtmlProd(r.Wick || '')}',${r.Diameter ?? 'null'},${r.Height ?? 'null'},'${escapeHtmlProd(r.Color || '')}','${escapeHtmlProd(r.Fragrance || '')}')">${highlightProductMatch(r.Product_Code, keyword)}</button></td>
       <td class="product-image-cell">${r.image_url ? `<button type="button" class="product-image-thumb" data-image="${escapeHtmlProd(r.image_url)}" data-code="${escapeHtmlProd(r.Product_Code)}" aria-label="Xem ảnh ${escapeHtmlProd(r.Product_Code)}"><img src="${escapeHtmlProd(r.image_url)}" alt="${escapeHtmlProd(r.Product_Code)}" loading="lazy"></button>` : '<span class="product-image-empty">—</span>'}</td>
       <td>${highlightProductMatch(r.po_number, keyword)}</td>
+      <td>${highlightProductMatch(r.Customer_PO_Code, keyword) || '—'}</td>
       <td>${highlightProductMatch(getProductCustomerName(r), keyword) || '—'}</td>
+      <td>${highlightProductMatch(r.Customer_Code, keyword) || '—'}</td>
       <td>${highlightProductMatch(r.Size, keyword) || '—'}</td>
       <td class="mono">${highlightProductMatch(r.Weight, keyword)}</td>
       <td>${highlightProductMatch(r.Wick, keyword) || '—'}</td>
@@ -10123,7 +10169,7 @@ document.getElementById('prod_add_btn').addEventListener('click', async () => {
   msg.className = 'msg'; msg.textContent = '';
   const editId = document.getElementById('prod_edit_id').value;
   const isEdit = !!editId;
-  const payload = { order_id: document.getElementById('prod_add_po').value, product_code: document.getElementById('prod_add_code').value.trim(), size: document.getElementById('prod_add_size').value.trim(), weight: document.getElementById('prod_add_weight').value, wick: document.getElementById('prod_add_wick').value.trim(), color: document.getElementById('prod_add_color').value.trim(), fragrance: document.getElementById('prod_add_frag').value.trim(), notes: document.getElementById('prod_add_notes').value.trim() };
+  const payload = { order_id: document.getElementById('prod_add_po').value, product_code: document.getElementById('prod_add_code').value.trim(), customer_po_code: document.getElementById('prod_add_customer_po_code').value.trim(), customer_code: document.getElementById('prod_add_customer_code').value.trim(), size: document.getElementById('prod_add_size').value.trim(), weight: document.getElementById('prod_add_weight').value, wick: document.getElementById('prod_add_wick').value.trim(), color: document.getElementById('prod_add_color').value.trim(), fragrance: document.getElementById('prod_add_frag').value.trim(), notes: document.getElementById('prod_add_notes').value.trim() };
   if(!payload.order_id || !payload.product_code){ msg.textContent = 'Vui lòng chọn PO và nhập mã sản phẩm.'; msg.className = 'msg err show'; return; }
   const btn = document.getElementById('prod_add_btn'); const original = btn.textContent;
   btn.disabled = true; btn.textContent = isEdit ? 'Đang cập nhật...' : 'Đang thêm...';
@@ -10139,7 +10185,7 @@ document.getElementById('prod_add_btn').addEventListener('click', async () => {
     if(!res.ok) throw new Error(data.error || (isEdit ? 'Cập nhật thất bại' : 'Thêm thất bại'));
     msg.textContent = isEdit ? '✓ Đã cập nhật sản phẩm.' : '✓ Đã thêm sản phẩm.';
     msg.className = 'msg ok show';
-    ['prod_add_code','prod_add_size','prod_add_weight','prod_add_wick','prod_add_color','prod_add_frag','prod_add_diameter','prod_add_height','prod_add_notes'].forEach(id => document.getElementById(id).value = '');
+    ['prod_add_code','prod_add_customer_po_code','prod_add_customer_code','prod_add_size','prod_add_weight','prod_add_wick','prod_add_color','prod_add_frag','prod_add_diameter','prod_add_height','prod_add_notes'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('prod_edit_id').value = '';
     resetProductImage();
     invalidateProductCache();
@@ -10197,8 +10243,38 @@ async function downloadProductLabels(format){
   } catch(err){ alert(err.message); }
   finally{ btn.disabled = false; btn.textContent = old; }
 }
+async function downloadCustomerProductCodes(){
+  const selectedIds = [...prodSelectedIds];
+  const poIds = getSelectedProductPoIds();
+  const btn = document.getElementById('prod_customer_codes_xlsx_btn');
+  const old = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Đang tạo file...';
+  try{
+    let url = '';
+    if(selectedIds.length){
+      url = `${API}/products/labels/customer-codes/selected.xlsx?ids=${encodeURIComponent(selectedIds.join(','))}`;
+    }else{
+      if(!poIds.length){ alert('Vui lòng chọn Đơn hàng / PO hoặc đánh dấu sản phẩm cần in.'); return; }
+      url = `${API}/products/labels/customer-codes/po.xlsx?po_ids=${encodeURIComponent(poIds.join(','))}`;
+    }
+    const res = await fetch(url);
+    if(!res.ok){ const data = await res.json().catch(() => ({})); throw new Error(data.error || 'Tạo file mã PO khách / SKU thất bại'); }
+    const blob = await res.blob();
+    const cd = res.headers.get('Content-Disposition') || '';
+    const match = cd.match(/filename\*=UTF-8''([^;]+)/i);
+    const filename = match ? decodeURIComponent(match[1]) : 'Ma_PO_Khach_SKU_A5.xlsx';
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  }catch(err){ alert(err.message); }
+  finally{ btn.disabled = false; btn.textContent = old; }
+}
 document.getElementById('prod_labels_btn').addEventListener('click', () => downloadProductLabels('pdf'));
 document.getElementById('prod_labels_xlsx_btn').addEventListener('click', () => downloadProductLabels('xlsx'));
+document.getElementById('prod_customer_codes_xlsx_btn').addEventListener('click', downloadCustomerProductCodes);
 const prodFilterPoSearch = document.getElementById('prod_filter_po_search');
 if(prodFilterPoSearch){
   prodFilterPoSearch.addEventListener('input', () => {
@@ -10249,6 +10325,8 @@ function openProductEditModal(id){
   }
   poSelect.value = poId;
   document.getElementById('prod_add_code').value = p.Product_Code || '';
+  document.getElementById('prod_add_customer_po_code').value = p.Customer_PO_Code || '';
+  document.getElementById('prod_add_customer_code').value = p.Customer_Code || '';
   document.getElementById('prod_add_size').value = p.Size || '';
   document.getElementById('prod_add_weight').value = p.Weight ?? '';
   document.getElementById('prod_add_wick').value = p.Wick || '';
@@ -10274,7 +10352,7 @@ function closeProductAddModal(){
   resetProductImage();
 }
 function resetProductAddForm(){
-  ['prod_add_code','prod_add_size','prod_add_weight','prod_add_wick','prod_add_color','prod_add_frag','prod_add_diameter','prod_add_height','prod_add_notes'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  ['prod_add_code','prod_add_customer_po_code','prod_add_customer_code','prod_add_size','prod_add_weight','prod_add_wick','prod_add_color','prod_add_frag','prod_add_diameter','prod_add_height','prod_add_notes'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   const msg = document.getElementById('prod_add_msg'); msg.className = 'msg'; msg.textContent = '';
   document.getElementById('prod_edit_id').value = '';
   prodEditMode = false;

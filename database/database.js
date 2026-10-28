@@ -133,6 +133,8 @@ CREATE TABLE IF NOT EXISTS products (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   order_id INTEGER NOT NULL REFERENCES purchase_orders(id) ON DELETE CASCADE,
   product_code TEXT NOT NULL,
+  customer_po_code TEXT,
+  customer_code TEXT,
   size TEXT,
   weight REAL,
   wick TEXT,
@@ -243,6 +245,11 @@ for (const unit of defaultUnits) {
 
 try { db.exec("ALTER TABLE burn_tests ADD COLUMN material_types TEXT"); } catch (_) {}
 try { db.exec("ALTER TABLE products ADD COLUMN image_url TEXT"); } catch (_) {}
+{
+  const columns = new Set(db.prepare('PRAGMA table_info(products)').all().map(column => column.name));
+  if (!columns.has('customer_po_code')) db.exec('ALTER TABLE products ADD COLUMN customer_po_code TEXT');
+  if (!columns.has('customer_code')) db.exec('ALTER TABLE products ADD COLUMN customer_code TEXT');
+}
 {
   const columns = new Set(db.prepare('PRAGMA table_info(customer_check_records)').all().map(column => column.name));
   if (!columns.has('is_completed')) db.exec('ALTER TABLE customer_check_records ADD COLUMN is_completed INTEGER NOT NULL DEFAULT 0');

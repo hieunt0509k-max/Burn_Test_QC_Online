@@ -8,6 +8,7 @@ const { prepare, transaction, UPLOADS_DIR } = require('../database/database');
 const { generateProductLabelsPdf, generateProductLabelsPdfForIds, generateProductLabelsPdfForPoIds } = require('../lib/labelReport');
 const { generateProductOrderReportXlsx } = require('../lib/productReport');
 const { generateProductLabelsXlsx, generateProductLabelsXlsxForIds, generateProductLabelsXlsxForPoIds } = require('../lib/labelReportXlsx'); 
+const { generateCustomerProductCodesXlsxForIds, generateCustomerProductCodesXlsxForPoIds } = require('../lib/customerProductCodesXlsx');
 const router = express.Router();
 
 const upload = multer({
@@ -113,6 +114,8 @@ function withLegacy(row) {
     Id: row.id,
     Order_Id: row.order_id,
     Product_Code: row.product_code,
+    Customer_PO_Code: row.customer_po_code,
+    Customer_Code: row.customer_code,
     Size: row.size,
     Weight: row.weight,
     Wick: row.wick,
@@ -181,6 +184,12 @@ router.get('/labels/selected.xlsx', async (req, res, next) => {
     await generateProductLabelsXlsxForIds(res, ids);
   } catch (err) { if (!res.headersSent) res.status(400).json({ error: err.message }); else next(err); }
 });
+router.get('/labels/customer-codes/selected.xlsx', async (req, res, next) => {
+  try {
+    const ids = String(req.query.ids || '').split(',').map(value => Number(value)).filter(id => Number.isInteger(id) && id > 0);
+    await generateCustomerProductCodesXlsxForIds(res, ids);
+  } catch (err) { if (!res.headersSent) res.status(400).json({ error: err.message }); else next(err); }
+});
 router.get('/labels/po.pdf', async (req, res, next) => {
   try {
     const poIds = String(req.query.po_ids || '').split(',').map(v => Number(v.trim())).filter(v => Number.isInteger(v) && v > 0);
@@ -193,6 +202,12 @@ router.get('/labels/po.xlsx', async (req, res, next) => {
     const poIds = String(req.query.po_ids || '').split(',').map(v => Number(v.trim())).filter(v => Number.isInteger(v) && v > 0);
     if (!poIds.length) throw new Error('Chưa chọn PO để in tem');
     await generateProductLabelsXlsxForPoIds(res, poIds);
+  } catch (err) { if (!res.headersSent) res.status(400).json({ error: err.message }); else next(err); }
+});
+router.get('/labels/customer-codes/po.xlsx', async (req, res, next) => {
+  try {
+    const poIds = String(req.query.po_ids || '').split(',').map(value => Number(value.trim())).filter(id => Number.isInteger(id) && id > 0);
+    await generateCustomerProductCodesXlsxForPoIds(res, poIds);
   } catch (err) { if (!res.headersSent) res.status(400).json({ error: err.message }); else next(err); }
 });
 router.get('/labels/:orderId.pdf', async (req, res, next) => {
@@ -215,6 +230,8 @@ function validatePayload(body, partial = false) {
   const p = {
     order_id: body.order_id !== undefined ? Number(body.order_id) : undefined,
     product_code: body.product_code !== undefined ? String(body.product_code ?? '').trim() : undefined,
+    customer_po_code: body.customer_po_code !== undefined ? (String(body.customer_po_code ?? '').trim() || null) : undefined,
+    customer_code: body.customer_code !== undefined ? (String(body.customer_code ?? '').trim() || null) : undefined,
     size: body.size !== undefined ? (body.size === '' ? null : String(body.size)) : undefined,
     weight: body.weight !== undefined ? body.weight : undefined,
     wick: body.wick !== undefined ? (body.wick === '' ? null : String(body.wick)) : undefined,
@@ -245,9 +262,9 @@ router.post('/', productImageUpload.single('image'), async (req, res, next) => {
     const dims = parseSizeToDimensions(p.size);
 
     const r = prepare(`INSERT INTO products
-      (order_id, product_code, size, weight, wick, color, fragrance, diameter_mm, height_mm, notes)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(
-      p.order_id, p.product_code, p.size ?? null, p.weight ?? null, p.wick ?? null,
+      (order_id, product_code, customer_po_code, customer_code, size, weight, wick, color, fragrance, diameter_mm, height_mm, notes)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(
+      p.order_id, p.product_code, p.customer_po_code ?? null, p.customer_code ?? null, p.size ?? null, p.weight ?? null, p.wick ?? null,
       p.color ?? null, p.fragrance ?? null, dims.diameter_mm, dims.height_mm, p.notes ?? null
     );
     if (req.file) await saveProductImage(Number(r.lastInsertRowid), req.file);
@@ -346,9 +363,9 @@ router.put('/:id', productImageUpload.single('image'), async (req, res, next) =>
       if (!po) return res.status(400).json({ error: 'PO không tồn tại' });
     }
 
-    prepare(`UPDATE products SET order_id=?, product_code=?, size=?, weight=?, wick=?, color=?,
+    prepare(`UPDATE products SET order_id=?, product_code=?, customer_po_code=?, customer_code=?, size=?, weight=?, wick=?, color=?,
       fragrance=?, diameter_mm=?, height_mm=?, notes=? WHERE id=?`).run(
-      merged.order_id, merged.product_code, merged.size, merged.weight, merged.wick, merged.color,
+      merged.order_id, merged.product_code, merged.customer_po_code, merged.customer_code, merged.size, merged.weight, merged.wick, merged.color,
       merged.fragrance, merged.diameter_mm, merged.height_mm, merged.notes, req.params.id
     );
     if (req.file) await saveProductImage(Number(req.params.id), req.file);
@@ -372,13 +389,16 @@ router.delete('/:id', (req, res, next) => {
 
 // ---------- Import từ file Excel ----------
 // Import tự động từ Excel theo cột cố định:
-// A = Tên khách hàng, B = Tên đơn hàng/PO, I ưu tiên mã hàng, G dùng dự phòng,
+// A = Tên khách hàng, B = Tên đơn hàng/PO, E = mã PO khách, H = mã khách hàng,
+// I ưu tiên mã hàng, G dùng dự phòng,
 // M = Size, S = Weight, X = Wick, Y = Color, AB = Fragrance.
 // Nếu khách hàng hoặc PO chưa tồn tại -> tự tạo.
 // Nếu mã hàng chưa tồn tại trong PO -> tự tạo; nếu đã tồn tại -> bỏ qua để tránh trùng.
 const AUTO_IMPORT_COLUMN_MAP = [
   ['A', 'customer_name'],
   ['B', 'po_number'],
+  ['E', 'customer_po_code'],
+  ['H', 'customer_code'],
   ['M', 'size'],
   ['S', 'weight'],
   ['X', 'wick'],
@@ -443,8 +463,12 @@ router.post('/import', upload.single('file'), async (req, res, next) => {
       const insertPO = prepare('INSERT INTO purchase_orders (customer_id, po_number) VALUES (?, ?)');
       const getProduct = prepare('SELECT id FROM products WHERE order_id = ? AND product_code = ?');
       const insertProduct = prepare(`INSERT INTO products
-        (order_id, product_code, size, weight, wick, color, fragrance, diameter_mm, height_mm)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`);
+        (order_id, product_code, customer_po_code, customer_code, size, weight, wick, color, fragrance, diameter_mm, height_mm)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
+      const updateImportedProductCodes = prepare(`UPDATE products
+        SET customer_po_code = COALESCE(?, customer_po_code),
+            customer_code = COALESCE(?, customer_code)
+        WHERE id = ?`);
 
       const customerIds = new Map();
       const poIds = new Map();
@@ -482,12 +506,13 @@ router.post('/import', upload.single('file'), async (req, res, next) => {
         const found = getProduct.get(orderId, rec.product_code.trim());
         if (found) {
           existing++;
+          updateImportedProductCodes.run(rec.customer_po_code, rec.customer_code, found.id);
           if (rec.image) productImageJobs.push({ productId: Number(found.id), media: rec.image, rowNumber: rec.rowNumber });
           skipped.push({ row: rec.rowNumber, reason: `Mã hàng ${rec.product_code.trim()} đã tồn tại trong PO ${rec.po_number.trim()}` });
           continue;
         }
 
-        const inserted = insertProduct.run(orderId, rec.product_code.trim(), rec.size, rec.weight, rec.wick,
+        const inserted = insertProduct.run(orderId, rec.product_code.trim(), rec.customer_po_code, rec.customer_code, rec.size, rec.weight, rec.wick,
           rec.color, rec.fragrance, rec.diameter_mm, rec.height_mm);
         if (rec.image) productImageJobs.push({ productId: Number(inserted.lastInsertRowid), media: rec.image, rowNumber: rec.rowNumber });
         imported++;
