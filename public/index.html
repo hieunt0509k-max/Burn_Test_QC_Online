@@ -423,6 +423,11 @@ footer{text-align:center;padding:24px;font-size:11.5px;color:var(--ink-soft)}
 .customer-check-management-body{padding:14px;border:1px solid var(--line);border-top:0;border-radius:0 0 8px 8px;background:#fff}
 .burn-test-capture-toolbar{display:flex;align-items:end;gap:12px;flex-wrap:wrap}
 .burn-test-capture-toolbar .field{flex:1 1 280px;margin:0}
+#view-photo-capture .photo-capture-search-box{display:flex;align-items:center;gap:8px;min-width:0}
+#view-photo-capture .photo-capture-search-box input{flex:1 1 auto;min-width:0}
+#view-photo-capture .photo-capture-search-clear{flex:0 0 36px;width:36px;height:36px;padding:0;border:1px solid #d6dde2;border-radius:8px;background:#fff;color:#53657a;font-size:16px;line-height:1;cursor:pointer}
+#view-photo-capture .photo-capture-search-clear:hover:not(:disabled){border-color:#7ab4ee;color:#1d5eba;background:#f3f8ff}
+#view-photo-capture .photo-capture-search-clear:disabled{opacity:.45;cursor:not-allowed}
 .burn-test-capture-layout{display:grid;grid-template-columns:minmax(0,3.5fr) minmax(300px,1fr);gap:14px;align-items:stretch}
 .burn-test-capture-layout .customer-check-camera-card,.burn-test-capture-layout .customer-check-code-panel{min-height:100%}
 .burn-test-capture-layout .customer-check-code-list{max-height:620px}
@@ -2242,7 +2247,7 @@ header{
     <div class="field" style="margin:0">
       <label>Tìm kiếm</label>
       <div class="photo-search-box">
-        <input id="photoSearchInput" placeholder="PO / mã hàng / khách hàng / kết quả..." oninput="syncPhotoSearchClear(); loadPhotoGallery()" style="width:100%">
+        <input id="photoSearchInput" placeholder="PO / mã hàng / khách hàng / kết quả..." oninput="syncPhotoSearchClear(); loadPhotoGallery(true)" style="width:100%">
         <button type="button" class="photo-search-clear" id="photoSearchClear" aria-label="Xóa tìm kiếm" title="Xóa tìm kiếm" onclick="clearPhotoSearch()" disabled>✕</button>
       </div>
     </div>
@@ -2259,7 +2264,10 @@ header{
     <div class="module-body burn-test-capture-toolbar">
       <div class="field">
         <label for="photoCaptureSearch">Tìm PO hoặc mã hàng</label>
-        <input id="photoCaptureSearch" type="search" placeholder="Nhập PO, mã hàng, khách hàng…" oninput="renderPhotoCaptureTests()">
+        <div class="photo-capture-search-box">
+          <input id="photoCaptureSearch" type="search" placeholder="Nhập PO, mã hàng, khách hàng…" oninput="syncPhotoCaptureSearchClear(); renderPhotoCaptureTests()">
+          <button type="button" class="photo-capture-search-clear" id="photoCaptureSearchClear" aria-label="Xóa tìm kiếm" title="Xóa tìm kiếm" onclick="clearPhotoCaptureSearch()" disabled>✕</button>
+        </div>
       </div>
       <small id="photoCaptureCount" style="color:var(--ink-soft)">0 lần test</small>
     </div>
@@ -2426,7 +2434,7 @@ header{
       <div class="sample-toolbar">
         <div class="sample-toolbar-search">
           <input id="sampleSearch" placeholder="PO / Mã hàng / Khách hàng / Tên sản phẩm..."
-                 oninput="syncSampleSearchClear(); clearTimeout(window._sampleSearchDebounce); window._sampleSearchDebounce = setTimeout(() => loadSampleTests(), 220);">
+                 oninput="syncSampleSearchClear(); clearTimeout(window._sampleSearchDebounce); window._sampleSearchDebounce = setTimeout(() => loadSampleTests(true), 220);">
           <button type="button" class="sample-search-clear" id="sampleSearchClear" aria-label="Xóa tìm kiếm" title="Xóa tìm kiếm" onclick="clearSampleSearch()" disabled>✕</button>
         </div>
         <button type="button" class="btn sample-toolbar-btn" onclick="openSampleModal()">＋ Tạo test hàng mẫu</button>
@@ -2451,7 +2459,7 @@ header{
     <th>Ngày</th>
     <th>Khách hàng</th>
     <th>PO</th>
-    <th>Ảnh đốt cuối</th>
+    <th>Ảnh đốt</th>
     <th>Quy cách</th>
     <th>Bấc</th>
     <th>Bắt đầu</th>
@@ -3151,7 +3159,7 @@ header{
   <button type="button" class="lightbox-nav lightbox-next" aria-label="Ảnh sau" onclick="event.stopPropagation();lightboxNext()">›</button>
   <button type="button" class="lightbox-copy" id="lightboxCopyBtn" onclick="event.stopPropagation();copyLightboxImage()">📋 Copy ảnh</button>
   <div class="lightbox-context-menu" id="lightboxContextMenu" role="menu">
-    <button type="button" role="menuitem" onclick="event.stopPropagation();copyLightboxImage()">Copy ảnh</button>
+    <button type="button" id="copyLightboxCopyBtn" role="menuitem" onclick="event.stopPropagation();copyLightboxImage()">Copy ảnh</button>
     <button type="button" id="copyLightboxStampedBtn" role="menuitem" onclick="event.stopPropagation();copyLightboxImage(true)" hidden>Copy ảnh kèm con dấu</button>
   </div>
   <div class="lightbox-counter" id="lightboxCounter" aria-hidden="true"></div>
@@ -3396,7 +3404,7 @@ function markAuthElements(){
   const REGEX = /(delete|edit|openProductAdd|openProductEdit|openSampleModal|save|upload|remove|backup|restore|change|import|openCamera|capture|chooseSample|addStandardRow)/i;
   document.querySelectorAll('[onclick]').forEach(el => {
     const code = el.getAttribute('onclick') || '';
-    if(/openImageModal|openLightbox|openSamplePhotoViewer|loadPhotos|switchView|loadWeeklyReport|loadPhotoGallery|loadSampleTests/i.test(code)) return;
+    if(/openImageModal|openLightbox|openSamplePhotoViewer|loadPhotos|switchView|loadWeeklyReport|loadPhotoGallery|loadSampleTests|clearPhotoCaptureSearch/i.test(code)) return;
     if(REGEX.test(code)) el.setAttribute('data-require-auth','1');
   });
   document.querySelectorAll('.icon-btn').forEach(el => {
@@ -3566,7 +3574,18 @@ document.getElementById('product_code').addEventListener('input', tryAutofillFro
 
 // ==================== TEST TABLE ====================
 const PAGE_SIZE = 20;
-let currentPage = 1;
+const PAGINATION_STORAGE_PREFIX = 'burnqc.pagination.v1.';
+function readSavedPage(name){
+  const page = Number(sessionStorage.getItem(`${PAGINATION_STORAGE_PREFIX}${name}`));
+  return Number.isSafeInteger(page) && page > 0 ? page : 1;
+}
+function savePage(name, page){
+  if(Number.isSafeInteger(page) && page > 0){
+    sessionStorage.setItem(`${PAGINATION_STORAGE_PREFIX}${name}`, String(page));
+  }
+}
+
+let currentPage = readSavedPage('burn-tests');
 let lastLoadedRows = [];
 
 function matchesBurnTestSearch(row, keyword, poMap, custNameMap, poCustMap){
@@ -3629,6 +3648,7 @@ function renderPage(){
   const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
   if(currentPage > totalPages) currentPage = totalPages;
   if(currentPage < 1) currentPage = 1;
+  savePage('burn-tests', currentPage);
   const start = (currentPage - 1) * PAGE_SIZE;
   const pageRows = rows.slice(start, start + PAGE_SIZE);
   const tbody = document.getElementById('tableBody');
@@ -3781,6 +3801,7 @@ function goToBurnTestPage(page){
   const totalPages = Math.max(1, Math.ceil(lastLoadedRows.length / PAGE_SIZE));
   if(!Number.isInteger(page) || page < 1 || page > totalPages || page === currentPage) return;
   currentPage = page;
+  savePage('burn-tests', currentPage);
   renderPage();
 }
 
@@ -3894,13 +3915,13 @@ function switchBurnTestGuideTab(tab){
 
 function buildBurnMediaStampHtml(row){
   if(!row) return '';
-  const poName = (posCache.find(item => item.PO_Id === row.PO_Id) || {}).PO_Name || row.PO_Id || '—';
+  const poName = (posCache.find(item => item.PO_Id === row.PO_Id) || {}).PO_Name || row.po_number || row.PO_Name || row.PO_Id || '—';
   const size = (row.Diameter != null || row.Height != null)
     ? `${row.Diameter ?? '?'} × ${row.Height ?? '?'} mm`
     : null;
   const weight = row.Weight != null && row.Weight !== '' ? `${row.Weight} g` : null;
   const colorWick = [row.Color, row.Wick].filter(Boolean).join(' · ') || null;
-  const title = String(row.Product_Code ?? '—');
+  const title = String(row.Product_Code ?? row.product_code ?? '—');
   const items = [['PO', String(poName)], ['COLOR', colorWick], ['SIZE', size], ['WEIGHT', weight]]
     .filter(([, value]) => value)
     .map(([label, value]) => `<div class="burn-media-stamp-row"><span class="burn-media-stamp-label">${escapeHtml(label)}</span><span class="burn-media-stamp-value">${escapeHtml(String(value))}</span></div>`)
@@ -4348,10 +4369,14 @@ function renderLightbox(){
   img.onerror = () => { img.style.opacity = '1'; };
   img.src = url;
   const stamp = document.getElementById('lightboxStamp');
-  const burnStamp = lightboxContext === 'burn' ? buildBurnMediaStampHtml(currentModalRow) : '';
+  const stampRow = getLightboxStampRow();
+  const burnStamp = stampRow ? buildBurnMediaStampHtml(stampRow) : '';
   stamp.innerHTML = burnStamp;
   stamp.style.display = burnStamp ? 'block' : 'none';
-  document.getElementById('copyLightboxStampedBtn').hidden = lightboxContext !== 'burn';
+  const copyOriginalButton = document.getElementById('copyLightboxCopyBtn');
+  if(copyOriginalButton) copyOriginalButton.hidden = false;
+  document.getElementById('copyLightboxStampedBtn').hidden = !stampRow;
+  document.getElementById('lightboxCopyBtn').textContent = '📋 Copy ảnh';
 
   // Counter + nav buttons
   const total = lightboxPhotos.length;
@@ -4372,6 +4397,14 @@ function renderLightbox(){
   info.style.display = 'none';
 }
 
+function getLightboxStampRow(){
+  if(lightboxContext === 'burn') return currentModalRow;
+  if(lightboxContext === 'photo-capture'){
+    return photoCaptureRows.find(row => Number(row.Id || row.id) === Number(photoCaptureSelectedId)) || null;
+  }
+  return null;
+}
+
 function lightboxPrev(){
   if(lightboxIndex > 0){ lightboxIndex--; renderLightbox(); }
 }
@@ -4383,9 +4416,8 @@ async function copyLightboxImage(withStamp = false){
   document.getElementById('lightboxContextMenu')?.classList.remove('show');
   const url = lightboxPhotos[lightboxIndex];
   if(!url) return;
-  if(withStamp && (lightboxContext !== 'burn' || !currentModalRow)){
-    throw new Error('Con dấu chỉ khả dụng với ảnh Burn Test.');
-  }
+  const stampRow = getLightboxStampRow();
+  if(withStamp && !stampRow) throw new Error('Không tìm thấy thông tin Burn Test để đóng dấu ảnh.');
   if(!navigator.clipboard?.write || typeof ClipboardItem === 'undefined'){
     button.textContent = 'Không hỗ trợ copy';
     return;
@@ -4405,7 +4437,7 @@ async function copyLightboxImage(withStamp = false){
         const context = canvas.getContext('2d');
         if(!context) throw new Error('Không thể xử lý ảnh để copy.');
         context.drawImage(bitmap, 0, 0);
-        if(withStamp) stampInfoOnCanvas(context, canvas.width, canvas.height);
+        if(withStamp) stampInfoOnCanvas(context, canvas.width, canvas.height, stampRow);
         return await new Promise((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Không chuyển được ảnh PNG')), 'image/png'));
       }finally{
         bitmap.close();
@@ -4424,7 +4456,11 @@ async function copyLightboxImage(withStamp = false){
     console.error('Copy lightbox image:', err);
   }finally{
     button.disabled = false;
-    setTimeout(() => { if(button.isConnected) button.textContent = '📋 Copy ảnh'; }, 1800);
+    setTimeout(() => {
+      if(button.isConnected) button.textContent = lightboxContext === 'photo-capture'
+        ? '📋 Copy ảnh kèm dấu'
+        : '📋 Copy ảnh';
+    }, 1800);
   }
 }
 function closeLightbox(){
@@ -4476,18 +4512,18 @@ function roundRect(ctx, x, y, w, h, r){
   ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
 }
 
-function stampInfoOnCanvas(ctx, w, h){
-  const r = currentModalRow;
+function stampInfoOnCanvas(ctx, w, h, row = currentModalRow){
+  const r = row;
   if(!r) return;
 
-  const poName = (posCache.find(p => p.PO_Id === r.PO_Id) || {}).PO_Name || r.PO_Id || '—';
+  const poName = (posCache.find(p => p.PO_Id === r.PO_Id) || {}).PO_Name || r.po_number || r.PO_Name || r.PO_Id || '—';
   const size = (r.Diameter != null || r.Height != null)
     ? `${r.Diameter ?? '?'} × ${r.Height ?? '?'} mm`
     : null;
   const weight = (r.Weight != null && r.Weight !== '') ? `${r.Weight} g` : null;
   const colorWick = [r.Color, r.Wick].filter(Boolean).join(' · ') || null;
 
-  const title = String(r.Product_Code ?? '—');
+  const title = String(r.Product_Code ?? r.product_code ?? '—');
   const items = [
     ['PO',     String(poName)],
     ['COLOR',  colorWick],
@@ -6059,7 +6095,8 @@ document.getElementById('weeklyXlsxBtn').addEventListener('click', () => downloa
 // ==================== MASTER ====================
 let masterEditingClientId = null, masterEditingPoId = null, masterClients = [], masterPos = [];
 const MASTER_PAGE_SIZE = 10;
-let masterClientPage = 1, masterPoPage = 1;
+let masterClientPage = readSavedPage('master-clients');
+let masterPoPage = readSavedPage('master-pos');
 
 async function apiJsonMaster(url, options){
   const r = await fetch(url, options);
@@ -6091,6 +6128,8 @@ function renderMaster(){
   const filteredPos = masterPos.filter(p => !cq || Number(p.Cus_id) === cq);
   masterClientPage = Math.min(masterClientPage, Math.max(1, Math.ceil(filteredClients.length / MASTER_PAGE_SIZE)));
   masterPoPage = Math.min(masterPoPage, Math.max(1, Math.ceil(filteredPos.length / MASTER_PAGE_SIZE)));
+  savePage('master-clients', masterClientPage);
+  savePage('master-pos', masterPoPage);
   const clientStart = (masterClientPage-1) * MASTER_PAGE_SIZE;
   const poStart = (masterPoPage-1) * MASTER_PAGE_SIZE;
   const clientRows = filteredClients.slice(clientStart, clientStart + MASTER_PAGE_SIZE);
@@ -6817,14 +6856,14 @@ function syncPhotoSearchClear(){
 
 const PHOTO_GALLERY_PAGE_SIZE = 20;
 let photoGalleryRows = [];
-let photoGalleryPage = 1;
+let photoGalleryPage = readSavedPage('photo-gallery');
 
 function clearPhotoSearch(){
   const input = document.getElementById('photoSearchInput');
   if(!input) return;
   input.value = '';
   syncPhotoSearchClear();
-  loadPhotoGallery();
+  loadPhotoGallery(true);
   input.focus();
 }
 
@@ -6835,6 +6874,7 @@ function renderPhotoGallery(){
   const data = photoGalleryRows;
   const totalPages = Math.max(1, Math.ceil(data.length / PHOTO_GALLERY_PAGE_SIZE));
   photoGalleryPage = Math.min(Math.max(1, photoGalleryPage), totalPages);
+  savePage('photo-gallery', photoGalleryPage);
   const start = (photoGalleryPage - 1) * PHOTO_GALLERY_PAGE_SIZE;
   const pageRows = data.slice(start, start + PHOTO_GALLERY_PAGE_SIZE);
 
@@ -6909,6 +6949,7 @@ function goToPhotoGalleryPage(page){
   const totalPages = Math.max(1, Math.ceil(photoGalleryRows.length / PHOTO_GALLERY_PAGE_SIZE));
   if(page < 1 || page > totalPages || page === photoGalleryPage) return;
   photoGalleryPage = page;
+  savePage('photo-gallery', photoGalleryPage);
   renderPhotoGallery();
 }
 
@@ -6917,7 +6958,7 @@ document.getElementById('photoGalleryPagination')?.addEventListener('click', eve
   if(button && !button.disabled) goToPhotoGalleryPage(Number(button.dataset.page));
 });
 
-async function loadPhotoGallery(){
+async function loadPhotoGallery(resetPage = false){
   const box = document.getElementById('photoGallery'); box.innerHTML = '<div class="module-empty">Đang tải...</div>';
   try{
     const rows = await fetch(`${API}/burn-tests`).then(r => r.json());
@@ -6938,13 +6979,12 @@ async function loadPhotoGallery(){
     });
 
     photoGalleryRows = data;
-    photoGalleryPage = 1;
+    if(resetPage) photoGalleryPage = 1;
     document.getElementById('photoGalleryCount').textContent = `${data.length} test có ảnh`;
     renderPhotoGallery();
   }catch(e){
     box.innerHTML = `<div class="module-empty">Không tải được gallery: ${homeEscape(e.message)}</div>`;
     photoGalleryRows = [];
-    photoGalleryPage = 1;
     document.getElementById('photoGalleryPageInfo').textContent = '0 test';
     document.getElementById('photoGalleryPagination').innerHTML = '';
   }
@@ -6953,10 +6993,13 @@ async function loadPhotoGallery(){
 let photoCaptureRows = [];
 let photoCaptureSelectedId = null;
 let photoCaptureBusy = false;
+const photoCaptureProductsByPo = new Map();
 
 async function loadPhotoCaptureTests(selectedId = photoCaptureSelectedId){
   const list = document.getElementById('photoCaptureTestCards');
-  if(list) list.innerHTML = '<div class="module-empty">Đang tải danh sách test…</div>';
+  if(list && !list.querySelector('[data-photo-capture-id]') && !photoCaptureRows.length){
+    list.innerHTML = '<div class="module-empty">Đang tải danh sách test…</div>';
+  }
   try{
     const response = await fetch(`${API}/burn-tests?result=PENDING`, { cache: 'no-store' });
     const data = await response.json();
@@ -6969,7 +7012,9 @@ async function loadPhotoCaptureTests(selectedId = photoCaptureSelectedId){
       photoCaptureRows.find(row => Number(row.Id || row.id) === Number(photoCaptureSelectedId))
     );
   }catch(err){
-    if(list) list.innerHTML = `<div class="module-empty">Không tải được danh sách test: ${homeEscape(err.message)}</div>`;
+    if(list && !list.querySelector('[data-photo-capture-id]')){
+      list.innerHTML = `<div class="module-empty">Không tải được danh sách test: ${homeEscape(err.message)}</div>`;
+    }
     throw err;
   }
 }
@@ -6988,9 +7033,25 @@ function getPhotoCaptureRows(){
   });
 }
 
+function syncPhotoCaptureSearchClear(){
+  const input = document.getElementById('photoCaptureSearch');
+  const clearButton = document.getElementById('photoCaptureSearchClear');
+  if(input && clearButton) clearButton.disabled = !(input.value || '').trim();
+}
+
+function clearPhotoCaptureSearch(){
+  const input = document.getElementById('photoCaptureSearch');
+  if(!input) return;
+  input.value = '';
+  syncPhotoCaptureSearchClear();
+  renderPhotoCaptureTests();
+  input.focus();
+}
+
 function renderPhotoCaptureTests(){
   const wrap = document.getElementById('photoCaptureTestCards');
   if(!wrap) return;
+  const scrollTop = wrap.scrollTop;
   const rows = getPhotoCaptureRows();
   const count = document.getElementById('photoCaptureCount');
   const listCount = document.getElementById('photoCaptureListCount');
@@ -6998,6 +7059,7 @@ function renderPhotoCaptureTests(){
   if(listCount) listCount.textContent = `${rows.length} test`;
   if(!rows.length){
     wrap.innerHTML = '<div class="module-empty">Không tìm thấy lần test phù hợp.</div>';
+    wrap.scrollTop = scrollTop;
     updatePhotoCaptureControls();
     return;
   }
@@ -7040,6 +7102,7 @@ function renderPhotoCaptureTests(){
       }
     });
   });
+  wrap.scrollTop = scrollTop;
   updatePhotoCaptureControls();
 }
 
@@ -7092,7 +7155,9 @@ function updatePhotoCaptureTestImage(row){
     button.append(image, label);
     button.addEventListener('click', event => {
       event.stopPropagation();
-      openLightbox(photo.url, 'photo-capture');
+      loadPhotoCaptureStampDetails(row)
+        .then(() => openLightbox(photo.url, 'photo-capture'))
+        .catch(err => alert(`Không tải được thông tin đóng dấu: ${err.message}`));
     });
     gallery.appendChild(button);
   });
@@ -7101,6 +7166,39 @@ function updatePhotoCaptureTestImage(row){
 function updatePhotoCaptureControls(){
   const button = document.getElementById('photoCaptureButton');
   if(button) button.disabled = !photoCaptureSelectedId || photoCaptureBusy;
+}
+
+async function loadPhotoCaptureStampDetails(row){
+  if(!row || (row.Weight != null && row.Weight !== '')) return;
+  const poId = row.PO_Id || row.purchase_order_id;
+  const productCode = String(row.Product_Code || row.product_code || '').trim().toUpperCase();
+  if(!poId || !productCode) return;
+  let productsPromise = photoCaptureProductsByPo.get(String(poId));
+  if(!productsPromise){
+    productsPromise = fetch(`${API}/products?order_id=${encodeURIComponent(poId)}`, { cache:'no-store' })
+      .then(async response => {
+        const products = await response.json();
+        if(!response.ok) throw new Error(products.error || 'Không tải được thông tin sản phẩm');
+        if(!Array.isArray(products)) throw new Error('Dữ liệu sản phẩm không hợp lệ');
+        return products;
+      })
+      .catch(err => {
+        photoCaptureProductsByPo.delete(String(poId));
+        throw err;
+      });
+    photoCaptureProductsByPo.set(String(poId), productsPromise);
+  }
+  const products = await productsPromise;
+  const product = products.find(item =>
+    String(item.Product_Code || item.product_code || '').trim().toUpperCase() === productCode
+  );
+  if(!product) return;
+  row.Weight = product.Weight ?? product.weight ?? row.Weight;
+  row.Diameter = product.Diameter ?? product.diameter_mm ?? row.Diameter;
+  row.Height = product.Height ?? product.height_mm ?? row.Height;
+  row.Color = row.Color || product.Color || product.color;
+  row.Wick = row.Wick || product.Wick || product.wick;
+  row.Frag = row.Frag || product.Fragrance || product.fragrance;
 }
 
 const photoCaptureDropzone = document.querySelector('.photo-capture-upload-card');
@@ -7960,7 +8058,7 @@ async function saveSampleTest(){
   }catch(e){ msg.className = 'msg err show'; msg.textContent = '✕ ' + e.message; }
 }// ==================== SAMPLE — PAGINATION ====================
 let sampleLastLoadedRows = [];
-let sampleCurrentPage = 1;
+let sampleCurrentPage = readSavedPage('sample-tests');
 const SAMPLE_PAGE_SIZE = 10;
 
 function syncSampleSearchClear(){
@@ -7976,17 +8074,17 @@ function clearSampleSearch(){
   input.value = '';
   syncSampleSearchClear();
   clearTimeout(window._sampleSearchDebounce);
-  window._sampleSearchDebounce = setTimeout(() => loadSampleTests(), 150);
+  window._sampleSearchDebounce = setTimeout(() => loadSampleTests(true), 150);
   input.focus();
 }
 
-async function loadSampleTests(){
+async function loadSampleTests(resetPage = false){
   try{
     const q = document.getElementById('sampleSearch')?.value.trim() || '';
     const rows = await fetch(`${API}/sample-tests${q ? '?q=' + encodeURIComponent(q) : ''}`).then(r => r.json());
     sampleTests = rows;
     sampleLastLoadedRows = Array.isArray(rows) ? rows : [];
-    sampleCurrentPage = 1;
+    if(resetPage) sampleCurrentPage = 1;
     renderSamplePage();
     syncSampleSelectAll();
     updateSampleLabelsButton();
@@ -8004,6 +8102,7 @@ function renderSamplePage(){
 
   if(sampleCurrentPage > totalPages) sampleCurrentPage = totalPages;
   if(sampleCurrentPage < 1) sampleCurrentPage = 1;
+  savePage('sample-tests', sampleCurrentPage);
 
   const start = (sampleCurrentPage - 1) * SAMPLE_PAGE_SIZE;
   const pageRows = rows.slice(start, start + SAMPLE_PAGE_SIZE);
@@ -8218,11 +8317,11 @@ document.addEventListener('mouseover', async (event) => {
 });
 
 document.getElementById('samplePrevBtn')?.addEventListener('click', () => {
-  if(sampleCurrentPage > 1){ sampleCurrentPage--; renderSamplePage(); }
+  if(sampleCurrentPage > 1){ sampleCurrentPage--; savePage('sample-tests', sampleCurrentPage); renderSamplePage(); }
 });
 document.getElementById('sampleNextBtn')?.addEventListener('click', () => {
   const totalPages = Math.max(1, Math.ceil(sampleLastLoadedRows.length / SAMPLE_PAGE_SIZE));
-  if(sampleCurrentPage < totalPages){ sampleCurrentPage++; renderSamplePage(); }
+  if(sampleCurrentPage < totalPages){ sampleCurrentPage++; savePage('sample-tests', sampleCurrentPage); renderSamplePage(); }
 });
 document.getElementById('sampleListBody')?.addEventListener('click', event => {
   if(event.target.closest('a, button, input, label, select, textarea, .quick-result-cell')) return;
@@ -9704,7 +9803,7 @@ function highlightProductMatch(value, keyword){
 }
 
 const PROD_PAGE_SIZE = 10;
-let prodCurrentPage = 1;
+let prodCurrentPage = readSavedPage('products');
 let prodLastLoadedRows = [];
 let prodCacheAll = [];
 let prodCachePO = null;
@@ -9821,6 +9920,7 @@ function renderProductsPage(){
   const totalPages = Math.max(1, Math.ceil(rows.length / PROD_PAGE_SIZE));
   if(prodCurrentPage > totalPages) prodCurrentPage = totalPages;
   if(prodCurrentPage < 1) prodCurrentPage = 1;
+  savePage('products', prodCurrentPage);
   if(!rows.length){
     tbody.innerHTML = '<tr><td colspan="16" class="empty-state">Chưa có sản phẩm nào.</td></tr>';
   } else {
@@ -9893,6 +9993,7 @@ function goToProductPage(page){
   const totalPages = Math.max(1, Math.ceil(prodLastLoadedRows.length / PROD_PAGE_SIZE));
   if(!Number.isInteger(page) || page < 1 || page > totalPages || page === prodCurrentPage) return;
   prodCurrentPage = page;
+  savePage('products', prodCurrentPage);
   renderProductsPage();
 }
 
