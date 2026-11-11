@@ -826,6 +826,25 @@ main{max-width:none;margin:0 0 0 213px;padding:0 18px 28px;width:auto;background
 .module-card-head{padding:13px 16px;border-bottom:1px solid #e5e9ed;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .module-card-head h3{margin:0;color:#1681d8;font-size:14px}
 .module-body{padding:14px 16px}
+.burn-calculator-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px;align-items:start}
+.burn-calculator-inputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}
+.burn-calculator-inputs .field{margin-bottom:14px}
+.burn-calculator-inputs .field label{font-size:12px;color:#3d4852;font-weight:600}
+.burn-calculator-inputs .field input{width:100%;height:39px;padding:9px 11px;border:1px solid #d6dde2;border-radius:5px;background:#fff;font:13px 'Inter',sans-serif;color:#252b31}
+.burn-calculator-inputs .field input:focus{outline:none;border-color:#187dcc;box-shadow:0 0 0 3px rgba(24,125,204,.12)}
+.burn-calculator-note{margin:0;color:#6b7780;font-size:11.5px;line-height:1.6}
+.burn-calculator-table-wrap{overflow-x:auto}
+.burn-calculator-table{width:100%;border-collapse:collapse;font-size:12px}
+.burn-calculator-table th,.burn-calculator-table td{padding:10px 9px;border:1px solid #dfe5e9;text-align:right;white-space:nowrap}
+.burn-calculator-table th{background:#f4f7f9;color:#3d4852;font-weight:600}
+.burn-calculator-table th:first-child,.burn-calculator-table td:first-child{text-align:left}
+.burn-calculator-time-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.burn-calculator-time{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border:1px solid #dce8f1;border-radius:7px;background:#f5faff}
+.burn-calculator-time span{color:#4d5963;font-size:12px;font-weight:600}
+.burn-calculator-time output{color:#187dcc;font:700 26px 'Space Grotesk',sans-serif}
+.burn-calculator-error{min-height:18px;margin:10px 0 0;color:#b23838;font-size:11.5px;line-height:1.5}
+@media(max-width:760px){.burn-calculator-grid{grid-template-columns:1fr}}
+@media(max-width:460px){.burn-calculator-inputs,.burn-calculator-time-grid{grid-template-columns:1fr}.burn-calculator-table th,.burn-calculator-table td{padding:8px 6px;font-size:11px}}
 .module-filter{display:grid;grid-template-columns:1.1fr 1.1fr 1fr auto;gap:8px}
 .module-filter input,.module-filter select,.module-form input,.module-form select,.module-form textarea{width:100%;box-sizing:border-box;padding:9px 10px;border:1px solid #d7dfe4;border-radius:4px;background:#fff;font:12px 'Inter',sans-serif}
 .module-filter label,.module-form label{font-size:10px;color:#69757e;display:block;margin-bottom:4px}
@@ -2156,6 +2175,7 @@ header{
   <div class="sidebar-group-title">Nghiệp vụ</div>
   <button type="button" class="view-tab" id="tabCustomerCheck" onclick="switchView('customer-check')">📸 <span>Ảnh khách kiểm</span></button>
   <button type="button" class="view-tab" id="tabSample" onclick="switchView('sample')">🕯️ <span>Test đốt hàng mẫu</span></button>
+  <button type="button" class="view-tab" id="tabBurnCalculator" onclick="switchView('burn-calculator')">🧮 <span>Tính thời gian đốt</span></button>
   <button type="button" class="view-tab" id="tabReportTemplates" onclick="switchView('report-templates')">📑 <span>Mẫu báo cáo</span></button>
   <button type="button" class="view-tab" id="tabBurnTestGuide" onclick="openBurnTestGuide()">📘 <span>Hướng dẫn đánh giá</span></button>
   <div class="sidebar-group-title">Quản trị</div>
@@ -2415,6 +2435,63 @@ header{
   <section id="reportTemplateList" class="report-template-grid" aria-label="Danh sách mẫu báo cáo"></section>
 </main>
 
+<main id="view-burn-calculator" class="hidden">
+  <div class="module-title">
+    <div><h2>🧮 Tính thời gian đốt</h2><p>Tính lượng sáp tiêu hao, Burn Rate và thời gian đốt ước tính từ kết quả thử.</p></div>
+  </div>
+  <div class="burn-calculator-grid">
+    <section class="module-card">
+      <div class="module-card-head"><h3>Thông số thử nghiệm</h3></div>
+      <div class="module-body">
+        <div class="burn-calculator-inputs">
+          <div class="field">
+            <label for="burnCalcInitialHeight">Chiều cao ban đầu (mm)</label>
+            <input id="burnCalcInitialHeight" type="number" min="0" step="any" inputmode="decimal" placeholder="Ví dụ: 254" oninput="calculateBurnTime()">
+          </div>
+          <div class="field">
+            <label for="burnCalcInitialWeight">Khối lượng ban đầu (g)</label>
+            <input id="burnCalcInitialWeight" type="number" min="0" step="any" inputmode="decimal" placeholder="Nhập khối lượng" oninput="calculateBurnTime()">
+          </div>
+          <div class="field">
+            <label for="burnCalcRemainingHeight">Chiều cao còn lại sau thử (mm)</label>
+            <input id="burnCalcRemainingHeight" type="number" min="0" step="any" inputmode="decimal" placeholder="Ví dụ: 135" oninput="calculateBurnTime()">
+          </div>
+          <div class="field">
+            <label for="burnCalcRemainingWeight">Khối lượng còn lại sau thử (g)</label>
+            <input id="burnCalcRemainingWeight" type="number" min="0" step="any" inputmode="decimal" placeholder="Nhập khối lượng" oninput="calculateBurnTime()">
+          </div>
+          <div class="field">
+            <label for="burnCalcHours">Thời gian cháy (h)</label>
+            <input id="burnCalcHours" type="number" min="0" step="any" inputmode="decimal" placeholder="Ví dụ: 4" oninput="calculateBurnTime()">
+          </div>
+        </div>
+        <p class="burn-calculator-note">Nhập chiều cao, khối lượng ban đầu và còn lại sau thử cùng tổng số giờ đã đốt. Kết quả cập nhật tự động.</p>
+        <button type="button" class="btn btn-ghost" style="width:auto;margin-top:12px;padding:8px 14px" onclick="resetBurnTimeCalculator()">Xóa thông số</button>
+      </div>
+    </section>
+    <section class="module-card">
+      <div class="module-card-head"><h3>Kết quả tính toán</h3></div>
+      <div class="module-body">
+        <div class="burn-calculator-table-wrap">
+          <table class="burn-calculator-table">
+            <thead><tr><th>Đại lượng</th><th>Sáp tiêu hao</th><th>Burn Rate</th></tr></thead>
+            <tbody>
+              <tr><td>Chiều cao (mm)</td><td id="burnCalcConsumedHeight">—</td><td id="burnCalcHeightRate">—</td></tr>
+              <tr><td>Khối lượng (g)</td><td id="burnCalcConsumedWeight">—</td><td id="burnCalcWeightRate">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="burn-calculator-time-grid">
+          <div class="burn-calculator-time"><span>Ước tính theo chiều cao</span><output id="burnCalcEstimatedTime" aria-live="polite">—</output></div>
+          <div class="burn-calculator-time"><span>Ước tính theo khối lượng</span><output id="burnCalcEstimatedWeightTime" aria-live="polite">—</output></div>
+        </div>
+        <p class="burn-calculator-note" style="margin-top:10px">Ước tính theo mm = chiều cao ban đầu ÷ Burn Rate (mm/h); theo g = khối lượng ban đầu ÷ Burn Rate (g/h). Cả hai được làm tròn đến giờ gần nhất.</p>
+        <p id="burnCalcError" class="burn-calculator-error" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+  </div>
+</main>
+
 <main id="view-sample" class="hidden">
   <div class="module-title">
     <div>
@@ -2575,6 +2652,8 @@ header{
         <button type="button" class="btn btn-ghost test-head-btn" id="importBtn">⇩ Import dữ liệu</button>
         <button type="button" class="btn btn-ghost test-head-btn" id="burnLabelsBtn" onclick="downloadBurnTestLabels('pdf')" title="In tem cho các mã hàng đã chọn">🏷️ In tem</button>
         <button type="button" class="btn btn-ghost test-head-btn" id="burnLabelsXlsxBtn" onclick="downloadBurnTestLabels('xlsx')" title="Xuất tem Excel cho các mã hàng đã chọn">📊 Tem Excel</button>
+        <button type="button" class="btn btn-ghost test-head-btn" id="burnReportsNoPhotosBtn" onclick="downloadSelectedBurnTestReports()" title="Xuất báo cáo Excel không ảnh cho các mã hàng đã chọn" disabled>📋 Excel không ảnh</button>
+        <button type="button" class="btn btn-ghost test-head-btn" id="printSelectedBurnReportsBtn" onclick="downloadSelectedBurnTestReportsPdf()" title="Tải một file PDF gồm báo cáo của tất cả mã hàng đã chọn" disabled>📄 PDF báo cáo</button>
         <button type="button" class="btn btn-ghost test-head-btn" id="exportListXlsxBtn">▣ Xuất Excel</button>
         <button type="button" class="btn btn-ghost test-head-btn" id="refreshBtn">↻ Làm mới</button>
       </div>
@@ -2972,9 +3051,11 @@ header{
 </main>
 
 <footer>
-  Burn Test Tracking API version 2.0· iSUN Products Viet Nam Co.,Ltd ·
+   <div>
+  Burn Test Tracking API version 2.0 </div>
+  <div>Copyright © 2026 iSUN  Products Viet Nam Co.,Ltd.
   <button type="button" id="backupNowBtn" onclick="backupNow()" style="background:none;border:none;color:var(--copper-dark);text-decoration:underline;cursor:pointer;font-size:inherit;padding:0;">💾 Backup ngay</button>
-  <span id="backupStatus" style="margin-left:6px;"></span>
+  <span id="backupStatus" style="margin-left:6px;"></span></div>  
 </footer>
 
 <div class="modal-overlay" id="importModal">
@@ -3001,7 +3082,7 @@ header{
   <div class="modal">
     <div class="modal-head">
       <div><h2 id="modalProductCode">—</h2><div class="modal-meta"><span>PO: <b id="modalPo">—</b></span><span>Start: <b id="modalStart">—</b></span><span>End: <b id="modalEnd">—</b></span><span>Tổng đốt: <b id="modalBurnTime">—</b></span><span>Nhiệt độ: <b id="modalTemp">—</b></span><span>Kết quả: <span id="modalResult"></span></span></div></div>
-      <div style="display:flex;align-items:flex-start;gap:8px;"><button type="button" class="btn btn-ghost" id="exportPdfBtn" onclick="exportBurnTestPdf()">⬇ Xuất PDF</button><button type="button" class="btn btn-ghost" id="exportXlsxBtn" onclick="exportBurnTestXlsx()">⬇ Xuất Excel</button><button class="modal-close" onclick="closeImageModal()">✕</button></div>
+      <div style="display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap;"><button type="button" class="btn btn-ghost" data-require-auth="1" onclick="editCurrentModalTest()">✎ Sửa thông tin</button><button type="button" class="btn btn-ghost" id="exportPdfBtn" onclick="exportBurnTestPdf()">⬇ Xuất PDF</button><button type="button" class="btn btn-ghost" id="exportXlsxBtn" onclick="exportBurnTestXlsx()">⬇ Xuất Excel</button><button type="button" class="btn btn-ghost" id="exportXlsxNoPhotosBtn" onclick="exportBurnTestXlsx(false)">⬇ Excel không ảnh</button><button class="modal-close" onclick="closeImageModal()">✕</button></div>
     </div>
     <div class="pic-grid" id="picGrid"></div>
     <section class="burn-video-section" aria-labelledby="burnVideosTitle">
@@ -3499,6 +3580,7 @@ function formatDateTime(value){ if(!value) return '—'; return String(value).re
 function stampHtml(result){ if(result === 'PASS') return '<span class="stamp pass">PASS</span>'; if(result === 'FAIL') return '<span class="stamp fail">FAIL</span>'; return '<span class="stamp pending">PENDING</span>'; }
 function todayISO(){ return new Date().toISOString().slice(0,10); }
 function localDateTimeValue(){ const d = new Date(); const pad = n => String(n).padStart(2, '0'); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+function dateTimeInputValue(value){ return value ? String(value).trim().replace(' ', 'T').slice(0,16) : ''; }
 function escapeHtml(str){ return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function homeEscape(v){ return String(v ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 function formatVNDate(s){ const d = new Date(`${s}T00:00:00`); return Number.isNaN(d.getTime()) ? s : d.toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric'}); }
@@ -3657,8 +3739,7 @@ function renderPage(){
   } else {
     const todayStr = todayISO();
     tbody.innerHTML = pageRows.map(r => {
-      const photoSlots = getPhotoSlots(r);
-      const firstPhoto = photoSlots.map(slot => r[slot]).find(Boolean) || '';
+      const lastPhoto = getLastPhotoFromBurnRecord(r);
       // Product master image (not burn-test evidence)
       let productImg = r.product_image_url || r.image_url || '';
       if (!productImg && r.Product_Code && typeof productCodeCache === 'object') {
@@ -3679,9 +3760,9 @@ function renderPage(){
         <td class="mono test-product-cell">
           <div class="burn-photo-wrap">
             <a href="#" class="product-link" title="Xem chi tiết mã hàng: ${escapeHtml(r.Product_Code || '—')}" onclick="openImageModal(${r.Id}); return false;">${renderMatchedText(r.Product_Code)}</a>
-            <div class="burn-photo-thumb" style="${firstPhoto || productImg ? '' : 'display:none'}">
-              <img src="${escapeHtml(firstPhoto || productImg || '')}" data-burn-img="${r.Id}" alt="Ảnh test" onerror="this.parentElement.style.display='none'">
-              ${firstPhoto ? buildBurnMediaStampHtml(r) : ''}
+            <div class="burn-photo-thumb" style="${lastPhoto || productImg ? '' : 'display:none'}">
+              <img src="${escapeHtml(lastPhoto || productImg || '')}" data-burn-img="${r.Id}" alt="Ảnh test" onerror="this.parentElement.style.display='none'">
+              ${lastPhoto ? buildBurnMediaStampHtml(r) : ''}
             </div>
           </div>
           <small>${renderMatchedText(r.Color || '—')} · ${renderMatchedText(r.Wick || '—')}</small>
@@ -3714,6 +3795,8 @@ function renderPage(){
 
 // ==================== BURN TEST LOG: MULTI-SELECT LABELS ====================
 let burnSelectedIds = new Set();
+let burnReportExportInProgress = false;
+let burnReportPdfInProgress = false;
 
 function getBurnPageRows(){
   const start = (currentPage - 1) * PAGE_SIZE;
@@ -3749,12 +3832,91 @@ function syncBurnSelectAll(){
 
 function updateBurnLabelsButton(){
   const n = burnSelectedIds.size;
-  ['burnLabelsBtn','burnLabelsXlsxBtn'].forEach(id => {
+  ['burnLabelsBtn','burnLabelsXlsxBtn','burnReportsNoPhotosBtn','printSelectedBurnReportsBtn'].forEach(id => {
     const btn = document.getElementById(id);
-    if(btn) btn.disabled = n === 0;
+    if(btn) btn.disabled = n === 0 ||
+      (id === 'burnReportsNoPhotosBtn' && burnReportExportInProgress) ||
+      (id === 'printSelectedBurnReportsBtn' && burnReportPdfInProgress);
   });
   const pdfBtn = document.getElementById('burnLabelsBtn');
   if(pdfBtn) pdfBtn.textContent = n ? `🏷️ In tem (${n})` : '🏷️ In tem';
+  const reportBtn = document.getElementById('burnReportsNoPhotosBtn');
+  if(reportBtn) reportBtn.textContent = n ? `📋 Excel không ảnh (${n})` : '📋 Excel không ảnh';
+  const pdfReportBtn = document.getElementById('printSelectedBurnReportsBtn');
+  if(pdfReportBtn) pdfReportBtn.textContent = burnReportPdfInProgress
+    ? 'Đang tạo PDF...'
+    : (n ? `📄 PDF báo cáo (${n})` : '📄 PDF báo cáo');
+}
+
+async function downloadSelectedBurnTestReports(){
+  const ids = [...burnSelectedIds];
+  if(!ids.length){ alert('Vui lòng chọn ít nhất 1 mã hàng để xuất báo cáo.'); return; }
+  const btn = document.getElementById('burnReportsNoPhotosBtn');
+  burnReportExportInProgress = true;
+  updateBurnLabelsButton();
+  btn.textContent = 'Đang tạo báo cáo...';
+  try{
+    const response = await fetch(`${API}/burn-tests/selected-reports/no-images.zip`, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body:JSON.stringify({ ids })
+    });
+    if(!response.ok){
+      let message = 'Không xuất được báo cáo Excel';
+      try { const data = await response.json(); message = data.error || message; } catch (_) {}
+      throw new Error(message);
+    }
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `bao-cao-test-dot-khong-anh-${new Date().toISOString().slice(0,10)}.zip`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  }catch(err){
+    alert('Lỗi xuất báo cáo: ' + err.message);
+  }finally{
+    burnReportExportInProgress = false;
+    updateBurnLabelsButton();
+  }
+}
+
+async function downloadSelectedBurnTestReportsPdf(){
+  const ids = [...burnSelectedIds];
+  if(!ids.length){ alert('Vui lòng chọn ít nhất 1 mã hàng để xuất PDF.'); return; }
+  const btn = document.getElementById('printSelectedBurnReportsBtn');
+  burnReportPdfInProgress = true;
+  updateBurnLabelsButton();
+  btn.textContent = 'Đang tạo PDF...';
+  try{
+    const response = await fetch(`${API}/burn-tests/selected-reports/no-images/print`, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body:JSON.stringify({ ids })
+    });
+    if(!response.ok){
+      let message = 'Không tạo được file PDF báo cáo';
+      try { const data = await response.json(); message = data.error || message; } catch (_) {}
+      throw new Error(message);
+    }
+    const pdf = await response.blob();
+    if(!pdf.size || pdf.type !== 'application/pdf') throw new Error('Dữ liệu PDF không hợp lệ hoặc file bị trống.');
+    const url = URL.createObjectURL(pdf);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `bao-cao-test-dot-${new Date().toISOString().slice(0,10)}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  }catch(err){
+    alert('Lỗi xuất PDF báo cáo: ' + err.message);
+  }finally{
+    burnReportPdfInProgress = false;
+    updateBurnLabelsButton();
+  }
 }
 
 async function downloadBurnTestLabels(format){
@@ -4049,6 +4211,13 @@ function closeImageModal(){
   document.getElementById('logTableWrap').innerHTML = '';
 }
 
+function editCurrentModalTest(){
+  const id = currentModalRow?.Id;
+  if(!id) return;
+  closeImageModal();
+  editRow(id);
+}
+
 function exportBurnTestPdf(){
   if(!currentModalRow) return;
   const btn = document.getElementById('exportPdfBtn'); const original = btn.textContent;
@@ -4056,11 +4225,12 @@ function exportBurnTestPdf(){
   window.location.href = `${API}/burn-tests/${currentModalRow.Id}/report.pdf`;
   setTimeout(() => { btn.disabled = false; btn.textContent = original; }, 1500);
 }
-function exportBurnTestXlsx(){
+function exportBurnTestXlsx(includePhotos = true){
   if(!currentModalRow) return;
-  const btn = document.getElementById('exportXlsxBtn'); const original = btn.textContent;
+  const btn = document.getElementById(includePhotos ? 'exportXlsxBtn' : 'exportXlsxNoPhotosBtn'); const original = btn.textContent;
   btn.disabled = true; btn.textContent = 'Đang xuất...';
-  window.location.href = `${API}/burn-tests/${currentModalRow.Id}/report.xlsx`;
+  const query = includePhotos ? '' : '?include_images=0';
+  window.location.href = `${API}/burn-tests/${currentModalRow.Id}/report.xlsx${query}`;
   setTimeout(() => { btn.disabled = false; btn.textContent = original; }, 1500);
 }
 
@@ -4571,7 +4741,7 @@ function stampInfoOnCanvas(ctx, w, h, row = currentModalRow){
   const boxY = h - boxH - margin;
 
  ctx.save();
-  ctx.globalAlpha = 0.75;   // ← 0.75 = mờ 25%, 0.85 = mờ 15%, 0.5 = mờ 50%
+  ctx.globalAlpha = 1;
   ctx.textBaseline = 'top';
 
   // ---- Shadow mềm ----
@@ -5417,8 +5587,8 @@ async function editRow(id){
     document.getElementById('frag').value = r.Frag ?? '';
     document.getElementById('wick').value = r.Wick ?? '';
     document.getElementById('temperature').value = r.Temperature ?? '';
-    document.getElementById('start_datetime').value = r.Start ?? '';
-    document.getElementById('end_datetime').value = r.End ?? '';
+    document.getElementById('start_datetime').value = dateTimeInputValue(r.Start);
+    document.getElementById('end_datetime').value = dateTimeInputValue(r.End);
     document.getElementById('total_burn_time').value = r.Total_Burn_Time ?? '';
     document.getElementById('test_date').value = r.Test_date ?? (r.Start ? r.Start.slice(0,10) : todayISO());
     document.getElementById('tester').value = r.Tester ?? '';
@@ -9691,6 +9861,69 @@ function startAutoRefresh(){
 }
 
 // ==================== SWITCH VIEW ====================
+function formatBurnCalculatorValue(value){
+  return new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(value);
+}
+
+function calculateBurnTime(){
+  const readValue = id => {
+    const input = document.getElementById(id);
+    if(!input.value.trim()) return null;
+    const value = input.valueAsNumber;
+    return Number.isFinite(value) ? value : null;
+  };
+  const initialHeight = readValue('burnCalcInitialHeight');
+  const initialWeight = readValue('burnCalcInitialWeight');
+  const remainingHeight = readValue('burnCalcRemainingHeight');
+  const remainingWeight = readValue('burnCalcRemainingWeight');
+  const hours = readValue('burnCalcHours');
+  const errors = [];
+  const calculateMetric = (initial, remaining, unit, consumedId, rateId) => {
+    const consumedEl = document.getElementById(consumedId);
+    const rateEl = document.getElementById(rateId);
+    consumedEl.textContent = '—';
+    rateEl.textContent = '—';
+    if(initial === null || remaining === null) return null;
+    if(initial < 0 || remaining < 0){
+      errors.push(`Thông số ${unit} không được nhỏ hơn 0.`);
+      return null;
+    }
+    if(remaining > initial){
+      errors.push(`Giá trị còn lại (${unit}) không thể lớn hơn giá trị ban đầu.`);
+      return null;
+    }
+    const consumed = initial - remaining;
+    consumedEl.textContent = `${formatBurnCalculatorValue(consumed)} ${unit}`;
+    if(hours !== null && hours > 0){
+      const rate = consumed / hours;
+      rateEl.textContent = `${formatBurnCalculatorValue(rate)} ${unit}/h`;
+      return rate;
+    }
+    return null;
+  };
+
+  const heightRate = calculateMetric(initialHeight, remainingHeight, 'mm', 'burnCalcConsumedHeight', 'burnCalcHeightRate');
+  const weightRate = calculateMetric(initialWeight, remainingWeight, 'g', 'burnCalcConsumedWeight', 'burnCalcWeightRate');
+  if(hours !== null && hours < 0) errors.push('Thời gian cháy không được nhỏ hơn 0.');
+  else if(hours === 0) errors.push('Thời gian cháy phải lớn hơn 0 để tính Burn Rate.');
+
+  const estimatedTime = document.getElementById('burnCalcEstimatedTime');
+  estimatedTime.textContent = initialHeight !== null && heightRate > 0
+    ? `~${formatBurnCalculatorValue(Math.round(initialHeight / heightRate))} h`
+    : '—';
+  const estimatedWeightTime = document.getElementById('burnCalcEstimatedWeightTime');
+  estimatedWeightTime.textContent = initialWeight !== null && weightRate > 0
+    ? `~${formatBurnCalculatorValue(Math.round(initialWeight / weightRate))} h`
+    : '—';
+  document.getElementById('burnCalcError').textContent = [...new Set(errors)].join(' ');
+}
+
+function resetBurnTimeCalculator(){
+  ['burnCalcInitialHeight', 'burnCalcInitialWeight', 'burnCalcRemainingHeight', 'burnCalcRemainingWeight', 'burnCalcHours']
+    .forEach(id => { document.getElementById(id).value = ''; });
+  calculateBurnTime();
+}
+
 function switchView(view){
   const isHome = view === 'home';
   const isTests = view === 'tests';
@@ -9701,6 +9934,7 @@ function switchView(view){
   const isPhotoCapture = view === 'photo-capture';
   const isCustomerCheck = view === 'customer-check';
   const isSample = view === 'sample';
+  const isBurnCalculator = view === 'burn-calculator';
   const isReportTemplates = view === 'report-templates';
   const isSettings = view === 'settings';
   document.getElementById('view-home').classList.toggle('hidden', !isHome);
@@ -9712,6 +9946,7 @@ function switchView(view){
   const photoCaptureView = document.getElementById('view-photo-capture'); if(photoCaptureView) photoCaptureView.classList.toggle('hidden', !isPhotoCapture);
   const customerCheckView = document.getElementById('view-customer-check'); if(customerCheckView) customerCheckView.classList.toggle('hidden', !isCustomerCheck);
   const sampleView = document.getElementById('view-sample'); if(sampleView) sampleView.classList.toggle('hidden', !isSample);
+  const burnCalculatorView = document.getElementById('view-burn-calculator'); if(burnCalculatorView) burnCalculatorView.classList.toggle('hidden', !isBurnCalculator);
   const reportTemplatesView = document.getElementById('view-report-templates'); if(reportTemplatesView) reportTemplatesView.classList.toggle('hidden', !isReportTemplates);
   document.getElementById('view-settings').classList.toggle('hidden', !isSettings);
   document.getElementById('tabHome').classList.toggle('active', isHome);
@@ -9723,6 +9958,7 @@ function switchView(view){
   const tabPhotoCapture = document.getElementById('tabPhotoCapture'); if(tabPhotoCapture) tabPhotoCapture.classList.toggle('active', isPhotoCapture);
   const tabCustomerCheck = document.getElementById('tabCustomerCheck'); if(tabCustomerCheck) tabCustomerCheck.classList.toggle('active', isCustomerCheck);
   const tabSample = document.getElementById('tabSample'); if(tabSample) tabSample.classList.toggle('active', isSample);
+  const tabBurnCalculator = document.getElementById('tabBurnCalculator'); if(tabBurnCalculator) tabBurnCalculator.classList.toggle('active', isBurnCalculator);
   const tabReportTemplates = document.getElementById('tabReportTemplates'); if(tabReportTemplates) tabReportTemplates.classList.toggle('active', isReportTemplates);
   document.getElementById('tabSettings').classList.toggle('active', isSettings);
   if(isHome) loadHomeDashboard();

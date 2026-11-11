@@ -1,11 +1,16 @@
 const express = require('express');
 const multer = require('multer');
+const archiver = require('archiver');
+const { PassThrough } = require('stream');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
+const { PDFDocument } = require('pdf-lib');
 const { prepare, UPLOADS_DIR } = require('../database/database');
 const { generateBurnTestReportPdf } = require('../lib/pdfReport');
-const { generateBurnTestReportXlsx } = require('../lib/xlsxReport');
+const {
+  generateBurnTestReportXlsx
+} = require('../lib/burnTestTemplateReportXlsx');
 const { generateWeeklyReportPdf, generateWeeklyReportXlsx } = require('../lib/weeklyReport');
 const { generateBurnTestLabelsPdf } = require('../lib/burnTestLabelReport');
 const { generateBurnTestLabelsXlsx } = require('../lib/burnTestLabelReportXlsx');
@@ -539,6 +544,117 @@ router.post('/labels.xlsx', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
+async function printSelectedBurnTestReports(req, res, next) {
+  try {
+    const ids = req.method === 'GET'
+      ? (req.query.ids ? String(req.query.ids).split(',') : [])
+      : req.body?.ids;
+    if (!Array.isArray(ids) || !ids.length) {
+      return res.status(400).json({ error: 'Vui lòng chọn ít nhất 1 mã hàng để in báo cáo.' });
+    }
+
+    const normalizedIds = [...new Set(ids.map(Number))];
+    if (normalizedIds.some(id => !Number.isSafeInteger(id) || id <= 0)) {
+      return res.status(400).json({ error: 'Danh sách mã test không hợp lệ.' });
+    }
+
+    const tests = normalizedIds.map(id => getTest(id));
+    const missingIds = normalizedIds.filter((_id, index) => !tests[index]);
+    if (missingIds.length) {
+      return res.status(404).json({ error: `Không tìm thấy mã test: ${missingIds.join(', ')}` });
+    }
+
+    const mergedPdf = await PDFDocument.create();
+    for (const test of tests) {
+      const chunks = [];
+      const reportStream = new PassThrough();
+      reportStream.on('data', chunk => chunks.push(chunk));
+      const reportReady = new Promise((resolve, reject) => {
+        reportStream.once('end', resolve);
+        reportStream.once('error', reject);
+      });
+      await Promise.all([
+        generateBurnTestReportPdf(reportStream, test),
+        reportReady
+      ]);
+      const reportPdf = await PDFDocument.load(Buffer.concat(chunks));
+      const pages = await mergedPdf.copyPages(reportPdf, reportPdf.getPageIndices());
+      pages.forEach(page => mergedPdf.addPage(page));
+    }
+    if (!mergedPdf.getPageCount()) throw new Error('Không tạo được trang PDF báo cáo.');
+    const pdf = Buffer.from(await mergedPdf.save());
+    res.type('application/pdf')
+      .set('Content-Disposition', 'attachment; filename="burn-test-reports.pdf"')
+      .send(pdf);
+  } catch (err) { next(err); }
+}
+
+router.get('/selected-reports/no-images/print', printSelectedBurnTestReports);
+router.post('/selected-reports/no-images/print', printSelectedBurnTestReports);
+
+router.post('/selected-reports/no-images.zip', async (req, res, next) => {
+  const ids = req.body?.ids;
+  if (!Array.isArray(ids) || !ids.length) {
+    return res.status(400).json({ error: 'Vui lòng chọn ít nhất 1 mã hàng để xuất báo cáo.' });
+  }
+
+  const normalizedIds = [...new Set(ids.map(Number))];
+  if (normalizedIds.some(id => !Number.isSafeInteger(id) || id <= 0)) {
+    return res.status(400).json({ error: 'Danh sách mã test không hợp lệ.' });
+  }
+
+  let archive;
+  let archiveError = null;
+  try {
+    const tests = normalizedIds.map(id => getTest(id));
+    const missingIds = normalizedIds.filter((_id, index) => !tests[index]);
+    if (missingIds.length) {
+      return res.status(404).json({ error: `Không tìm thấy mã test: ${missingIds.join(', ')}` });
+    }
+
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="bao-cao-test-dot-khong-anh-${new Date().toISOString().slice(0, 10)}.zip"`
+    );
+
+    archive = archiver('zip', { zlib: { level: 6 } });
+    archive.on('error', err => {
+      archiveError = err;
+      if (res.headersSent) res.destroy(err);
+    });
+    archive.pipe(res);
+
+    for (const test of tests) {
+      const chunks = [];
+      const reportStream = new PassThrough();
+      reportStream.on('data', chunk => chunks.push(chunk));
+      const reportReady = new Promise((resolve, reject) => {
+        reportStream.once('end', resolve);
+        reportStream.once('error', reject);
+      });
+      await Promise.all([
+        generateBurnTestReportXlsx(reportStream, test, { includePhotos: false }),
+        reportReady
+      ]);
+      if (archiveError) throw archiveError;
+
+      const code = String(test.Product_Code || test.product_code || test.Id)
+        .replace(/[\\/:*?"<>|]+/g, '-')
+        .replace(/[\s.]+$/g, '')
+        .slice(0, 100) || `test-${test.Id}`;
+      archive.append(Buffer.concat(chunks), { name: `${code}-${test.Id}.xlsx` });
+    }
+
+    await archive.finalize();
+  } catch (err) {
+    if (archive) archive.abort();
+    const failure = archiveError || err;
+    if (res.headersSent) res.destroy(failure);
+    else next(failure);
+  }
+});
+
 router.get('/:id', (req, res, next) => {
   try {
     const row = getTest(req.params.id);
@@ -567,7 +683,9 @@ router.get('/:id/report.xlsx', async (req, res, next) => {
     const safeCode = String(test.Product_Code || test.Id).replace(/[^a-zA-Z0-9._-]+/g, '-');
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', `attachment; filename="bao-cao-test-dot-${safeCode}.xlsx"`);
-    await generateBurnTestReportXlsx(res, test);
+    await generateBurnTestReportXlsx(res, test, {
+      includePhotos: req.query.include_images !== '0'
+    });
   } catch (err) { next(err); }
 });
 

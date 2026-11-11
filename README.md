@@ -15,6 +15,9 @@ npm start
 ```
 Mở: http://localhost:3000
 
+Trong **Nhật ký test đốt**, chọn các mã hàng rồi nhấn **PDF báo cáo** để tải một file PDF gồm toàn bộ báo cáo đã chọn theo mẫu `MAU_BURN_TEST_REPORT.xlsx`. Máy chạy ứng dụng cần cài Microsoft Excel để xuất đúng bố cục mẫu.
+Rê chuột lên mã hàng trong danh sách để xem ảnh test mới nhất (slot ảnh lớn nhất); nếu chưa có ảnh test, ảnh sản phẩm được dùng làm ảnh xem trước.
+
 ## Camera trên iPhone trong mạng nội bộ
 
 Camera trực tiếp cần HTTPS. Khi chứng chỉ cục bộ đã được tạo, khởi động lại app và mở `https://testdot-pc:3443/` trên iPhone. Tải chứng chỉ CA tại `http://testdot-pc:3001/testdot-pc-root-ca.cer`, cài trong **Settings > General > VPN & Device Management**, sau đó bật tin cậy tại **Settings > General > About > Certificate Trust Settings**. Chỉ cài CA này trên thiết bị tin cậy; chứng chỉ riêng của server nằm ngoài workspace.

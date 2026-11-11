@@ -41,8 +41,15 @@ app.use(optionalAuth);
 app.use('/api/v1/auth', authRouter);
 
 // Helper: chỉ chặn các method ghi
+const readOnlyReportPosts = new Set([
+  '/labels.pdf',
+  '/labels.xlsx',
+  '/selected-reports/no-images/print',
+  '/selected-reports/no-images.zip'
+]);
 const protectWrites = (req, res, next) => {
   const m = req.method.toUpperCase();
+  if(m === 'POST' && readOnlyReportPosts.has(req.path)) return next();
   if(['POST','PUT','PATCH','DELETE'].includes(m)) return requireAuth(req, res, next);
   next();
 };
