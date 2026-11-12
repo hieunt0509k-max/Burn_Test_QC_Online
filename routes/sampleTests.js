@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
+const { safeImageExt } = require('../lib/imageExt');
 const sharp = require('sharp');
 const { prepare, transaction, UPLOADS_DIR } = require('../database/database');
 const router = express.Router();
@@ -26,7 +27,7 @@ function relativeSampleFile(folder, filename) { return path.relative(sampleDir, 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, sampleDir),
   filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname || '').toLowerCase() || '.jpg';
+    const ext = safeImageExt(file.mimetype, file.originalname);
     cb(null, `${Date.now()}-${Math.random().toString(36).slice(2,8)}${ext}`);
   }
 });
@@ -140,7 +141,9 @@ router.get('/',(req,res,next)=>{try{
     (SELECT COUNT(*) FROM sample_burn_test_photos p WHERE p.sample_test_id=s.id) photo_count,
     (SELECT p.file_url FROM sample_burn_test_photos p WHERE p.sample_test_id=s.id ORDER BY p.slot DESC, p.id DESC LIMIT 1) last_photo_url
     FROM sample_burn_tests s LEFT JOIN customers c ON c.id=s.customer_id LEFT JOIN purchase_orders po ON po.id=s.purchase_order_id WHERE 1=1`;
-  const p=[]; if(req.query.q){sql+=' AND (s.product_code LIKE ? OR s.product_name LIKE ? OR c.name LIKE ? OR po.po_number LIKE ?)'; const q='%'+req.query.q+'%'; p.push(q,q,q,q)}
+  const p=[];
+  if(String(req.query.result || '').trim().toUpperCase() === 'PENDING') sql += " AND upper(coalesce(nullif(trim(s.test_result), ''), 'PENDING')) = 'PENDING'";
+  if(req.query.q){sql+=' AND (s.product_code LIKE ? OR s.product_name LIKE ? OR c.name LIKE ? OR po.po_number LIKE ?)'; const q='%'+req.query.q+'%'; p.push(q,q,q,q)}
   sql+=' ORDER BY s.test_date DESC, s.id DESC';
   const rows=prepare(sql).all(...p); res.json(rows);
 }catch(e){next(e)}});

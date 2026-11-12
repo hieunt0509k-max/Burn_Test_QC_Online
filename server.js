@@ -8,7 +8,7 @@ const path = require('path');
 const multer = require('multer');
 const ExcelJS = require('exceljs');
 require('dotenv').config();
-const { UPLOADS_DIR } = require('./database/database'); // require để đảm bảo DB/schema được khởi tạo ngay khi start
+const { UPLOADS_DIR, db, closeDatabase } = require('./database/database'); // require để đảm bảo DB/schema được khởi tạo ngay khi start
 const { backupNow, BACKUP_DIR, BACKUP_KEEP } = require('./lib/backup');
 
 const clientsRouter = require('./routes/clients');
@@ -32,7 +32,16 @@ const HTTPS_PFX_PATH = process.env.HTTPS_PFX_PATH || path.join(HTTPS_CERT_DIR, '
 const HTTPS_PFX_PASSPHRASE_PATH = process.env.HTTPS_PFX_PASSPHRASE_PATH || path.join(HTTPS_CERT_DIR, 'testdot-pc.pass');
 const BACKUP_INTERVAL_HOURS = Number(process.env.BACKUP_INTERVAL_HOURS) || 6;
 
-app.use(cors());
+app.disable('x-powered-by');
+// CORS_ORIGIN (xem .env.example): để trống = cho mọi origin (app nội bộ); đặt host để khóa lại.
+// Có thể liệt kê nhiều origin, ngăn cách bằng dấu phẩy.
+const corsOrigins = String(process.env.CORS_ORIGIN || '').split(',').map(s => s.trim()).filter(Boolean);
+app.use(cors(corsOrigins.length ? { origin: corsOrigins } : undefined));
+app.use((_req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Referrer-Policy', 'same-origin');
+  next();
+});
 app.use(express.json({ limit: '1mb' }));
 // Đọc token ở mọi request (gán req.user nếu có)
 app.use(optionalAuth);
@@ -65,7 +74,14 @@ const protectWrites = (req, res, next) => {
  ,'/api/v1/customer-checks'
 ]
 .forEach(path => app.use(path, protectWrites));
-app.use('/uploads', express.static(UPLOADS_DIR));
+// File tải lên chỉ được hiển thị, không bao giờ được thực thi như trang web.
+app.use('/uploads', express.static(UPLOADS_DIR, {
+  dotfiles: 'deny',
+  setHeaders: (res, filePath) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    if (/\.(html?|svg|xml|js)$/i.test(filePath)) res.setHeader('Content-Disposition', 'attachment');
+  }
+}));
 
 function normalizeTemplateKey(value = '') {
   return String(value)
@@ -275,9 +291,12 @@ app.post('/api/v1/settings/report-templates', (req, res, next) => {
 });
 
 app.delete('/api/v1/settings/report-templates/:name', (req, res) => {
-  const encodedName = decodeURIComponent(req.params.name || '');
-  const targetFile = path.join(REPORT_TEMPLATE_DIR, encodedName);
-  if (!encodedName || !fs.existsSync(targetFile) || !/\.(xlsx?|xls)$/i.test(encodedName)) {
+  let encodedName = '';
+  try { encodedName = decodeURIComponent(req.params.name || ''); } catch (_) { /* tên sai định dạng -> 404 bên dưới */ }
+  // Chỉ nhận tên file đơn thuần nằm trực tiếp trong assets/ (chặn ../ và đường dẫn con).
+  const targetFile = path.resolve(REPORT_TEMPLATE_DIR, encodedName);
+  const insideAssets = path.dirname(targetFile) === path.resolve(REPORT_TEMPLATE_DIR) && path.basename(encodedName) === encodedName;
+  if (!encodedName || !insideAssets || !fs.existsSync(targetFile) || !/\.(xlsx?|xls)$/i.test(encodedName)) {
     return res.status(404).json({ error: 'Không tìm thấy mẫu báo cáo để xóa.' });
   }
   fs.unlinkSync(targetFile);
@@ -336,7 +355,7 @@ app.use((err, _req, res, _next) => {
 });
 
 if (require.main === module) {
-  app.listen(PORT, () => {
+  const httpServer = app.listen(PORT, () => {
     console.log(`✔ Burn Test QC (SQLite local) đang chạy tại http://localhost:${PORT}`);
 
     // Backup ngay lúc khởi động (đảm bảo luôn có ít nhất 1 bản backup mới mỗi lần mở app),
@@ -356,6 +375,20 @@ if (require.main === module) {
       }
     }, BACKUP_INTERVAL_HOURS * 60 * 60 * 1000);
   });
+
+  // Dừng êm (Ctrl+C / kill / stop_app.bat): ghi nốt WAL vào file .db rồi mới thoát.
+  let shuttingDown = false;
+  const shutdown = (signal) => {
+    if (shuttingDown) return;
+    shuttingDown = true;
+    console.log(`\n${signal} — đang dừng server...`);
+    try { db.exec('PRAGMA wal_checkpoint(TRUNCATE)'); } catch (_) {}
+    try { closeDatabase(); } catch (_) {}
+    httpServer.close(() => process.exit(0));
+    setTimeout(() => process.exit(0), 3000).unref();
+  };
+  process.on('SIGINT', () => shutdown('SIGINT'));
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
 
   if (fs.existsSync(HTTPS_PFX_PATH)) {
     try {

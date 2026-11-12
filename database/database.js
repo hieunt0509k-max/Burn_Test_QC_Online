@@ -14,6 +14,8 @@ fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 const db = new DatabaseSync(DB_PATH);
 db.exec('PRAGMA foreign_keys = ON');
 db.exec('PRAGMA journal_mode = WAL');
+db.exec('PRAGMA busy_timeout = 5000');   // chờ tối đa 5s khi DB đang bận (backup/ghi đồng thời) thay vì báo lỗi "database is locked"
+db.exec('PRAGMA synchronous = NORMAL');  // an toàn với WAL, ghi nhanh hơn đáng kể
 
 db.exec(`
 CREATE TABLE IF NOT EXISTS customers (
@@ -243,6 +245,16 @@ for (const unit of defaultUnits) {
   db.prepare('INSERT OR IGNORE INTO qc_units(code,name,active) VALUES(?,?,?)').run(...unit);
 }
 
+// Index bổ sung (an toàn chạy lại nhiều lần). Hai index lower(product_code) giúp truy vấn
+// has_test / "Chỉ mã chưa test" ở danh sách sản phẩm không phải quét toàn bảng cho từng dòng.
+db.exec(`
+CREATE INDEX IF NOT EXISTS idx_burn_tests_po_code ON burn_tests(purchase_order_id, lower(product_code));
+CREATE INDEX IF NOT EXISTS idx_sample_tests_po_code ON sample_burn_tests(purchase_order_id, lower(product_code));
+CREATE INDEX IF NOT EXISTS idx_burn_tests_date ON burn_tests(test_date);
+CREATE INDEX IF NOT EXISTS idx_products_order_code ON products(order_id, product_code);
+CREATE INDEX IF NOT EXISTS idx_products_customer_code ON products(customer_code);
+`);
+
 try { db.exec("ALTER TABLE burn_tests ADD COLUMN material_types TEXT"); } catch (_) {}
 try { db.exec("ALTER TABLE products ADD COLUMN image_url TEXT"); } catch (_) {}
 {
@@ -288,9 +300,12 @@ function transaction(fn) {
 const { hashPassword } = require('../lib/auth');
 const cnt = prepare('SELECT COUNT(*) AS n FROM users').get();
 if(!cnt || Number(cnt.n) === 0){
+  const adminUser = (process.env.ADMIN_USER || 'admin').trim() || 'admin';
+  const adminPass = process.env.ADMIN_PASSWORD || 'admin123';
   prepare('INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)')
-    .run('admin', hashPassword('admin123'), 'admin');
-  console.log('🔐 Đã tạo tài khoản admin mặc định:  admin / admin123   (hãy đổi sau khi đăng nhập)');
+    .run(adminUser, hashPassword(adminPass), 'admin');
+  if(process.env.ADMIN_PASSWORD) console.log(`🔐 Đã tạo tài khoản admin ban đầu: ${adminUser} (mật khẩu theo ADMIN_PASSWORD)`);
+  else console.log(`🔐 Đã tạo tài khoản admin mặc định:  ${adminUser} / admin123   (hãy đổi mật khẩu ngay sau khi đăng nhập)`);
 }
 
 
@@ -304,7 +319,14 @@ function ensureSampleBurnColumns(){
     ['current_phase','TEXT NOT NULL DEFAULT "BURN"'],
     ['phase_started_at','TEXT'],
     ['phase_elapsed_seconds','INTEGER NOT NULL DEFAULT 0'],
-    ['last_saved_at','TEXT']
+    ['last_saved_at','TEXT'],
+    // Các cột mà routes/sampleTests.js dùng nhưng trước đây chỉ có khi chạy tay migrate_sample_v2.js
+    // -> cài mới/DB trống bị lỗi "no column named start_datetime".
+    ['start_datetime','TEXT'],
+    ['end_datetime','TEXT'],
+    ['total_burn_time','TEXT'],
+    ['test_result',"TEXT DEFAULT 'PENDING'"],
+    ['approved','TEXT']
   ];
   const existing = new Set(db.prepare("PRAGMA table_info(sample_burn_tests)").all().map(x=>x.name));
   for(const [name,type] of cols){ if(!existing.has(name)) db.exec(`ALTER TABLE sample_burn_tests ADD COLUMN ${name} ${type}`); }

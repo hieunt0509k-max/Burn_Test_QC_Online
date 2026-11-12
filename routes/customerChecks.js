@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const { safeImageExt } = require('../lib/imageExt');
 const fs = require('fs');
 const sharp = require('sharp');
 const { prepare, transaction, UPLOADS_DIR } = require('../database/database');
@@ -64,8 +65,8 @@ function getOrCreateRecord(orderId, customerCode) {
   return record;
 }
 
-function photoPath(record, hours, photoId, originalName) {
-  const ext = (path.extname(originalName || '').toLowerCase() || '.jpg').replace(/[^a-z0-9.]/g, '') || '.jpg';
+function photoPath(record, hours, photoId, originalName, mimeType) {
+  const ext = safeImageExt(mimeType, originalName);
   const folder = path.join(customerCheckDir, safePart(record.po_number, 'PO'), safePart(record.customer_code, 'NO_CODE'));
   fs.mkdirSync(folder, { recursive: true });
   const relative = path.relative(UPLOADS_DIR, path.join(folder, `${safePart(hours, '0')}H-${photoId}${ext}`)).split(path.sep).join('/');
@@ -222,7 +223,7 @@ router.patch('/:id', (req, res, next) => {
     const updated = recordWithPhotos(record.id);
     for (const photo of updated.photos) {
       const oldPath = path.join(UPLOADS_DIR, ...photo.file_name.split('/'));
-      const next = photoPath(updated, photo.burn_hours, photo.id, photo.original_name);
+      const next = photoPath(updated, photo.burn_hours, photo.id, photo.original_name, photo.mime_type);
       if (fs.existsSync(oldPath) && oldPath !== next.disk) {
         fs.mkdirSync(path.dirname(next.disk), { recursive: true });
         fs.renameSync(oldPath, next.disk);

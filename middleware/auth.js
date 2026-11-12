@@ -20,4 +20,11 @@ function requireAuth(req, res, next){
   next();
 }
 
-module.exports = { optionalAuth, requireAuth };
+// Chỉ quản trị viên (role = admin)
+function requireAdmin(req, res, next){
+  if(!req.user) return res.status(401).json({ error: 'Chưa đăng nhập hoặc phiên đã hết hạn' });
+  if(String(req.user.r || '').toLowerCase() !== 'admin') return res.status(403).json({ error: 'Chỉ quản trị viên mới có quyền này' });
+  next();
+}
+
+module.exports = { optionalAuth, requireAuth, requireAdmin };

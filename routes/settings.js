@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { prepare, transaction, db, DB_PATH, UPLOADS_DIR } = require('../database/database');
 const { BACKUP_DIR, BACKUP_KEEP, backupNow, listBackups, verifyBackup, restoreBackup } = require('../lib/backup');
+const { requireAdmin } = require('../middleware/auth');
 const router = express.Router();
 const REPORT_LOGO_DIR = path.join(__dirname, '..', 'uploads', 'system');
 fs.mkdirSync(REPORT_LOGO_DIR, { recursive: true });
@@ -21,13 +22,13 @@ router.get('/', (_req,res,next)=>{try{
 }catch(e){next(e)}});
 
 router.put('/', (req,res,next)=>{try{
-  const input=req.body.settings||{}; transaction(()=>{for(const [key,value] of Object.entries(input)){prepare('INSERT INTO app_settings(key,value,updated_at) VALUES(?,?,datetime(\'now\')) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=datetime(\'now\')').run(clean(key), clean(value));}});
+  const input=req.body.settings||{}; transaction(()=>{for(const [key,value] of Object.entries(input)){if(clean(key)==='report_logo_path') continue; /* chỉ đổi qua POST /logo */ prepare('INSERT INTO app_settings(key,value,updated_at) VALUES(?,?,datetime(\'now\')) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=datetime(\'now\')').run(clean(key), clean(value));}});
   audit('SETTINGS_UPDATE', Object.keys(input).join(', ')); res.json({ok:true});
 }catch(e){res.status(400).json({error:e.message})}});
 
 
 router.post('/logo', logoUpload.single('logo'), (req,res,next)=>{try{
-  if(!req.file) return res.status(400).json({error:'Vui lòng chọn logo PNG/JPG/WEBP.'});
+  if(!req.file) return res.status(400).json({error:'Vui lòng chọn logo PNG hoặc JPG.'});
   const full=path.resolve(req.file.path);
   prepare('INSERT INTO app_settings(key,value,updated_at) VALUES(?,?,datetime(\'now\')) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=datetime(\'now\')').run('report_logo_path',full);
   audit('REPORT_LOGO_UPDATE', full);
@@ -35,7 +36,7 @@ router.post('/logo', logoUpload.single('logo'), (req,res,next)=>{try{
 }catch(e){next(e)}});
 router.delete('/logo', (_req,res,next)=>{try{
   const old=prepare('SELECT value FROM app_settings WHERE key=\'report_logo_path\'').get();
-  if(old?.value && fs.existsSync(old.value)) { try{fs.unlinkSync(old.value)}catch(_){} }
+  if(old?.value){ const f=path.resolve(old.value); if(path.dirname(f)===path.resolve(REPORT_LOGO_DIR) && fs.existsSync(f)){ try{fs.unlinkSync(f)}catch(_){} } }
   prepare('DELETE FROM app_settings WHERE key=\'report_logo_path\'').run(); audit('REPORT_LOGO_DELETE',''); res.json({ok:true});
 }catch(e){next(e)}});
 
@@ -73,7 +74,7 @@ router.get('/backups', (_req,res,next)=>{try{
   res.json(listBackups().map(x=>({name:x.name,hasDb:x.hasDb,hasUploads:x.hasUploads,dbSize:x.dbSize,uploadSize:x.uploadSize})));
 }catch(e){next(e)}});
 router.get('/backups/:name/verify', (req,res,next)=>{try{res.json(verifyBackup(req.params.name))}catch(e){res.status(400).json({ok:false,error:e.message})}});
-router.post('/backups/:name/restore', (req,res,next)=>{try{
+router.post('/backups/:name/restore', requireAdmin, (req,res,next)=>{try{
   const result=restoreBackup(req.params.name);
   audit('RESTORE', `${req.params.name} | safety=${result.safetyBackup}`);
   res.json(result);

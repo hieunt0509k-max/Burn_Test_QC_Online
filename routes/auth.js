@@ -6,6 +6,34 @@ const { requireAuth } = require('../middleware/auth');
 
 const router = express.Router();
 
+// ---------- Chống dò mật khẩu (brute-force) ----------
+// Đếm số lần đăng nhập sai theo (IP + tài khoản). Sai quá MAX_FAILS lần trong WINDOW_MS
+// thì khóa tạm LOCK_MS. Lưu trong bộ nhớ: khởi động lại server sẽ reset, đủ dùng cho app nội bộ.
+const LOGIN_WINDOW_MS = 15 * 60 * 1000;
+const LOGIN_MAX_FAILS = 8;
+const LOGIN_LOCK_MS = 5 * 60 * 1000;
+const loginAttempts = new Map();
+
+function loginKey(req, username){
+  return `${req.ip || req.socket?.remoteAddress || '?'}|${String(username).toLowerCase()}`;
+}
+function sweepLoginAttempts(now){
+  for(const [key, a] of loginAttempts){
+    if((a.lockedUntil || 0) < now && now - a.first > LOGIN_WINDOW_MS) loginAttempts.delete(key);
+  }
+}
+function loginLockedSeconds(key, now){
+  const a = loginAttempts.get(key);
+  return a && a.lockedUntil > now ? Math.ceil((a.lockedUntil - now) / 1000) : 0;
+}
+function noteLoginFailure(key, now){
+  let a = loginAttempts.get(key);
+  if(!a || now - a.first > LOGIN_WINDOW_MS) a = { count: 0, first: now, lockedUntil: 0 };
+  a.count += 1;
+  if(a.count >= LOGIN_MAX_FAILS){ a.lockedUntil = now + LOGIN_LOCK_MS; a.count = 0; a.first = now; }
+  loginAttempts.set(key, a);
+}
+
 // ---------- Đăng nhập ----------
 router.post('/login', (req, res) => {
   try{
@@ -14,9 +42,21 @@ router.post('/login', (req, res) => {
     if(!username || !password)
       return res.status(400).json({ error: 'Thiếu tài khoản hoặc mật khẩu' });
 
+    const now = Date.now();
+    sweepLoginAttempts(now);
+    const key = loginKey(req, username);
+    const locked = loginLockedSeconds(key, now);
+    if(locked){
+      res.set('Retry-After', String(locked));
+      return res.status(429).json({ error: `Đăng nhập sai quá nhiều lần. Vui lòng thử lại sau ${Math.ceil(locked / 60)} phút.` });
+    }
+
     const user = prepare('SELECT * FROM users WHERE username = ?').get(username);
-    if(!user || !verifyPassword(password, user.password_hash))
+    if(!user || !verifyPassword(password, user.password_hash)){
+      noteLoginFailure(key, now);
       return res.status(401).json({ error: 'Tài khoản hoặc mật khẩu không đúng' });
+    }
+    loginAttempts.delete(key);
 
     const token = signToken(user);
     res.json({

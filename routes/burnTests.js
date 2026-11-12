@@ -5,6 +5,7 @@ const { PassThrough } = require('stream');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
+const { safeImageExt } = require('../lib/imageExt');
 const { PDFDocument } = require('pdf-lib');
 const { prepare, UPLOADS_DIR } = require('../database/database');
 const { generateBurnTestReportPdf } = require('../lib/pdfReport');
@@ -917,7 +918,7 @@ router.post(['/:id/photos', '/:id/images'], upload.single('file'), (req, res, ne
     if (!req.file) return res.status(400).json({ error: 'Thiếu file ảnh' });
 
     const slot = parseSlot(req.body.slot ?? req.body.pic_slot);
-    const ext = (path.extname(req.file.originalname).toLowerCase() || '.jpg').replace(/[^a-z0-9.]/g, '');
+    const ext = safeImageExt(req.file.mimetype, req.file.originalname);
     // Cấu trúc: {po_number}/{product_code}/{test_date}/burn-test-{test_id}-{slot}.{ext}
     const relPath = buildPhotoPath(test.id, test.po_number, test.product_code, test.test_date, slot, ext);
 

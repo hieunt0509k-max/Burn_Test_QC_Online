@@ -465,6 +465,22 @@ body.customer-check-capture-mode .customer-check-exit-capture{display:inline-fle
 .photo-capture-action:disabled{opacity:.55;cursor:not-allowed}
 .view-tabs #tabPhotoCapture{padding-left:32px!important;font-size:12px!important}
 @media(max-width:760px){.burn-test-capture-layout{grid-template-columns:minmax(0,1fr)}.burn-test-capture-layout .customer-check-code-list{max-height:380px}}
+.sample-pending-capture-layout{grid-template-columns:minmax(260px,1fr) minmax(0,3fr)}
+.sample-pending-capture-layout .customer-check-code-list{max-height:620px}
+.sample-pending-capture-layout .customer-check-code-card{grid-template-columns:minmax(0,1fr)}
+.sample-pending-capture-layout .customer-check-code-thumb{display:none}
+.sample-pending-capture-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;max-height:620px;overflow:auto}
+.sample-pending-capture-photo{min-width:0;padding:5px;border:1px solid #e3e9ee;border-radius:8px;background:#f8fafb;cursor:zoom-in}
+.sample-pending-capture-photo img{display:block;width:100%;height:150px;object-fit:contain;border-radius:4px;background:#fff}
+.sample-pending-capture-photo small{display:block;padding:5px 2px 1px;color:var(--ink-soft);font-size:10px;text-align:center}
+.sample-pending-capture-empty{grid-column:1/-1;padding:30px 12px;color:var(--ink-soft);text-align:center}
+@media(max-width:900px){
+  .sample-pending-capture-layout{grid-template-columns:minmax(0,1fr)}
+  .sample-pending-capture-layout .customer-check-code-panel{min-width:0}
+  .sample-pending-capture-layout .customer-check-code-list{max-height:260px}
+  .sample-pending-capture-gallery{grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:8px;max-height:none;overflow:visible}
+  .sample-pending-capture-photo img{height:clamp(130px,38vw,220px)}
+}
 @media(max-width:760px){body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-capture-layout{grid-template-columns:minmax(0,1fr);height:auto}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-card{min-height:calc(100vh - 24px)}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-stage{min-height:45vh;flex:1 1 auto}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-panel{min-height:220px}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-list{max-height:34vh;flex:1 1 auto}}
 @media(orientation:landscape) and (max-height:600px){body.customer-check-capture-mode #view-customer-check.is-capturing{position:fixed;inset:0;z-index:1000;width:100%;height:100vh;height:100dvh;min-height:0;padding:0;overflow:hidden;background:#111}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-capture-layout{position:absolute;inset:0;display:block;height:auto;min-height:0}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-card{position:absolute;inset:0;display:flex;min-height:0;border:0;border-radius:0}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-head{flex:0 0 auto;padding:6px 12px}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-stage{min-height:0;flex:1 1 0;aspect-ratio:auto}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-actions{flex:0 0 auto;gap:6px;padding:6px 10px;background:rgba(255,255,255,.92)}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-actions small{max-width:35%;font-size:10px}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-camera-actions .btn{padding:6px 9px;font-size:11px}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-panel{display:none;position:absolute;top:max(8px,env(safe-area-inset-top));right:max(8px,env(safe-area-inset-right));bottom:max(8px,env(safe-area-inset-bottom));z-index:1090;width:min(340px,82vw);background:rgba(255,255,255,.97);box-shadow:0 6px 24px rgba(0,0,0,.35)}body.customer-check-capture-mode #view-customer-check.is-capturing.customer-check-code-list-open .customer-check-code-panel{display:flex}body.customer-check-capture-mode #view-customer-check.is-capturing .customer-check-code-list{flex:1 1 auto;min-height:0;max-height:none;padding-bottom:12px}.customer-check-code-toggle,.customer-check-fullscreen-toggle{position:fixed;z-index:1101;display:inline-flex;align-items:center;justify-content:center;min-height:42px;margin:0;padding:8px 12px;border:1px solid rgba(255,255,255,.75);border-radius:999px;background:rgba(25,31,38,.82);color:#fff;font-size:12px;font-weight:700;box-shadow:0 3px 12px rgba(0,0,0,.3);backdrop-filter:blur(6px)}.customer-check-code-toggle{left:max(10px,env(safe-area-inset-left));top:max(58px,calc(env(safe-area-inset-top) + 50px))}.customer-check-fullscreen-toggle{left:max(10px,env(safe-area-inset-left));top:max(10px,env(safe-area-inset-top))}.customer-check-code-list-open .customer-check-code-toggle{background:#187dcc}}
 @media(orientation:landscape) and (max-height:600px){body:not(.customer-check-capture-mode) .customer-check-code-toggle,body:not(.customer-check-capture-mode) .customer-check-fullscreen-toggle{display:none}}
@@ -2515,6 +2531,7 @@ header{
           <button type="button" class="sample-search-clear" id="sampleSearchClear" aria-label="Xóa tìm kiếm" title="Xóa tìm kiếm" onclick="clearSampleSearch()" disabled>✕</button>
         </div>
         <button type="button" class="btn sample-toolbar-btn" onclick="openSampleModal()">＋ Tạo test hàng mẫu</button>
+        <button type="button" class="btn btn-ghost sample-toolbar-btn" id="samplePendingCaptureToggle" onclick="switchView('sample-photo-capture')">📷 Chụp ảnh </button>
         <button type="button" class="btn btn-ghost sample-toolbar-btn" id="sampleLabelsBtn" onclick="downloadSampleLabels('pdf')" title="In tem cho các mã hàng đã chọn">🏷️ In tem</button>
         <button type="button" class="btn btn-ghost sample-toolbar-btn" id="sampleLabelsXlsxBtn" onclick="downloadSampleLabels('xlsx')" title="Xuất tem Excel cho các mã hàng đã chọn">📊 Tem Excel</button>
         <button type="button" class="btn btn-ghost sample-toolbar-btn" onclick="loadSampleTests()">↻ Làm mới</button>
@@ -2565,12 +2582,50 @@ header{
   </section>
 </main>
 
+<main id="view-sample-photo-capture" class="hidden">
+  <div class="module-title">
+    <div><h2>📷 Chụp ảnh test hàng mẫu</h2><p>Chỉ hiển thị các mã đang Pending. Chọn mã để xem ảnh và chụp bổ sung.</p></div>
+    <div class="module-actions">
+      <button type="button" class="btn btn-ghost" onclick="loadSamplePendingCaptureTests().catch(err => alert(err.message))">↻ Làm mới</button>
+      <button type="button" class="btn btn-ghost" onclick="switchView('sample')">← Danh sách test hàng mẫu</button>
+    </div>
+  </div>
+  <section class="module-card">
+    <div class="module-body burn-test-capture-toolbar">
+      <div class="field">
+        <label for="samplePendingCaptureSearch">Tìm PO hoặc mã hàng</label>
+        <div class="photo-capture-search-box">
+          <input id="samplePendingCaptureSearch" type="search" placeholder="Nhập PO, mã hàng, khách hàng…" oninput="syncSamplePendingCaptureSearchClear(); renderSamplePendingCaptureTests()">
+          <button type="button" class="photo-capture-search-clear" id="samplePendingCaptureSearchClear" aria-label="Xóa tìm kiếm" title="Xóa tìm kiếm" onclick="clearSamplePendingCaptureSearch()" disabled>✕</button>
+        </div>
+      </div>
+      <small id="samplePendingCaptureCount" style="color:var(--ink-soft)">0 mã Pending</small>
+    </div>
+  </section>
+  <section class="burn-test-capture-layout sample-pending-capture-layout">
+    <div class="customer-check-code-panel">
+      <div class="customer-check-code-head"><b>Danh sách test Pending</b><small id="samplePendingCaptureListCount">0 mã</small></div>
+      <div class="customer-check-code-list" id="samplePendingCaptureTestCards">
+        <div class="module-empty">Đang tải danh sách test…</div>
+      </div>
+    </div>
+    <div class="customer-check-camera-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div><b>Ảnh của mã đang chọn</b><small id="samplePendingCaptureSelectedLabel" style="display:block;margin-top:5px;color:var(--ink-soft)">Chọn mã ở danh sách bên trái</small></div>
+        <button type="button" class="btn photo-capture-action" id="samplePendingCaptureButton" disabled onclick="captureSelectedPendingSample()">📷 Chụp ảnh</button>
+      </div>
+      <div id="samplePendingCaptureGallery" class="sample-pending-capture-gallery" style="margin-top:14px" aria-label="Ảnh của test hàng mẫu đang chọn"></div>
+      <small class="photo-upload-status" id="samplePendingCaptureStatus" aria-live="polite">Chưa chọn mã test</small>
+    </div>
+  </section>
+</main>
+
 <div class="modal-overlay" id="sampleModal"><div class="modal-window" style="max-width:980px"><div class="modal-head"><div><h3 id="sampleModalTitle">Tạo test đốt hàng mẫu gửi khách</h3><small>Thông tin báo cáo + chụp / tải ảnh không giới hạn</small></div><button class="icon-btn" onclick="closeSampleModal()">✕</button></div><div class="modal-body">
   <input type="hidden" id="sampleId">
  <input type="hidden" id="sampleProductCode">
  <div class="periodic-form-grid">
   <div class="field"><label>Khách hàng</label><select id="sampleCustomer"></select></div>
-  <div class="field"><label>PO / Đơn hàng *</label><select id="samplePO" onchange="changeProductCode(this.value)"></select></div>
+  <div class="field"><label>PO / Đơn hàng *</label><select id="samplePO"></select></div>
   <div class="field"><label>Quy cách *</label><input id="sampleProductName" placeholder="Ví dụ: 玻璃罐 227g"></div>
   <div class="field"><label>Bấc *</label><input id="sampleWick" placeholder="Ví dụ: T27,T32"></div>
 </div>
@@ -3002,7 +3057,7 @@ header{
       <div class="settings-section-title">📄 Cấu hình báo cáo <small>Burn Test / Weekly</small></div>
       <div class="settings-panel-grid">
         <section class="settings-card"><div class="settings-head"><h3>📄 Cấu hình báo cáo</h3><span class="eyebrow">Áp dụng Burn Test / Weekly</span></div><div class="settings-body"><div class="settings-form">
-          <div class="wide"><label>Logo trên báo cáo (PNG/JPG/WEBP, tối đa 5MB)</label><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><input id="set_report_logo" type="file" accept="image/png,image/jpeg" style="flex:1;min-width:220px"><button type="button" class="btn btn-ghost" onclick="uploadReportLogo()">⬆ Tải logo</button><button type="button" class="btn btn-ghost" onclick="removeReportLogo()">🗑 Xóa logo</button><span id="reportLogoStatus" class="settings-note" style="margin:0">Chưa có logo</span></div><img id="reportLogoPreview" style="display:none;max-width:180px;max-height:70px;margin-top:9px;border:1px solid #e1e6ea;border-radius:5px;padding:5px;object-fit:contain"></div><div><label>Tên báo cáo</label><input id="set_report_title" value="BURN TEST QC REPORT"></div><div><label>Footer</label><input id="set_report_footer"></div><div><label>Người lập</label><input id="set_report_prepared"></div><div><label>Người duyệt</label><input id="set_report_approved"></div><div><label>Hiển thị biểu đồ</label><select id="set_report_chart"><option value="1">Có</option><option value="0">Không</option></select></div><div><label>Hiển thị chữ ký</label><select id="set_report_signature"><option value="1">Có</option><option value="0">Không</option></select></div>
+          <div class="wide"><label>Logo trên báo cáo (PNG/JPG/WEBP, tối đa 5MB)</label><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><input id="set_report_logo" type="file" accept="image/png,image/jpeg" style="flex:1;min-width:220px"><button type="button" class="btn btn-ghost" onclick="uploadReportLogo()">⬆ Tải logo</button><button type="button" class="btn btn-ghost" onclick="removeReportLogo()">🗑 Xóa logo</button><span id="reportLogoStatus" class="settings-note" style="margin:0">Chưa có logo</span></div><img id="reportLogoPreview" alt="Logo báo cáo" style="display:none;max-width:180px;max-height:70px;margin-top:9px;border:1px solid #e1e6ea;border-radius:5px;padding:5px;object-fit:contain"></div><div><label>Tên báo cáo</label><input id="set_report_title" value="BURN TEST QC REPORT"></div><div><label>Footer</label><input id="set_report_footer"></div><div><label>Người lập</label><input id="set_report_prepared"></div><div><label>Người duyệt</label><input id="set_report_approved"></div><div><label>Hiển thị biểu đồ</label><select id="set_report_chart"><option value="1">Có</option><option value="0">Không</option></select></div><div><label>Hiển thị chữ ký</label><select id="set_report_signature"><option value="1">Có</option><option value="0">Không</option></select></div>
         </div><div class="settings-actions"><button class="btn" onclick="saveAppSettings()">💾 Lưu cấu hình</button></div></div></section>
       </div>
     </div>
@@ -5059,7 +5114,7 @@ async function saveCapturedPhoto(){
   let saved = false;
   if(cameraTargetType === 'sample'){
     try{
-      const result = await uploadSamplePhotoFile(id, file, Number(slot));
+      const result = await uploadSamplePhotoFile(id, file, Number(slot), cameraTargetOrigin);
       if(cameraTargetOrigin === 'viewer' && samplePhotoViewerId === id) renderSamplePhotoViewer(result);
       saved = !!result;
     }catch(err){ alert('✕ ' + err.message); }
@@ -7008,10 +7063,14 @@ async function loadHomeDashboard(){
     if(fail) alerts.push(`<div class="home-alert fail"><div class="aicon">✕</div><div><b>${fail} test Không đạt</b><span>Kiểm tra nguyên nhân và xử lý CAPA nếu cần.</span></div></div>`);
     if(!pending && !fail && total > 0) alerts.push(`<div class="home-alert info"><div class="aicon">✓</div><div><b>Không có cảnh báo tồn đọng</b><span>Tất cả kết quả hiện tại đang được kiểm soát.</span></div></div>`);
     if(total === 0) alerts.push(`<div class="home-alert info"><div class="aicon">i</div><div><b>Chưa có dữ liệu test</b><span>Hãy nhập hoặc import dữ liệu để bắt đầu.</span></div></div>`);
-    document.getElementById('homeAlerts').innerHTML = alerts.join('');
+    const alertBox = document.getElementById('homeAlerts');
+    if(alertBox) alertBox.innerHTML = alerts.join('');
   }catch(err){
     console.error('Home dashboard:', err);
-    document.getElementById('homeAlerts').innerHTML = `<div class="home-alert fail"><div class="aicon">!</div><div><b>Không tải được Dashboard</b><span>${homeEscape(err.message)}</span></div></div>`;
+    const errBox = document.getElementById('homeAlerts');
+    if(errBox) errBox.innerHTML = `<div class="home-alert fail"><div class="aicon">!</div><div><b>Không tải được Dashboard</b><span>${homeEscape(err.message)}</span></div></div>`;
+    const syncEl = document.getElementById('homeLastSync');
+    if(syncEl) syncEl.textContent = 'Không tải được Dashboard: ' + (err && err.message ? err.message : 'lỗi không xác định');
   } finally { homeDashboardLoading = false; }
 } 	
 
@@ -7586,7 +7645,7 @@ function renderSamplePhotoGrid(photos=[]){
   add.onclick = () => captureSamplePhoto();
   box.appendChild(add);
 }
-async function uploadSamplePhotoFile(id, file, slot=null){
+async function uploadSamplePhotoFile(id, file, slot=null, origin=null){
   if(!id || !file) return;
   const fd = new FormData();
   const optimized = await compressImageForUpload(file);
@@ -7595,7 +7654,18 @@ async function uploadSamplePhotoFile(id, file, slot=null){
   const r = await fetch(`${API}/sample-tests/${id}/photos`, { method:'POST', body:fd });
   const d = await r.json();
   if(!r.ok) throw new Error(d.error || 'Tải ảnh thất bại');
-  renderSamplePhotoGrid(d.photos||[]);
+  if(origin === 'sample-capture' && Number(samplePendingCaptureSelectedId) === Number(id)){
+    samplePendingCaptureSelectedTest = d;
+    const row = samplePendingCaptureRows.find(item => Number(item.id) === Number(id));
+    if(row){
+      row.photo_count = (d.photos || []).length;
+      row.last_photo_url = d.photos?.[d.photos.length - 1]?.file_url || '';
+      renderSamplePendingCaptureTests();
+    }
+    renderSamplePendingCapturePhotos(d);
+  }else{
+    renderSamplePhotoGrid(d.photos||[]);
+  }
   await loadSampleTests();
   return d;
 }
@@ -7618,6 +7688,10 @@ function captureSampleViewerPhoto(){
   openSampleCamera(samplePhotoViewerId, 'viewer');
 }
 function getNextSamplePhotoSlot(id, origin){
+  if(origin === 'sample-capture' && Number(samplePendingCaptureSelectedId) === Number(id)){
+    const slots = (samplePendingCaptureSelectedTest?.photos || []).map(photo => Number(photo.slot));
+    return Math.max(0, ...slots.filter(Number.isFinite)) + 1;
+  }
   const slots = origin === 'viewer' && samplePhotoViewerId === id
     ? (window._sampleViewerPhotoSlots || [])
     : [...document.querySelectorAll('#samplePhotoGrid .sample-photo-slot[data-slot]')].map(item => Number(item.dataset.slot));
@@ -8251,7 +8325,9 @@ function clearSampleSearch(){
 async function loadSampleTests(resetPage = false){
   try{
     const q = document.getElementById('sampleSearch')?.value.trim() || '';
-    const rows = await fetch(`${API}/sample-tests${q ? '?q=' + encodeURIComponent(q) : ''}`).then(r => r.json());
+    const response = await fetch(`${API}/sample-tests${q ? '?q=' + encodeURIComponent(q) : ''}`);
+    const rows = await response.json();
+    if(!response.ok) throw new Error(rows.error || 'Không tải được danh sách test hàng mẫu');
     sampleTests = rows;
     sampleLastLoadedRows = Array.isArray(rows) ? rows : [];
     if(resetPage) sampleCurrentPage = 1;
@@ -8502,6 +8578,143 @@ document.getElementById('sampleListBody')?.addEventListener('click', event => {
   if(sample) openSampleModal(sample);
 });
 let samplePhotoViewerId = null;
+let samplePendingCaptureRows = [];
+let samplePendingCaptureSelectedId = null;
+let samplePendingCaptureSelectedTest = null;
+let samplePendingCaptureLoadToken = 0;
+
+async function loadSamplePendingCaptureTests(selectedId=samplePendingCaptureSelectedId){
+  const list = document.getElementById('samplePendingCaptureTestCards');
+  if(list && !samplePendingCaptureRows.length) list.innerHTML = '<div class="module-empty">Đang tải danh sách test…</div>';
+  try{
+    const response = await fetch(`${API}/sample-tests?result=PENDING`, { cache:'no-store' });
+    const rows = await response.json();
+    if(!response.ok) throw new Error(rows.error || 'Không tải được danh sách test Pending');
+    samplePendingCaptureRows = Array.isArray(rows) ? rows : [];
+    const selectedExists = samplePendingCaptureRows.some(row => Number(row.id) === Number(selectedId));
+    samplePendingCaptureSelectedId = selectedExists ? Number(selectedId) : null;
+    renderSamplePendingCaptureTests();
+    if(samplePendingCaptureSelectedId) await selectSamplePendingCaptureTest(samplePendingCaptureSelectedId);
+    else{
+      samplePendingCaptureSelectedTest = null;
+      renderSamplePendingCapturePhotos(null);
+    }
+  }catch(error){
+    if(list) list.innerHTML = `<div class="module-empty">Không tải được danh sách: ${sampleEsc(error.message)}</div>`;
+    throw error;
+  }
+}
+
+function getSamplePendingCaptureRows(){
+  const search = (document.getElementById('samplePendingCaptureSearch')?.value || '').trim().toLowerCase();
+  return samplePendingCaptureRows.filter(row => [
+    row.po_number || '',
+    row.product_code || '',
+    row.product_name || '',
+    row.customer_name || '',
+    row.wick_spec || ''
+  ].join(' ').toLowerCase().includes(search));
+}
+
+function renderSamplePendingCaptureTests(){
+  const list = document.getElementById('samplePendingCaptureTestCards');
+  if(!list) return;
+  const rows = getSamplePendingCaptureRows();
+  document.getElementById('samplePendingCaptureCount').textContent = `${rows.length} mã Pending`;
+  document.getElementById('samplePendingCaptureListCount').textContent = `${rows.length} mã`;
+  list.innerHTML = rows.length ? rows.map(row => {
+    const id = Number(row.id);
+    const image = row.last_photo_url
+      ? `<img src="${sampleEsc(row.last_photo_url)}" alt="" loading="lazy">`
+      : 'Chưa có ảnh';
+    return `<button type="button" class="customer-check-code-card${id === samplePendingCaptureSelectedId ? ' selected' : ''}" data-sample-pending-id="${id}" aria-pressed="${id === samplePendingCaptureSelectedId}">
+      <div class="customer-check-code-meta">
+        <b>${sampleEsc(row.product_code || row.po_number || '—')}</b>
+        <small>PO: ${sampleEsc(row.po_number || '—')}<br>${sampleEsc(row.customer_name || '—')} · ${Number(row.photo_count || 0)} ảnh</small>
+      </div>
+    </button>`;
+  }).join('') : '<div class="module-empty">Không có mã Pending phù hợp.</div>';
+  list.querySelectorAll('[data-sample-pending-id]').forEach(button => {
+    button.addEventListener('click', () => {
+      selectSamplePendingCaptureTest(Number(button.dataset.samplePendingId))
+        .catch(error => console.error('Sample pending photo selection failed:', error));
+    });
+  });
+}
+
+async function selectSamplePendingCaptureTest(id){
+  const row = samplePendingCaptureRows.find(item => Number(item.id) === Number(id));
+  if(!row) return;
+  samplePendingCaptureSelectedId = Number(id);
+  const requestToken = ++samplePendingCaptureLoadToken;
+  renderSamplePendingCaptureTests();
+  document.getElementById('samplePendingCaptureSelectedLabel').textContent = `${row.product_code || '—'} · ${row.po_number || '—'} · ${row.product_name || '—'} · Bấc: ${row.wick_spec || '—'}`;
+  document.getElementById('samplePendingCaptureStatus').textContent = 'Đang tải ảnh…';
+  document.getElementById('samplePendingCaptureButton').disabled = true;
+  try{
+    const response = await fetch(`${API}/sample-tests/${id}`, { cache:'no-store' });
+    const test = await response.json();
+    if(!response.ok) throw new Error(test.error || 'Không tải được ảnh của mã hàng');
+    if(requestToken !== samplePendingCaptureLoadToken) return;
+    if(String(test.test_result || 'PENDING').toUpperCase() !== 'PENDING'){
+      samplePendingCaptureSelectedTest = null;
+      await loadSamplePendingCaptureTests(null);
+      return;
+    }
+    samplePendingCaptureSelectedTest = test;
+    renderSamplePendingCapturePhotos(test);
+  }catch(error){
+    if(requestToken === samplePendingCaptureLoadToken){
+      document.getElementById('samplePendingCaptureGallery').innerHTML = `<div class="sample-pending-capture-empty">Không tải được ảnh: ${sampleEsc(error.message)}</div>`;
+      document.getElementById('samplePendingCaptureStatus').textContent = 'Tải ảnh thất bại';
+      throw error;
+    }
+  }
+}
+
+function renderSamplePendingCapturePhotos(test){
+  const gallery = document.getElementById('samplePendingCaptureGallery');
+  const button = document.getElementById('samplePendingCaptureButton');
+  const status = document.getElementById('samplePendingCaptureStatus');
+  if(!gallery || !button || !status) return;
+  const photos = [...(test?.photos || [])].sort((a,b) => Number(a.slot) - Number(b.slot));
+  window._sampleViewerPhotos = photos.map(photo =>
+    `${sampleEsc(photo.file_url)}${String(photo.file_url || '').includes('?') ? '&' : '?'}t=${Date.now()}`
+  );
+  gallery.innerHTML = photos.length ? photos.map(photo => {
+    const url = window._sampleViewerPhotos[photos.indexOf(photo)];
+    return `<button type="button" class="sample-pending-capture-photo" title="Xem ảnh ${Number(photo.slot)}" onclick="openLightbox('${url}','sample')">
+      <img src="${url}" alt="Ảnh ${Number(photo.slot)}" loading="lazy"><small>Ảnh ${Number(photo.slot)}</small>
+    </button>`;
+  }).join('') : '<div class="sample-pending-capture-empty">Mã này chưa có ảnh. Bấm “Chụp ảnh” để bắt đầu.</div>';
+  button.disabled = !test || String(test.test_result || 'PENDING').toUpperCase() !== 'PENDING';
+  status.textContent = test ? `${photos.length} ảnh · Sẵn sàng chụp hoặc xem ảnh` : 'Chọn mã test ở danh sách bên trái';
+}
+
+function syncSamplePendingCaptureSearchClear(){
+  const input = document.getElementById('samplePendingCaptureSearch');
+  const button = document.getElementById('samplePendingCaptureSearchClear');
+  if(input && button) button.disabled = !(input.value || '').trim();
+}
+
+function clearSamplePendingCaptureSearch(){
+  const input = document.getElementById('samplePendingCaptureSearch');
+  if(!input) return;
+  input.value = '';
+  syncSamplePendingCaptureSearchClear();
+  renderSamplePendingCaptureTests();
+  input.focus();
+}
+
+async function captureSelectedPendingSample(){
+  const test = samplePendingCaptureSelectedTest;
+  if(!test || String(test.test_result || 'PENDING').toUpperCase() !== 'PENDING'){
+    alert('Vui lòng chọn mã đang Pending.');
+    return;
+  }
+  openCamera(Number(test.id), getNextSamplePhotoSlot(Number(test.id), 'sample-capture'), 'sample', 'sample-capture');
+}
+
 async function openSamplePhotoViewer(id){
   const modal = document.getElementById('samplePhotoViewerModal');
   const grid = document.getElementById('sampleViewerGrid');
@@ -8514,7 +8727,8 @@ async function openSamplePhotoViewer(id){
     const d = await r.json();
     if(!r.ok) throw new Error(d.error || 'Không tải được test');
     renderSamplePhotoViewer(d);
-  }catch(e){ grid.innerHTML = `<div class="module-empty">Lỗi tải ảnh: ${sampleEsc(e.message)}</div>`; }
+    return d;
+  }catch(e){ grid.innerHTML = `<div class="module-empty">Lỗi tải ảnh: ${sampleEsc(e.message)}</div>`; return null; }
 }
 function renderSamplePhotoViewer(test){
   const grid = document.getElementById('sampleViewerGrid');
@@ -9822,7 +10036,7 @@ let autoRefreshTimer = null;
 const AUTO_REFRESH_MS = 30000;
 
 function getActiveViewName(){
-  const ids = ['view-home','view-tests','view-products','view-weekly','view-master','view-photos','view-photo-capture','view-customer-check','view-sample','view-report-templates','view-settings'];
+  const ids = ['view-home','view-tests','view-products','view-weekly','view-master','view-photos','view-photo-capture','view-customer-check','view-sample-photo-capture','view-sample','view-report-templates','view-settings'];
   for(const id of ids){
     const el = document.getElementById(id);
     if(el && !el.classList.contains('hidden')) return id.replace(/^view-/, '');
@@ -9849,6 +10063,7 @@ function refreshActiveView(){
   else if(view === 'photos') loadPhotoGallery();
   else if(view === 'photo-capture' && !photoCaptureBusy) loadPhotoCaptureTests();
   else if(view === 'customer-check') { renderCustomerCheckSchedule(); renderCustomerCheckGrid(); }
+  else if(view === 'sample-photo-capture' && !cameraStream) loadSamplePendingCaptureTests().catch(err => console.error('Sample photo capture refresh failed:', err));
   else if(view === 'sample') loadSampleTests();
   else if(view === 'settings') loadSettings();
 }
@@ -9934,6 +10149,7 @@ function switchView(view){
   const isPhotoCapture = view === 'photo-capture';
   const isCustomerCheck = view === 'customer-check';
   const isSample = view === 'sample';
+  const isSamplePhotoCapture = view === 'sample-photo-capture';
   const isBurnCalculator = view === 'burn-calculator';
   const isReportTemplates = view === 'report-templates';
   const isSettings = view === 'settings';
@@ -9946,6 +10162,7 @@ function switchView(view){
   const photoCaptureView = document.getElementById('view-photo-capture'); if(photoCaptureView) photoCaptureView.classList.toggle('hidden', !isPhotoCapture);
   const customerCheckView = document.getElementById('view-customer-check'); if(customerCheckView) customerCheckView.classList.toggle('hidden', !isCustomerCheck);
   const sampleView = document.getElementById('view-sample'); if(sampleView) sampleView.classList.toggle('hidden', !isSample);
+  const samplePhotoCaptureView = document.getElementById('view-sample-photo-capture'); if(samplePhotoCaptureView) samplePhotoCaptureView.classList.toggle('hidden', !isSamplePhotoCapture);
   const burnCalculatorView = document.getElementById('view-burn-calculator'); if(burnCalculatorView) burnCalculatorView.classList.toggle('hidden', !isBurnCalculator);
   const reportTemplatesView = document.getElementById('view-report-templates'); if(reportTemplatesView) reportTemplatesView.classList.toggle('hidden', !isReportTemplates);
   document.getElementById('view-settings').classList.toggle('hidden', !isSettings);
@@ -9957,7 +10174,7 @@ function switchView(view){
   document.getElementById('tabPhotos').classList.toggle('active', isPhotos);
   const tabPhotoCapture = document.getElementById('tabPhotoCapture'); if(tabPhotoCapture) tabPhotoCapture.classList.toggle('active', isPhotoCapture);
   const tabCustomerCheck = document.getElementById('tabCustomerCheck'); if(tabCustomerCheck) tabCustomerCheck.classList.toggle('active', isCustomerCheck);
-  const tabSample = document.getElementById('tabSample'); if(tabSample) tabSample.classList.toggle('active', isSample);
+  const tabSample = document.getElementById('tabSample'); if(tabSample) tabSample.classList.toggle('active', isSample || isSamplePhotoCapture);
   const tabBurnCalculator = document.getElementById('tabBurnCalculator'); if(tabBurnCalculator) tabBurnCalculator.classList.toggle('active', isBurnCalculator);
   const tabReportTemplates = document.getElementById('tabReportTemplates'); if(tabReportTemplates) tabReportTemplates.classList.toggle('active', isReportTemplates);
   document.getElementById('tabSettings').classList.toggle('active', isSettings);
@@ -9979,6 +10196,9 @@ function switchView(view){
     }).catch(err => alert('Không tải được danh sách đơn hàng: ' + err.message));
   }
   if(isSample){ loadSampleRefs(); loadSampleTests(); }
+  if(isSamplePhotoCapture){
+    loadSamplePendingCaptureTests().catch(err => alert('Không tải được danh sách test Pending: ' + err.message));
+  }
   if(isReportTemplates) loadReportTemplates();
   if(isSettings) loadSettings();
   startAutoRefresh();
